@@ -346,10 +346,13 @@
         }
 
         function crearFicha(jugador, equipo) {
-            const esEntrenador = jugador.entrenador?.toUpperCase() === 'SI';
+            const esEntrenador = jugador.entrenador?.toUpperCase() === 'SI' || 
+                                 jugador.entrenador?.toUpperCase() === 'TRUE' ||
+                                 jugador.entrenador === '1';
+            
             const driveBase = equipo === 'femenino' ? CONFIG_PLANTILLAS.driveFemenino : CONFIG_PLANTILLAS.driveMasculino;
             const fotoUrl = `${driveBase}${jugador.numero}.png`;
-            const numDisplay = jugador.numero;
+            const numDisplay = jugador.numero || '?';
 
             const card = document.createElement('div');
             card.className = `player-card${esEntrenador ? ' invertido' : ''}`;
@@ -359,12 +362,12 @@
                 <div class="player-number">${numDisplay}</div>
                 <div class="photo-container">
                     <img src="${fotoUrl}"
-                         alt="${jugador.nombre}"
+                         alt="${jugador.nombre || 'Jugador'}"
                          loading="lazy"
                          onerror="this.parentElement.innerHTML='<div class=\\'photo-error\\'>${numDisplay}</div>'">
                 </div>
                 <div class="name-container">
-                    <div class="player-name">${jugador.nombre}</div>
+                    <div class="player-name">${jugador.nombre || 'Sin nombre'}</div>
                 </div>
             `;
 
@@ -375,20 +378,45 @@
             const lines = csv.split('\n').filter(line => line.trim());
             if (lines.length < 2) return [];
 
-            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+            // Limpiar y normalizar cabeceras
+            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+            
+            // Mapear cabeceras a nombres esperados
+            const headerMap = {};
+            rawHeaders.forEach((h, index) => {
+                if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) {
+                    headerMap['numero'] = index;
+                } else if (h.includes('nombre') || h.includes('nome') || h.includes('jugador')) {
+                    headerMap['nombre'] = index;
+                } else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) {
+                    headerMap['entrenador'] = index;
+                }
+            });
+
+            // Si no encuentra las columnas, usa las primeras columnas por orden
+            if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
+            if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
+            if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
+
             return lines.slice(1).map(line => {
                 const values = line.split(',').map(v => v.trim());
                 const obj = {};
-                headers.forEach((h, i) => obj[h] = values[i] || '');
+                Object.keys(headerMap).forEach(key => {
+                    obj[key] = values[headerMap[key]] || '';
+                });
                 return obj;
             });
         }
 
         async function cargarHoja(url, equipo, gridId, countId) {
             try {
+                console.log(`🔄 Cargando ${equipo} desde:`, url);
                 const response = await fetch(url);
                 const csv = await response.text();
+                console.log(`📄 CSV recibido (primeros 200 caracteres):`, csv.substring(0, 200));
+                
                 const datos = parseCSV(csv);
+                console.log(`📊 Datos parseados (${datos.length} filas):`, datos);
 
                 // Ordenar por número (entrenadores al final)
                 datos.sort((a, b) => {
