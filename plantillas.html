@@ -88,9 +88,21 @@
         /* ===== GRILLA DE JUGADORES ===== */
         .players-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-template-columns: repeat(5, 1fr);
             gap: 1.5rem;
             justify-items: center;
+        }
+
+        /* ===== GRILLA DE ENTRENADORES (centrados) ===== */
+        .entrenadores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 200px));
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px dashed var(--dorado);
+            width: 100%;
         }
 
         /* ===== FICHA DE JUGADOR ===== */
@@ -144,7 +156,7 @@
             left: -10%;
             opacity: 0.12;
             transform: rotate(35deg);
-            background-image: url('assets/img/logo.png');
+            background-image: url('assets/img/logos/club/logo-negro.png');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -219,9 +231,14 @@
         }
 
         /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .players-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
         @media (max-width: 768px) {
             .players-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                grid-template-columns: repeat(3, 1fr);
                 gap: 1rem;
             }
             .player-card { max-width: 150px; }
@@ -244,6 +261,14 @@
                 padding: 0.5rem 1.5rem;
                 font-size: 0.9rem;
             }
+            .entrenadores-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 160px));
+            }
+        }
+        @media (max-width: 480px) {
+            .players-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -252,7 +277,7 @@
     <!-- ===== HEADER ===== -->
     <header class="main-header">
         <a href="/" class="logo">
-            <img src="assets/img/logo.png" alt="CB O Grove" onerror="this.style.display='none'">
+            <img src="assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
             CB O GROVE
         </a>
         <nav class="main-nav">
@@ -331,8 +356,8 @@
         const CONFIG_PLANTILLAS = {
             sheetFemenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
             sheetMasculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205',
-            driveFemenino: 'https://drive.google.com/uc?export=view&id=1sLx9b3g_IF6UMoFDANea7---EiO9BeWe/',
-            driveMasculino: 'https://drive.google.com/uc?export=view&id=1aOptup23AMDNVp6UpuXa8CO5w54v9BlT/'
+            driveFemenino: 'assets/img/plantillas/femenino/',
+            driveMasculino: 'assets/img/plantillas/masculino/'
         };
 
         // ===== FUNCIONES =====
@@ -351,14 +376,19 @@
                                  jugador.entrenador === '1';
             
             const driveBase = equipo === 'femenino' ? CONFIG_PLANTILLAS.driveFemenino : CONFIG_PLANTILLAS.driveMasculino;
-            const fotoUrl = `${driveBase}${jugador.numero}.png`;
-            const numDisplay = jugador.numero || '?';
+            const timestamp = Date.now();
+            const fotoUrl = `${driveBase}${jugador.numero}.png?t=${timestamp}`;
+            // Forzar el número como string para que muestre "0" correctamente
+            const numDisplay = String(jugador.numero || '?');
 
             const card = document.createElement('div');
             card.className = `player-card${esEntrenador ? ' invertido' : ''}`;
 
+            // Logo de fondo centralizado
+            const logoFondo = 'assets/img/logos/club/logo-negro.png';
+
             card.innerHTML = `
-                <div class="card-background"></div>
+                <div class="card-background" style="background-image: url('${logoFondo}?t=${timestamp}');"></div>
                 <div class="player-number">${numDisplay}</div>
                 <div class="photo-container">
                     <img src="${fotoUrl}"
@@ -378,10 +408,8 @@
             const lines = csv.split('\n').filter(line => line.trim());
             if (lines.length < 2) return [];
 
-            // Limpiar y normalizar cabeceras
             const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
             
-            // Mapear cabeceras a nombres esperados
             const headerMap = {};
             rawHeaders.forEach((h, index) => {
                 if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) {
@@ -393,7 +421,6 @@
                 }
             });
 
-            // Si no encuentra las columnas, usa las primeras columnas por orden
             if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
             if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
             if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
@@ -418,8 +445,27 @@
                 const datos = parseCSV(csv);
                 console.log(`📊 Datos parseados (${datos.length} filas):`, datos);
 
-                // Ordenar por número (entrenadores al final)
-                datos.sort((a, b) => {
+                // Separar jugadores de entrenadores
+                const entrenadores = datos.filter(j => 
+                    j.entrenador?.toUpperCase() === 'SI' || 
+                    j.entrenador?.toUpperCase() === 'TRUE' ||
+                    j.entrenador === '1'
+                );
+                const jugadores = datos.filter(j => 
+                    j.entrenador?.toUpperCase() !== 'SI' && 
+                    j.entrenador?.toUpperCase() !== 'TRUE' &&
+                    j.entrenador !== '1'
+                );
+
+                // Ordenar jugadores por número
+                jugadores.sort((a, b) => {
+                    const numA = parseInt(a.numero) || 999;
+                    const numB = parseInt(b.numero) || 999;
+                    return numA - numB;
+                });
+
+                // Ordenar entrenadores por número
+                entrenadores.sort((a, b) => {
                     const numA = parseInt(a.numero) || 999;
                     const numB = parseInt(b.numero) || 999;
                     return numA - numB;
@@ -427,12 +473,21 @@
 
                 const grid = document.getElementById(gridId);
                 grid.innerHTML = '';
-                datos.forEach(j => grid.appendChild(crearFicha(j, equipo)));
+
+                // Renderizar jugadores
+                jugadores.forEach(j => grid.appendChild(crearFicha(j, equipo)));
+
+                // Si hay entrenadores, crear un grid separado y centrado
+                if (entrenadores.length > 0) {
+                    const entrenadoresContainer = document.createElement('div');
+                    entrenadoresContainer.className = 'entrenadores-grid';
+                    entrenadores.forEach(j => entrenadoresContainer.appendChild(crearFicha(j, equipo)));
+                    grid.appendChild(entrenadoresContainer);
+                }
 
                 const countEl = document.getElementById(countId);
                 if (countEl) countEl.textContent = `${datos.length} ${equipo === 'femenino' ? 'xogadoras' : 'xogadores'}`;
 
-                // Actualizar badge del selector
                 const badgeId = equipo === 'femenino' ? 'countF' : 'countM';
                 document.getElementById(badgeId).textContent = datos.length;
 
@@ -453,7 +508,6 @@
             console.log(`✅ Plantillas cargadas: ${totalF} femenino, ${totalM} masculino`);
         }
 
-        // ===== INICIALIZAR =====
         document.addEventListener('DOMContentLoaded', cargarPlantillas);
     </script>
 </body>
