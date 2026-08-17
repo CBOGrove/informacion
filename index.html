@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="gl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio · Club Baloncesto O Grove</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .hero {
+            background: linear-gradient(135deg, var(--azul-club) 0%, #0d1f33 100%);
+            border-radius: 25px;
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--blanco);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-logo {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hero h1 {
+            font-family: var(--font-titulos);
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            color: var(--dorado);
+        }
+        
+        .hero .eslogan {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-acciones {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .hero-acciones a {
+            background: var(--dorado);
+            color: var(--azul-club);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .hero-acciones a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(201, 160, 61, 0.4);
+        }
+        
+        .hero-acciones a.secundario {
+            background: transparent;
+            color: var(--blanco);
+            border: 2px solid var(--blanco);
+        }
+        
+        .hero-acciones a.secundario:hover {
+            background: var(--blanco);
+            color: var(--azul-club);
+        }
+        
+        .mosaico-redes {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        
+        .mosaico-redes .item {
+            background: var(--blanco);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--sombra-suave);
+            transition: transform 0.3s, box-shadow 0.3s;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .mosaico-redes .item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--sombra-media);
+        }
+        
+        .mosaico-redes .item-grande {
+            grid-row: span 2;
+        }
+        
+        .mosaico-redes .item .icono {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mosaico-redes .item .nombre {
+            font-weight: 600;
+            color: var(--azul-club);
+        }
+        
+        .mosaico-redes .item .estado {
+            font-size: 0.85rem;
+            color: var(--gris-texto);
+        }
+        
+        .mosaico-redes .item.twitch .icono { color: #9146FF; }
+        .mosaico-redes .item.youtube .icono { color: #FF0000; }
+        .mosaico-redes .item.instagram .icono { color: #E4405F; }
+        .mosaico-redes .item.twitter .icono { color: #000000; }
+        
+        .ultima-noticia {
+            background: var(--blanco);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--sombra-suave);
+            border-left: 5px solid var(--dorado);
+            margin-bottom: 3rem;
+        }
+        
+        .ultima-noticia .fecha {
+            color: var(--gris-texto);
+            font-size: 0.9rem;
+        }
+        
+        .ultima-noticia h2 {
+            color: var(--azul-club);
+            margin: 0.3rem 0;
+        }
+        
+        .ultima-noticia p {
+            color: #444;
+            line-height: 1.6;
+        }
+        
+        .accesos-rapidos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .accesos-rapidos a {
+            background: var(--blanco);
+            padding: 1.5rem 1rem;
+            border-radius: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--azul-club);
+            font-weight: 600;
+            box-shadow: var(--sombra-suave);
+            transition: all 0.3s;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .accesos-rapidos a:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--sombra-media);
+            background: var(--azul-club);
+            color: var(--blanco);
+        }
+        
+        .accesos-rapidos a .emoji {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero {
+                padding: 2rem 1rem;
+            }
+            
+            .mosaico-redes {
+                grid-template-columns: 1fr;
+            }
+            
+            .mosaico-redes .item-grande {
+                grid-row: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <a href="/" class="logo">
+            <img src="assets/img/logo.png" alt="CB O Grove" onerror="this.style.display='none'">
+            CB O GROVE
+        </a>
+        <nav class="main-nav">
+            <a href="/" class="active">Inicio</a>
+            <a href="plantillas.html">Plantillas</a>
+            <a href="jornadas.html">Jornadas</a>
+            <a href="noticias.html">Noticias</a>
+            <a href="sorteos.html">Sorteos</a>
+            <a href="contacto.html">Contacto</a>
+        </nav>
+        <span class="twitch-badge" id="twitchBadge">📺 No en directo</span>
+    </header>
+
+    <main class="main-content">
+        
+        <section class="hero">
+            <div class="hero-logo">🏀</div>
+            <h1>CLUB BALONCESTO O GROVE</h1>
+            <p class="eslogan">Orgullo grovense desde 1975</p>
+            <div class="hero-acciones">
+                <a href="plantillas.html">Ver plantillas</a>
+                <a href="jornadas.html" class="secundario">Próximos partidos</a>
+            </div>
+        </section>
+
+        <section class="mosaico-redes">
+            <div class="item item-grande twitch">
+                <div>
+                    <div class="icono"><i class="fab fa-twitch"></i></div>
+                    <div class="nombre">Twitch</div>
+                    <div class="estado">🔴 No en directo</div>
+                </div>
+            </div>
+            <div class="item youtube">
+                <div>
+                    <div class="icono"><i class="fab fa-youtube"></i></div>
+                    <div class="nombre">YouTube</div>
+                    <div class="estado">Último video: hace 3 días</div>
+                </div>
+            </div>
+            <div class="item instagram">
+                <div>
+                    <div class="icono"><i class="fab fa-instagram"></i></div>
+                    <div class="nombre">Instagram</div>
+                    <div class="estado">@cbogrove</div>
+                </div>
+            </div>
+            <div class="item twitter">
+                <div>
+                    <div class="icono"><i class="fab fa-twitter"></i></div>
+                    <div class="nombre">X (Twitter)</div>
+                    <div class="estado">@cbogrove</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="ultima-noticia" id="ultimaNoticia">
+            <div class="fecha">📅 17 de agosto de 2026</div>
+            <h2>🏀 Benvidos á nova web do club</h2>
+            <p>Estamos de estrea! Esta é a nova páxina web do Club Baloncesto O Grove. Aquí poderás atopar toda a información sobre as nosas plantillas, próximos partidos, noticias e moito máis. Agardamos que vos guste!</p>
+        </section>
+
+        <section class="accesos-rapidos">
+            <a href="plantillas.html">
+                <span class="emoji">👥</span>
+                Plantillas
+            </a>
+            <a href="jornadas.html">
+                <span class="emoji">📅</span>
+                Jornadas
+            </a>
+            <a href="noticias.html">
+                <span class="emoji">📰</span>
+                Noticias
+            </a>
+            <a href="sorteos.html">
+                <span class="emoji">🎰</span>
+                Sorteos
+            </a>
+            <a href="contacto.html">
+                <span class="emoji">📬</span>
+                Contacto
+            </a>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <div class="redes">
+            <a href="https://www.tiktok.com/@cbogrove" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://www.youtube.com/@cbogrove" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.instagram.com/cbogrove" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.twitch.tv/cbogrove" target="_blank" aria-label="Twitch"><i class="fab fa-twitch"></i></a>
+            <a href="https://x.com/cbogrove" target="_blank" aria-label="X (Twitter)"><i class="fab fa-twitter"></i></a>
+        </div>
+        <div class="copy">© 2026 Club Baloncesto O Grove</div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
