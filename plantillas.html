@@ -109,6 +109,12 @@
             height: 350px;
             flex-shrink: 0;
             cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .flip-container:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
         }
 
         .flip-inner {
@@ -158,11 +164,7 @@
             border: 3px solid #000000;
             background: #FFD700;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-            transition: box-shadow 0.3s;
             flex-shrink: 0;
-        }
-        .player-card:hover {
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
         }
 
         /* ===== FICHA INVERTIDA (STAFF) ===== */
@@ -293,13 +295,53 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            padding: 1rem;
+            padding: 0;
             box-sizing: border-box;
             position: relative;
         }
 
+        /* Fondo con escudo en la parte trasera */
+        .flip-back .back-card-background {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            opacity: 0.15;
+            transform: rotate(35deg);
+            background-image: url('assets/img/logos/club/logo-negro.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: brightness(0) contrast(1);
+            pointer-events: none;
+        }
+
+        /* Contenedor de foto (vacío, solo marco) en la parte trasera */
+        .flip-back .back-photo-container {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            right: 25px;
+            bottom: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.05);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 2px dashed rgba(0, 0, 0, 0.15);
+        }
+
+        .flip-back .back-photo-container.invertido-back {
+            border-color: rgba(255, 215, 0, 0.2);
+            background: rgba(255, 215, 0, 0.05);
+        }
+
         .flip-back .back-text-area {
-            flex: 1;
+            position: absolute;
+            top: 35px;
+            left: 35px;
+            right: 35px;
+            bottom: 90px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -307,8 +349,7 @@
             text-align: center;
             padding: 0.5rem;
             overflow-y: auto;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
+            z-index: 1;
         }
 
         .flip-back .back-text-area p {
@@ -332,14 +373,18 @@
             font-size: 1.5rem;
         }
 
+        /* Nombre en la parte trasera (igual que el frente) */
         .flip-back .back-name-container {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
             height: 55px;
             border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 4px 8px;
-            margin: 0 15px 15px 15px;
             z-index: 2;
         }
 
@@ -414,6 +459,18 @@
                 right: 18px;
                 bottom: 62px;
             }
+            .flip-back .back-photo-container {
+                top: 18px;
+                left: 18px;
+                right: 18px;
+                bottom: 62px;
+            }
+            .flip-back .back-text-area {
+                top: 28px;
+                left: 28px;
+                right: 28px;
+                bottom: 72px;
+            }
             .player-number {
                 width: 42px;
                 height: 42px;
@@ -427,9 +484,18 @@
                 left: 10px;
                 right: 10px;
             }
+            .flip-back .back-name-container {
+                height: 42px;
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+            }
             .player-name {
                 font-size: 16px;
                 letter-spacing: 0.5px;
+            }
+            .flip-back .back-name {
+                font-size: 16px;
             }
             .team-btn {
                 padding: 0.5rem 1.5rem;
@@ -454,12 +520,6 @@
             .flip-back .back-text-area .back-line-first {
                 font-size: 0.95rem;
             }
-            .flip-back .back-name {
-                font-size: 16px;
-            }
-            .flip-back .back-name-container {
-                height: 42px;
-            }
         }
         @media (max-width: 480px) {
             .players-grid {
@@ -480,6 +540,19 @@
                 right: 14px;
                 bottom: 50px;
             }
+            .flip-back .back-photo-container {
+                top: 14px;
+                left: 14px;
+                right: 14px;
+                bottom: 50px;
+            }
+            .flip-back .back-text-area {
+                top: 22px;
+                left: 22px;
+                right: 22px;
+                bottom: 58px;
+                padding: 0.2rem;
+            }
             .player-number {
                 width: 35px;
                 height: 35px;
@@ -494,9 +567,19 @@
                 right: 8px;
                 padding: 2px 4px;
             }
+            .flip-back .back-name-container {
+                height: 36px;
+                bottom: 8px;
+                left: 8px;
+                right: 8px;
+                padding: 2px 4px;
+            }
             .player-name {
                 font-size: 13px;
                 letter-spacing: 0.3px;
+            }
+            .flip-back .back-name {
+                font-size: 13px;
             }
             .staff-row {
                 gap: 1rem;
@@ -514,18 +597,6 @@
             }
             .flip-back .back-text-area .back-line-first {
                 font-size: 0.8rem;
-            }
-            .flip-back .back-name {
-                font-size: 13px;
-            }
-            .flip-back .back-name-container {
-                height: 36px;
-                margin: 0 8px 8px 8px;
-            }
-            .flip-back .back-text-area {
-                margin-top: 0.5rem;
-                margin-bottom: 0.2rem;
-                padding: 0.2rem;
             }
         }
     </style>
@@ -666,7 +737,7 @@
             front.appendChild(card);
 
             // =============================================
-            // ===== DETRÁS (SOLO texto, sin foto ni número) =====
+            // ===== DETRÁS (con marco, escudo y texto) =====
             // =============================================
             const back = document.createElement('div');
             back.className = 'flip-back';
@@ -685,7 +756,21 @@
             const backContent = document.createElement('div');
             backContent.className = 'back-content';
 
-            // Área de texto (ocupa el espacio de la foto)
+            // Escudo de fondo
+            const backLogo = document.createElement('div');
+            backLogo.className = 'back-card-background';
+            backLogo.style.backgroundImage = `url('${logoFondo}?t=${timestamp}')`;
+            if (esStaffMiembro) {
+                backLogo.style.filter = 'brightness(1) invert(1) contrast(1)';
+            }
+            backContent.appendChild(backLogo);
+
+            // Marco contenedor (donde iría la foto)
+            const backPhotoContainer = document.createElement('div');
+            backPhotoContainer.className = `back-photo-container${esStaffMiembro ? ' invertido-back' : ''}`;
+            backContent.appendChild(backPhotoContainer);
+
+            // Área de texto (sobre el marco)
             const textArea = document.createElement('div');
             textArea.className = 'back-text-area';
 
@@ -700,7 +785,6 @@
                     textArea.appendChild(p);
                 });
             } else {
-                // Si no hay info_extra, mostrar mensaje por defecto
                 const p = document.createElement('p');
                 p.textContent = 'Sin información adicional';
                 p.style.color = textColor;
