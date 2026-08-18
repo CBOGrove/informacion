@@ -6,7 +6,7 @@
     <title>Plantillas · Club Baloncesto O Grove</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2">
 
     <style>
         /* ===== SELECTOR DE EQUIPO ===== */
@@ -662,7 +662,7 @@
         <div class="copy">© 2026 Club Baloncesto O Grove</div>
     </footer>
 
-    <script src="js/app.js"></script>
+    <script src="js/app.js?v=2"></script>
     <script>
         const CONFIG_PLANTILLAS = {
             sheetFemenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
@@ -701,6 +701,9 @@
             let backLines = [];
             if (jugador.info_extra && jugador.info_extra.trim()) {
                 backLines = String(jugador.info_extra).split('|').map(line => line.trim());
+                console.log(`📝 Info extra para ${jugador.nombre}:`, backLines);
+            } else {
+                console.log(`ℹ️ Sin info_extra para ${jugador.nombre}`);
             }
 
             // ===== CONTENEDOR FLIP =====
@@ -818,6 +821,7 @@
             flipContainer.addEventListener('click', function(e) {
                 e.stopPropagation();
                 this.classList.toggle('flipped');
+                console.log('🔄 Flip toggled:', this.classList.contains('flipped'));
             });
 
             return flipContainer;
@@ -846,6 +850,8 @@
             if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
             if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
             if (headerMap['info_extra'] === undefined) headerMap['info_extra'] = 3;
+
+            console.log('📋 Headers detectados:', headerMap);
 
             return lines.slice(1).map(line => {
                 const values = line.split(',').map(v => v.trim());
@@ -944,6 +950,7 @@
         }
 
         async function cargarPlantillas() {
+            console.log('🚀 Iniciando carga de plantillas...');
             await cargarHoja(CONFIG_PLANTILLAS.sheetFemenino, 'femenino', 'gridFemenino');
             await cargarHoja(CONFIG_PLANTILLAS.sheetMasculino, 'masculino', 'gridMasculino');
             console.log(`✅ Plantillas cargadas correctamente`);
