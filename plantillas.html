@@ -96,8 +96,8 @@
             margin: 0 auto;
         }
 
-        /* ===== GRILLA DE ENTRENADORES (centrados) ===== */
-        .entrenadores-grid {
+        /* ===== GRILLA DE STAFF (entrenadores y delegados) ===== */
+        .staff-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(233px, 1fr));
             justify-content: center;
@@ -130,7 +130,7 @@
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
         }
 
-        /* ===== FICHA INVERTIDA (ENTRENADORES) ===== */
+        /* ===== FICHA INVERTIDA (STAFF: entrenadores y delegados) ===== */
         .player-card.invertido {
             background: #000000;
             border: 3px solid #FFD700;
@@ -259,7 +259,7 @@
             .players-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
-            .entrenadores-grid {
+            .staff-grid {
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 max-width: 500px;
             }
@@ -306,7 +306,7 @@
                 padding: 0.5rem 1.5rem;
                 font-size: 0.9rem;
             }
-            .entrenadores-grid {
+            .staff-grid {
                 grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
                 max-width: 400px;
                 gap: 1rem;
@@ -345,7 +345,7 @@
                 font-size: 13px;
                 letter-spacing: 0.3px;
             }
-            .entrenadores-grid {
+            .staff-grid {
                 grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
                 max-width: 320px;
                 gap: 0.8rem;
@@ -452,17 +452,21 @@
         }
 
         function crearFicha(jugador, equipo) {
-            const esEntrenador = jugador.entrenador?.toUpperCase() === 'SI' || 
-                                 jugador.entrenador?.toUpperCase() === 'TRUE' ||
-                                 jugador.entrenador === '1';
+            const esStaff = jugador.entrenador?.toUpperCase() === 'SI' || 
+                            jugador.entrenador?.toUpperCase() === 'TRUE' ||
+                            jugador.entrenador === '1';
             
             const driveBase = equipo === 'femenino' ? CONFIG_PLANTILLAS.driveFemenino : CONFIG_PLANTILLAS.driveMasculino;
             const timestamp = Date.now();
             const fotoUrl = `${driveBase}${jugador.numero}.png?t=${timestamp}`;
-            const numDisplay = String(jugador.numero || '?');
+            
+            // Mostrar "E" para entrenadores, "D" para delegados, o el número normal
+            let numDisplay = String(jugador.numero || '?');
+            if (numDisplay.startsWith('E')) numDisplay = 'E';
+            if (numDisplay.startsWith('D')) numDisplay = 'D';
 
             const card = document.createElement('div');
-            card.className = `player-card${esEntrenador ? ' invertido' : ''}`;
+            card.className = `player-card${esStaff ? ' invertido' : ''}`;
 
             const logoFondo = 'assets/img/logos/club/logo-negro.png';
 
@@ -524,8 +528,8 @@
                 const datos = parseCSV(csv);
                 console.log(`📊 Datos parseados (${datos.length} filas):`, datos);
 
-                // Separar jugadores de entrenadores
-                const entrenadores = datos.filter(j => 
+                // Separar jugadores de staff (entrenadores y delegados)
+                const staff = datos.filter(j => 
                     j.entrenador?.toUpperCase() === 'SI' || 
                     j.entrenador?.toUpperCase() === 'TRUE' ||
                     j.entrenador === '1'
@@ -536,7 +540,7 @@
                     j.entrenador !== '1'
                 );
 
-                // Ordenar jugadores por número (0 va primero, E1/E2 al final)
+                // Ordenar jugadores por número (0 va primero)
                 jugadores.sort((a, b) => {
                     const numA = parseInt(a.numero);
                     const numB = parseInt(b.numero);
@@ -545,13 +549,14 @@
                     return numA - numB;
                 });
 
-                // Ordenar entrenadores por número
-                entrenadores.sort((a, b) => {
-                    const numA = parseInt(a.numero);
-                    const numB = parseInt(b.numero);
-                    if (isNaN(numA)) return 1;
-                    if (isNaN(numB)) return -1;
-                    return numA - numB;
+                // Ordenar staff por orden personalizado: E1 → E2 → D1 → D2
+                const ordenStaff = ['E1', 'E2', 'D1', 'D2'];
+                staff.sort((a, b) => {
+                    const indexA = ordenStaff.indexOf(a.numero);
+                    const indexB = ordenStaff.indexOf(b.numero);
+                    if (indexA === -1) return 1;
+                    if (indexB === -1) return -1;
+                    return indexA - indexB;
                 });
 
                 const grid = document.getElementById(gridId);
@@ -560,13 +565,13 @@
                 // Renderizar jugadores
                 jugadores.forEach(j => grid.appendChild(crearFicha(j, equipo)));
 
-                // Si hay entrenadores, crear un grid separado FUERA del grid de jugadores
-                if (entrenadores.length > 0) {
-                    const entrenadoresContainer = document.createElement('div');
-                    entrenadoresContainer.className = 'entrenadores-grid';
-                    entrenadores.forEach(j => entrenadoresContainer.appendChild(crearFicha(j, equipo)));
+                // Si hay staff, crear un grid separado FUERA del grid de jugadores
+                if (staff.length > 0) {
+                    const staffContainer = document.createElement('div');
+                    staffContainer.className = 'staff-grid';
+                    staff.forEach(j => staffContainer.appendChild(crearFicha(j, equipo)));
                     // Insertar DESPUÉS del grid (no dentro)
-                    grid.parentNode.insertBefore(entrenadoresContainer, grid.nextSibling);
+                    grid.parentNode.insertBefore(staffContainer, grid.nextSibling);
                 }
 
                 const countEl = document.getElementById(countId);
