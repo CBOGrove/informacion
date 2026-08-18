@@ -9,6 +9,37 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
+        /* ===== FONDO CON ESCUDO (como bases-legales) ===== */
+        body {
+            background: linear-gradient(145deg, #f8f9fc 0%, #eef2f7 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ===== ESCUDO DE FONDO ===== */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('assets/img/logos/club/logo-negro.png');
+            background-size: auto 70%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            opacity: 0.06;
+            transform: rotate(0deg);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== TODO EL CONTENIDO POR ENCIMA DEL FONDO ===== */
+        .main-content {
+            position: relative;
+            z-index: 1;
+        }
+
         /* ===== SELECTOR DE EQUIPO ===== */
         .team-selector {
             display: flex;
@@ -21,7 +52,8 @@
             padding: 0.8rem 2.5rem;
             border: 3px solid var(--azul-club);
             border-radius: 50px;
-            background: transparent;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
             color: var(--azul-club);
             font-family: var(--font-titulos);
             font-size: 1.1rem;
@@ -54,15 +86,9 @@
         .team-container { display: none; }
         .team-container.active { display: block; }
 
-        /* ===== SECCIÓN DE EQUIPO ===== */
+        /* ===== SECCIÓN DE EQUIPO (sin recuadro blanco) ===== */
         .team-section {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 25px;
-            padding: 2rem;
             margin-bottom: 2rem;
-            box-shadow: var(--sombra-suave);
-            border: 1px solid rgba(255,255,255,0.3);
         }
         .team-section-header {
             display: flex;
@@ -71,6 +97,11 @@
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
             gap: 0.5rem;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(4px);
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.3);
         }
         .team-section-header h2 {
             font-size: 1.8rem;
@@ -85,7 +116,7 @@
             font-size: 0.8rem;
         }
 
-        /* ===== GRILLA DE JUGADORES (5 columnas fijas) ===== */
+        /* ===== GRILLA DE JUGADORES (5 columnas) ===== */
         .players-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -96,19 +127,45 @@
             margin: 0 auto;
         }
 
-        /* ===== GRILLA DE STAFF (centrados) ===== */
-        .staff-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(233px, 1fr));
+        /* ===== STAFF EN HORIZONTAL (entrenadores izq, delegados der) ===== */
+        .staff-row {
+            display: flex;
             justify-content: center;
-            gap: 2rem;
+            gap: 4rem;
             margin-top: 2rem;
             padding-top: 1.5rem;
             border-top: 2px dashed var(--dorado);
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            flex-wrap: wrap;
+            background: rgba(255,255,255,0.3);
+            backdrop-filter: blur(4px);
+            border-radius: 15px;
+            padding: 1.5rem 2rem;
+        }
+
+        .staff-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .staff-group-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--azul-club);
+            font-weight: 600;
+            opacity: 0.7;
+            border-bottom: 2px solid var(--dorado);
+            padding-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .staff-group-cards {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         /* ===== FICHA DE JUGADOR - DISEÑO EXACTO ===== */
@@ -254,14 +311,25 @@
             line-height: 1.1;
         }
 
+        /* ===== TÍTULO DE PÁGINA ===== */
+        .page-title {
+            text-align: center;
+            color: var(--azul-club);
+            font-family: var(--font-titulos);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+        }
+        .page-subtitle {
+            text-align: center;
+            color: var(--gris-texto);
+            margin-bottom: 2rem;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1200px) {
             .players-grid {
                 grid-template-columns: repeat(4, 1fr);
-            }
-            .staff-grid {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                max-width: 500px;
             }
         }
         @media (max-width: 992px) {
@@ -306,9 +374,12 @@
                 padding: 0.5rem 1.5rem;
                 font-size: 0.9rem;
             }
-            .staff-grid {
-                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-                max-width: 400px;
+            .staff-row {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: center;
+            }
+            .staff-group-cards {
                 gap: 1rem;
             }
         }
@@ -345,9 +416,11 @@
                 font-size: 13px;
                 letter-spacing: 0.3px;
             }
-            .staff-grid {
-                grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-                max-width: 320px;
+            .staff-row {
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .staff-group-cards {
                 gap: 0.8rem;
             }
         }
@@ -374,12 +447,8 @@
 
     <!-- ===== CONTENIDO ===== -->
     <main class="main-content">
-        <h1 style="text-align:center; color:var(--azul-club); font-family:var(--font-titulos); font-size:2.5rem; margin-bottom:0.5rem;">
-            👥 NOSAS PLANTILLAS
-        </h1>
-        <p style="text-align:center; color:var(--gris-texto); margin-bottom:2rem;">
-            Coñece a todos os xogadores e xogadoras do club
-        </p>
+        <h1 class="page-title">👥 NOSAS PLANTILLAS</h1>
+        <p class="page-subtitle">Coñece a todos os xogadores e xogadoras do club</p>
 
         <!-- SELECTOR -->
         <div class="team-selector">
@@ -451,7 +520,6 @@
             });
         }
 
-        // ===== FUNCIÓN PARA DETECTAR SI ES STAFF (más robusta) =====
         function esStaff(valor) {
             if (!valor) return false;
             const v = String(valor).toUpperCase().trim();
@@ -465,7 +533,6 @@
             const timestamp = Date.now();
             const fotoUrl = `${driveBase}${jugador.numero}.png?t=${timestamp}`;
             
-            // Mostrar "E" para entrenadores, "D" para delegados, o el número normal
             let numDisplay = String(jugador.numero || '?');
             if (numDisplay.startsWith('E')) numDisplay = 'E';
             if (numDisplay.startsWith('D')) numDisplay = 'D';
@@ -533,13 +600,13 @@
                 const datos = parseCSV(csv);
                 console.log(`📊 Datos parseados (${datos.length} filas):`, datos);
 
-                // Separar jugadores de staff usando la función esStaff
+                // Separar jugadores de staff
                 const staff = datos.filter(j => esStaff(j.entrenador));
                 const jugadores = datos.filter(j => !esStaff(j.entrenador));
 
                 console.log(`👥 Jugadores: ${jugadores.length}, Staff: ${staff.length}`);
 
-                // Ordenar jugadores por número (0 va primero)
+                // Ordenar jugadores por número
                 jugadores.sort((a, b) => {
                     const numA = parseInt(a.numero);
                     const numB = parseInt(b.numero);
@@ -548,13 +615,21 @@
                     return numA - numB;
                 });
 
-                // Ordenar staff por orden personalizado: E1 → E2 → D1 → D2
-                const ordenStaff = ['E1', 'E2', 'D1', 'D2'];
-                staff.sort((a, b) => {
-                    const indexA = ordenStaff.indexOf(a.numero);
-                    const indexB = ordenStaff.indexOf(b.numero);
-                    if (indexA === -1) return 1;
-                    if (indexB === -1) return -1;
+                // Separar staff en entrenadores (E) y delegados (D)
+                const entrenadores = staff.filter(j => j.numero.startsWith('E'));
+                const delegados = staff.filter(j => j.numero.startsWith('D'));
+
+                // Ordenar entrenadores: E1 → E2
+                entrenadores.sort((a, b) => {
+                    const indexA = parseInt(a.numero.replace('E', '') || 0);
+                    const indexB = parseInt(b.numero.replace('E', '') || 0);
+                    return indexA - indexB;
+                });
+
+                // Ordenar delegados: D1 → D2
+                delegados.sort((a, b) => {
+                    const indexA = parseInt(a.numero.replace('D', '') || 0);
+                    const indexB = parseInt(b.numero.replace('D', '') || 0);
                     return indexA - indexB;
                 });
 
@@ -564,13 +639,37 @@
                 // Renderizar jugadores
                 jugadores.forEach(j => grid.appendChild(crearFicha(j, equipo)));
 
-                // Si hay staff, crear un grid separado FUERA del grid de jugadores
-                if (staff.length > 0) {
-                    const staffContainer = document.createElement('div');
-                    staffContainer.className = 'staff-grid';
-                    staff.forEach(j => staffContainer.appendChild(crearFicha(j, equipo)));
-                    // Insertar DESPUÉS del grid (no dentro)
-                    grid.parentNode.insertBefore(staffContainer, grid.nextSibling);
+                // ===== STAFF EN FILA HORIZONTAL =====
+                if (entrenadores.length > 0 || delegados.length > 0) {
+                    const staffRow = document.createElement('div');
+                    staffRow.className = 'staff-row';
+
+                    // Entrenadores (izquierda)
+                    if (entrenadores.length > 0) {
+                        const group = document.createElement('div');
+                        group.className = 'staff-group';
+                        group.innerHTML = `<div class="staff-group-label">🧑‍🏫 Entrenadores</div>`;
+                        const cards = document.createElement('div');
+                        cards.className = 'staff-group-cards';
+                        entrenadores.forEach(j => cards.appendChild(crearFicha(j, equipo)));
+                        group.appendChild(cards);
+                        staffRow.appendChild(group);
+                    }
+
+                    // Delegados (derecha)
+                    if (delegados.length > 0) {
+                        const group = document.createElement('div');
+                        group.className = 'staff-group';
+                        group.innerHTML = `<div class="staff-group-label">📋 Delegados</div>`;
+                        const cards = document.createElement('div');
+                        cards.className = 'staff-group-cards';
+                        delegados.forEach(j => cards.appendChild(crearFicha(j, equipo)));
+                        group.appendChild(cards);
+                        staffRow.appendChild(group);
+                    }
+
+                    // Insertar DESPUÉS del grid
+                    grid.parentNode.insertBefore(staffRow, grid.nextSibling);
                 }
 
                 const countEl = document.getElementById(countId);
