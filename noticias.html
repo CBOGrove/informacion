@@ -203,7 +203,6 @@
     <script>
         // ===== CONFIGURACIÓN =====
         const CONFIG_NOTICIAS = {
-            // URL de exportación del Google Sheet (formato CSV)
             sheetUrl: 'https://docs.google.com/spreadsheets/d/1WyAXYg7YZXG3jhr2y1LjgoRMbq7nWtHReJmBTk-FkcQ/export?format=csv'
         };
 
@@ -222,7 +221,6 @@
                 else if (h.includes('imagen') || h.includes('enlace') || h.includes('foto')) headerMap['enlace_imagen'] = index;
             });
 
-            // Si no encuentra las columnas, usa las primeras por orden
             if (headerMap['fecha'] === undefined) headerMap['fecha'] = 0;
             if (headerMap['cabecera'] === undefined) headerMap['cabecera'] = 1;
             if (headerMap['texto'] === undefined) headerMap['texto'] = 2;
@@ -232,7 +230,12 @@
                 const values = line.split(',').map(v => v.trim());
                 const obj = {};
                 Object.keys(headerMap).forEach(key => {
-                    obj[key] = values[headerMap[key]] || '';
+                    let value = values[headerMap[key]] || '';
+                    // Limpiar comillas que Google Sheets añade automáticamente
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.slice(1, -1);
+                    }
+                    obj[key] = value;
                 });
                 return obj;
             });
@@ -318,7 +321,6 @@
             }
         }
 
-        // ===== INICIALIZAR =====
         document.addEventListener('DOMContentLoaded', cargarNoticias);
     </script>
 </body>
