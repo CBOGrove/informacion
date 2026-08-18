@@ -108,6 +108,7 @@
             width: 233px;
             height: 350px;
             flex-shrink: 0;
+            cursor: pointer;
         }
 
         .flip-inner {
@@ -132,6 +133,8 @@
             -webkit-backface-visibility: hidden;
             border-radius: 12px;
             overflow: hidden;
+            top: 0;
+            left: 0;
         }
 
         .flip-front {
@@ -141,6 +144,7 @@
         .flip-back {
             transform: rotateY(180deg);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            z-index: 1;
         }
 
         /* ===== FICHA DE JUGADOR - FRENTE ===== */
@@ -154,7 +158,6 @@
             background: #FFD700;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
             transition: box-shadow 0.3s;
-            cursor: pointer;
             flex-shrink: 0;
         }
         .player-card:hover {
@@ -284,11 +287,6 @@
         }
 
         /* ===== ESTILOS PARA LA PARTE DE ATRÁS ===== */
-        .flip-back {
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
         .flip-back .back-content {
             width: 100%;
             height: 100%;
@@ -307,7 +305,7 @@
             text-align: center;
             padding: 0.5rem;
             overflow-y: auto;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             margin-bottom: 0.5rem;
         }
 
@@ -318,11 +316,13 @@
             line-height: 1.5;
             letter-spacing: 0.3px;
             font-family: var(--font-textos);
+            padding: 0 0.5rem;
         }
 
         .flip-back .back-text-area .back-line-first {
             font-size: 1.1rem;
             font-weight: 600;
+            margin-bottom: 0.3rem;
         }
 
         .flip-back .back-text-area .back-line-empty {
@@ -455,6 +455,9 @@
             .flip-back .back-name {
                 font-size: 16px;
             }
+            .flip-back .back-name-container {
+                height: 42px;
+            }
         }
         @media (max-width: 480px) {
             .players-grid {
@@ -512,6 +515,15 @@
             }
             .flip-back .back-name {
                 font-size: 13px;
+            }
+            .flip-back .back-name-container {
+                height: 36px;
+                margin: 0 8px 8px 8px;
+            }
+            .flip-back .back-text-area {
+                margin-top: 0.5rem;
+                margin-bottom: 0.2rem;
+                padding: 0.2rem;
             }
         }
     </style>
@@ -612,8 +624,9 @@
             if (numDisplay.startsWith('E')) numDisplay = 'E';
             if (numDisplay.startsWith('D')) numDisplay = 'D';
 
+            // Procesar info_extra
             let backLines = [];
-            if (jugador.info_extra) {
+            if (jugador.info_extra && jugador.info_extra.trim()) {
                 backLines = String(jugador.info_extra).split('|').map(line => line.trim());
             }
 
@@ -685,10 +698,11 @@
                     textArea.appendChild(p);
                 });
             } else {
+                // Si no hay info_extra, mostrar mensaje por defecto
                 const p = document.createElement('p');
-                p.textContent = '—';
-                p.className = 'back-line-empty';
+                p.textContent = 'Sin información adicional';
                 p.style.color = textColor;
+                p.style.opacity = '0.6';
                 textArea.appendChild(p);
             }
 
