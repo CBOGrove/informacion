@@ -283,6 +283,74 @@
             line-height: 1.1;
         }
 
+        /* ===== ESTILOS PARA LA PARTE DE ATRÁS ===== */
+        .flip-back {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .flip-back .back-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .flip-back .back-text-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0.5rem;
+            overflow-y: auto;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .flip-back .back-text-area p {
+            margin: 0.15rem 0;
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.5;
+            letter-spacing: 0.3px;
+            font-family: var(--font-textos);
+        }
+
+        .flip-back .back-text-area .back-line-first {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .flip-back .back-text-area .back-line-empty {
+            opacity: 0.2;
+            font-size: 1.5rem;
+        }
+
+        .flip-back .back-name-container {
+            height: 55px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            margin: 0 15px 15px 15px;
+            z-index: 2;
+        }
+
+        .flip-back .back-name {
+            font-size: 22px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 0.8px;
+            line-height: 1.1;
+            font-family: var(--font-titulos);
+        }
+
         /* ===== TÍTULO DE PÁGINA ===== */
         .page-title {
             text-align: center;
@@ -378,6 +446,15 @@
                 font-size: 0.8rem;
                 letter-spacing: 2px;
             }
+            .flip-back .back-text-area p {
+                font-size: 0.85rem;
+            }
+            .flip-back .back-text-area .back-line-first {
+                font-size: 0.95rem;
+            }
+            .flip-back .back-name {
+                font-size: 16px;
+            }
         }
         @media (max-width: 480px) {
             .players-grid {
@@ -426,6 +503,15 @@
             .staff-group-label {
                 font-size: 0.7rem;
                 letter-spacing: 1.5px;
+            }
+            .flip-back .back-text-area p {
+                font-size: 0.7rem;
+            }
+            .flip-back .back-text-area .back-line-first {
+                font-size: 0.8rem;
+            }
+            .flip-back .back-name {
+                font-size: 13px;
             }
         }
     </style>
@@ -531,19 +617,21 @@
                 backLines = String(jugador.info_extra).split('|').map(line => line.trim());
             }
 
+            // ===== CONTENEDOR FLIP =====
             const flipContainer = document.createElement('div');
             flipContainer.className = 'flip-container';
 
             const flipInner = document.createElement('div');
             flipInner.className = 'flip-inner';
 
-            // ===== FRENTE =====
+            // =============================================
+            // ===== FRENTE (con foto y número) =====
+            // =============================================
             const front = document.createElement('div');
             front.className = 'flip-front';
 
             const card = document.createElement('div');
             card.className = `player-card${esStaffMiembro ? ' invertido' : ''}`;
-
             const logoFondo = 'assets/img/logos/club/logo-negro.png';
 
             card.innerHTML = `
@@ -562,111 +650,71 @@
 
             front.appendChild(card);
 
-            // ===== DETRÁS =====
+            // =============================================
+            // ===== DETRÁS (SOLO texto, sin foto ni número) =====
+            // =============================================
             const back = document.createElement('div');
             back.className = 'flip-back';
-            
-            if (esStaffMiembro) {
-                back.style.background = '#000000';
-                back.style.border = '3px solid #FFD700';
-            } else {
-                back.style.background = '#FFD700';
-                back.style.border = '3px solid #000000';
-            }
 
-            const textContainer = document.createElement('div');
-            textContainer.style.cssText = `
-                position: absolute;
-                top: 25px;
-                left: 25px;
-                right: 25px;
-                bottom: 80px;
-                border-radius: 8px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                padding: 1rem;
-                text-align: center;
-                overflow-y: auto;
-                background: ${esStaffMiembro ? 'rgba(255, 215, 0, 0.05)' : 'rgba(0, 0, 0, 0.03)'};
-            `;
+            // Configurar fondo y borde según staff
+            const bgColor = esStaffMiembro ? '#000000' : '#FFD700';
+            const borderColor = esStaffMiembro ? '#FFD700' : '#000000';
+            const textColor = esStaffMiembro ? '#FFD700' : '#000000';
+            const nameBgColor = esStaffMiembro ? '#FFD700' : '#000000';
+            const nameTextColor = esStaffMiembro ? '#000000' : '#FFD700';
 
-            const textStyle = esStaffMiembro ? '#FFD700' : '#000000';
+            back.style.background = bgColor;
+            back.style.border = `3px solid ${borderColor}`;
+
+            // Contenido de atrás
+            const backContent = document.createElement('div');
+            backContent.className = 'back-content';
+
+            // Área de texto (ocupa el espacio de la foto)
+            const textArea = document.createElement('div');
+            textArea.className = 'back-text-area';
 
             if (backLines.length > 0) {
                 backLines.forEach((line, index) => {
                     const p = document.createElement('p');
                     p.textContent = line || '\u00A0';
-                    p.style.cssText = `
-                        margin: 0.15rem 0;
-                        font-size: 1rem;
-                        font-weight: 500;
-                        color: ${textStyle};
-                        line-height: 1.5;
-                        letter-spacing: 0.3px;
-                        font-family: var(--font-textos);
-                    `;
+                    p.style.color = textColor;
                     if (index === 0 && backLines.length > 1) {
-                        p.style.fontSize = '1.1rem';
-                        p.style.fontWeight = '600';
+                        p.className = 'back-line-first';
                     }
-                    textContainer.appendChild(p);
+                    textArea.appendChild(p);
                 });
             } else {
                 const p = document.createElement('p');
                 p.textContent = '—';
-                p.style.cssText = `
-                    margin: 0;
-                    font-size: 1.5rem;
-                    color: ${textStyle};
-                    opacity: 0.2;
-                    font-family: var(--font-textos);
-                `;
-                textContainer.appendChild(p);
+                p.className = 'back-line-empty';
+                p.style.color = textColor;
+                textArea.appendChild(p);
             }
 
-            back.appendChild(textContainer);
+            backContent.appendChild(textArea);
 
-            // ===== NOMBRE EN LA PARTE DE ATRÁS =====
+            // Nombre en la parte de atrás (igual que en el frente)
             const nameBack = document.createElement('div');
-            nameBack.className = 'name-container';
-            nameBack.style.cssText = `
-                position: absolute;
-                bottom: 15px;
-                left: 15px;
-                right: 15px;
-                height: 55px;
-                border-radius: 6px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 4px 8px;
-                background: ${esStaffMiembro ? '#FFD700' : '#000000'};
-                border: 1.5px solid ${esStaffMiembro ? '#FFD700' : '#000000'};
-                z-index: 2;
-            `;
+            nameBack.className = 'back-name-container';
+            nameBack.style.background = nameBgColor;
+            nameBack.style.border = `1.5px solid ${nameBgColor}`;
 
             const nameText = document.createElement('div');
-            nameText.className = 'player-name';
+            nameText.className = 'back-name';
             nameText.textContent = jugador.nombre || 'Sin nombre';
-            nameText.style.cssText = `
-                font-size: 22px;
-                font-weight: bold;
-                text-transform: uppercase;
-                text-align: center;
-                color: ${esStaffMiembro ? '#000000' : '#FFD700'};
-                letter-spacing: 0.8px;
-                line-height: 1.1;
-                font-family: var(--font-titulos);
-            `;
-            nameBack.appendChild(nameText);
-            back.appendChild(nameBack);
+            nameText.style.color = nameTextColor;
 
+            nameBack.appendChild(nameText);
+            backContent.appendChild(nameBack);
+            back.appendChild(backContent);
+
+            // ===== MONTAR FLIP =====
             flipInner.appendChild(front);
             flipInner.appendChild(back);
             flipContainer.appendChild(flipInner);
 
+            // ===== EVENTO CLICK =====
             flipContainer.addEventListener('click', function(e) {
                 e.stopPropagation();
                 this.classList.toggle('flipped');
