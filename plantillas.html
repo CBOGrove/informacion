@@ -102,7 +102,84 @@
             justify-content: center;
         }
 
-        /* ===== FICHA DE JUGADOR - DISEÑO EXACTO ===== */
+        /* ===== FLIP CONTAINER ===== */
+        .flip-container {
+            perspective: 1000px;
+            width: 233px;
+            height: 350px;
+            flex-shrink: 0;
+        }
+
+        .flip-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-container.flipped .flip-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* ===== FRENTE Y DETRÁS ===== */
+        .flip-front,
+        .flip-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .flip-front {
+            z-index: 2;
+        }
+
+        .flip-back {
+            transform: rotateY(180deg);
+            background: #FFD700;
+            border: 3px solid #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ===== ESTILO INVERTIDO PARA STAFF (DETRÁS) ===== */
+        .player-card.invertido .flip-back {
+            background: #000000;
+            border: 3px solid #FFD700;
+        }
+        .player-card.invertido .flip-back .back-text {
+            color: #FFD700;
+        }
+        .player-card.invertido .flip-back .back-line {
+            color: #FFD700;
+        }
+
+        .flip-back .back-text {
+            color: #000000;
+            font-family: var(--font-textos);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            width: 100%;
+        }
+
+        .flip-back .back-line {
+            display: block;
+            color: #000000;
+            padding: 0.1rem 0;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        /* ===== FICHA DE JUGADOR - FRENTE ===== */
         .player-card {
             width: 233px;
             height: 350px;
@@ -112,12 +189,11 @@
             border: 3px solid #000000;
             background: #FFD700;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: box-shadow 0.3s;
             cursor: pointer;
             flex-shrink: 0;
         }
         .player-card:hover {
-            transform: translateY(-6px) scale(1.02);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
         }
 
@@ -151,7 +227,7 @@
             background: rgba(0, 0, 0, 0.3) !important;
         }
 
-        /* ===== ELEMENTOS INTERNOS ===== */
+        /* ===== ELEMENTOS INTERNOS DEL FRENTE ===== */
         .card-background {
             position: absolute;
             width: 120%;
@@ -198,7 +274,6 @@
             background: rgba(255, 215, 0, 0.3);
         }
 
-        /* ===== NÚMERO ===== */
         .player-number {
             position: absolute;
             top: 15px;
@@ -218,7 +293,6 @@
             z-index: 3;
         }
 
-        /* ===== NOMBRE ===== */
         .name-container {
             position: absolute;
             bottom: 15px;
@@ -265,16 +339,36 @@
             .players-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
+            .flip-container {
+                width: 200px;
+                height: 300px;
+            }
+            .player-card {
+                width: 200px;
+                height: 300px;
+            }
         }
         @media (max-width: 992px) {
             .players-grid {
                 grid-template-columns: repeat(3, 1fr);
+            }
+            .flip-container {
+                width: 200px;
+                height: 300px;
+            }
+            .player-card {
+                width: 200px;
+                height: 300px;
             }
         }
         @media (max-width: 768px) {
             .players-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 1rem;
+            }
+            .flip-container {
+                width: 180px;
+                height: 270px;
             }
             .player-card {
                 width: 180px;
@@ -320,11 +414,18 @@
                 font-size: 0.8rem;
                 letter-spacing: 2px;
             }
+            .flip-back .back-text {
+                font-size: 0.8rem;
+            }
         }
         @media (max-width: 480px) {
             .players-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 0.8rem;
+            }
+            .flip-container {
+                width: 150px;
+                height: 225px;
             }
             .player-card {
                 width: 150px;
@@ -364,6 +465,9 @@
             .staff-group-label {
                 font-size: 0.7rem;
                 letter-spacing: 1.5px;
+            }
+            .flip-back .back-text {
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -471,6 +575,26 @@
             if (numDisplay.startsWith('E')) numDisplay = 'E';
             if (numDisplay.startsWith('D')) numDisplay = 'D';
 
+            // ===== PROCESAR INFO EXTRA =====
+            let backLines = [];
+            if (jugador.info_extra) {
+                // Dividir por | y limpiar espacios
+                backLines = String(jugador.info_extra).split('|').map(line => line.trim());
+                // Filtrar líneas vacías (opcional: si quieres mostrarlas como espacio, quita el filter)
+                // backLines = backLines.filter(line => line.length > 0);
+            }
+
+            // Crear contenedor flip
+            const flipContainer = document.createElement('div');
+            flipContainer.className = 'flip-container';
+
+            const flipInner = document.createElement('div');
+            flipInner.className = 'flip-inner';
+
+            // ===== FRENTE =====
+            const front = document.createElement('div');
+            front.className = 'flip-front';
+
             const card = document.createElement('div');
             card.className = `player-card${esStaffMiembro ? ' invertido' : ''}`;
 
@@ -490,7 +614,58 @@
                 </div>
             `;
 
-            return card;
+            front.appendChild(card);
+
+            // ===== DETRÁS =====
+            const back = document.createElement('div');
+            back.className = 'flip-back';
+            
+            // Aplicar estilo invertido al back si es staff
+            if (esStaffMiembro) {
+                back.style.background = '#000000';
+                back.style.border = '3px solid #FFD700';
+            }
+
+            const backText = document.createElement('div');
+            backText.className = 'back-text';
+
+            if (backLines.length > 0) {
+                backLines.forEach(line => {
+                    const span = document.createElement('span');
+                    span.className = 'back-line';
+                    span.textContent = line || '\u00A0'; // espacio no rompible si está vacío
+                    backText.appendChild(span);
+                });
+            } else {
+                // Si no hay info, mostrar un mensaje sutil
+                const span = document.createElement('span');
+                span.className = 'back-line';
+                span.textContent = '—';
+                span.style.opacity = '0.3';
+                backText.appendChild(span);
+            }
+
+            back.appendChild(backText);
+
+            // ===== MONTAR FLIP =====
+            flipInner.appendChild(front);
+            flipInner.appendChild(back);
+            flipContainer.appendChild(flipInner);
+
+            // ===== EVENTO CLICK PARA GIRAR =====
+            flipContainer.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.classList.toggle('flipped');
+            });
+
+            // Para cerrar si se hace clic fuera (opcional)
+            // document.addEventListener('click', function() {
+            //     document.querySelectorAll('.flip-container.flipped').forEach(el => {
+            //         el.classList.remove('flipped');
+            //     });
+            // });
+
+            return flipContainer;
         }
 
         function parseCSV(csv) {
@@ -507,12 +682,15 @@
                     headerMap['nombre'] = index;
                 } else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) {
                     headerMap['entrenador'] = index;
+                } else if (h.includes('info') || h.includes('extra') || h.includes('detras') || h.includes('frase')) {
+                    headerMap['info_extra'] = index;
                 }
             });
 
             if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
             if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
             if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
+            if (headerMap['info_extra'] === undefined) headerMap['info_extra'] = 3;
 
             return lines.slice(1).map(line => {
                 const values = line.split(',').map(v => v.trim());
@@ -574,7 +752,6 @@
                 jugadores.forEach(j => grid.appendChild(crearFicha(j, equipo)));
 
                 // ===== STAFF EN FILA HORIZONTAL =====
-                // Eliminar staff-row anterior si existe
                 const oldStaffRow = grid.parentNode.querySelector('.staff-row');
                 if (oldStaffRow) oldStaffRow.remove();
 
@@ -582,7 +759,6 @@
                     const staffRow = document.createElement('div');
                     staffRow.className = 'staff-row';
 
-                    // Entrenadores (izquierda)
                     if (entrenadores.length > 0) {
                         const group = document.createElement('div');
                         group.className = 'staff-group';
@@ -594,7 +770,6 @@
                         staffRow.appendChild(group);
                     }
 
-                    // Delegados (derecha)
                     if (delegados.length > 0) {
                         const group = document.createElement('div');
                         group.className = 'staff-group';
@@ -606,7 +781,6 @@
                         staffRow.appendChild(group);
                     }
 
-                    // Insertar DESPUÉS del grid
                     grid.parentNode.insertBefore(staffRow, grid.nextSibling);
                 }
 
