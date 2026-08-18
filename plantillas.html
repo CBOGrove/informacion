@@ -317,7 +317,33 @@
             pointer-events: none;
         }
 
-        /* Contenedor de foto (vacío, solo marco) en la parte trasera */
+        /* Número en la parte trasera (igual que el frente) */
+        .flip-back .back-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            border: 2px solid #000000;
+            background: #000000;
+            color: #FFD700;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            z-index: 3;
+        }
+
+        .flip-back .back-number.invertido-back {
+            background: #FFD700;
+            color: #000000;
+            border: 2px solid #FFD700;
+        }
+
+        /* Contenedor de foto (vacío, solo marco) en la parte trasera - SIN BORDE PUNTEADO */
         .flip-back .back-photo-container {
             position: absolute;
             top: 25px;
@@ -328,11 +354,10 @@
             overflow: hidden;
             background: rgba(0, 0, 0, 0.05);
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
-            border: 2px dashed rgba(0, 0, 0, 0.15);
+            border: none;
         }
 
         .flip-back .back-photo-container.invertido-back {
-            border-color: rgba(255, 215, 0, 0.2);
             background: rgba(255, 215, 0, 0.05);
         }
 
@@ -478,6 +503,13 @@
                 top: 10px;
                 left: 10px;
             }
+            .flip-back .back-number {
+                width: 42px;
+                height: 42px;
+                font-size: 20px;
+                top: 10px;
+                left: 10px;
+            }
             .name-container {
                 height: 42px;
                 bottom: 10px;
@@ -554,6 +586,13 @@
                 padding: 0.2rem;
             }
             .player-number {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+                top: 8px;
+                left: 8px;
+            }
+            .flip-back .back-number {
                 width: 35px;
                 height: 35px;
                 font-size: 16px;
@@ -666,7 +705,7 @@
     <script>
         const CONFIG_PLANTILLAS = {
             sheetFemenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
-            sheetMasculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205',
+            sheetMasculino: 'https://docs.google.comspreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205',
             driveFemenino: 'assets/img/plantillas/femenino/',
             driveMasculino: 'assets/img/plantillas/masculino/'
         };
@@ -702,8 +741,6 @@
             if (jugador.info_extra && jugador.info_extra.trim()) {
                 backLines = String(jugador.info_extra).split('|').map(line => line.trim());
                 console.log(`📝 Info extra para ${jugador.nombre}:`, backLines);
-            } else {
-                console.log(`ℹ️ Sin info_extra para ${jugador.nombre}`);
             }
 
             // ===== CONTENEDOR FLIP =====
@@ -740,7 +777,7 @@
             front.appendChild(card);
 
             // =============================================
-            // ===== DETRÁS (con marco, escudo y texto) =====
+            // ===== DETRÁS (con marco, escudo, número y texto) =====
             // =============================================
             const back = document.createElement('div');
             back.className = 'flip-back';
@@ -751,6 +788,9 @@
             const textColor = esStaffMiembro ? '#FFD700' : '#000000';
             const nameBgColor = esStaffMiembro ? '#FFD700' : '#000000';
             const nameTextColor = esStaffMiembro ? '#000000' : '#FFD700';
+            const numberBgColor = esStaffMiembro ? '#FFD700' : '#000000';
+            const numberTextColor = esStaffMiembro ? '#000000' : '#FFD700';
+            const numberBorderColor = esStaffMiembro ? '#FFD700' : '#000000';
 
             back.style.background = bgColor;
             back.style.border = `3px solid ${borderColor}`;
@@ -768,7 +808,16 @@
             }
             backContent.appendChild(backLogo);
 
-            // Marco contenedor (donde iría la foto)
+            // Número en la parte trasera
+            const backNumber = document.createElement('div');
+            backNumber.className = `back-number${esStaffMiembro ? ' invertido-back' : ''}`;
+            backNumber.textContent = numDisplay;
+            backNumber.style.background = numberBgColor;
+            backNumber.style.color = numberTextColor;
+            backNumber.style.border = `2px solid ${numberBorderColor}`;
+            backContent.appendChild(backNumber);
+
+            // Marco contenedor (donde iría la foto) - SIN BORDE PUNTEADO
             const backPhotoContainer = document.createElement('div');
             backPhotoContainer.className = `back-photo-container${esStaffMiembro ? ' invertido-back' : ''}`;
             backContent.appendChild(backPhotoContainer);
@@ -821,7 +870,6 @@
             flipContainer.addEventListener('click', function(e) {
                 e.stopPropagation();
                 this.classList.toggle('flipped');
-                console.log('🔄 Flip toggled:', this.classList.contains('flipped'));
             });
 
             return flipContainer;
@@ -850,8 +898,6 @@
             if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
             if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
             if (headerMap['info_extra'] === undefined) headerMap['info_extra'] = 3;
-
-            console.log('📋 Headers detectados:', headerMap);
 
             return lines.slice(1).map(line => {
                 const values = line.split(',').map(v => v.trim());
