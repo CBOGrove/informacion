@@ -85,10 +85,10 @@
             font-size: 0.8rem;
         }
 
-        /* ===== GRILLA DE JUGADORES ===== */
+        /* ===== GRILLA DE JUGADORES (5 columnas fijas) ===== */
         .players-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(233px, 1fr));
+            grid-template-columns: repeat(5, 1fr);
             gap: 2rem;
             justify-items: center;
             justify-content: center;
@@ -96,7 +96,7 @@
             margin: 0 auto;
         }
 
-        /* ===== GRILLA DE STAFF (entrenadores y delegados) ===== */
+        /* ===== GRILLA DE STAFF (centrados) ===== */
         .staff-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(233px, 1fr));
@@ -130,7 +130,7 @@
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
         }
 
-        /* ===== FICHA INVERTIDA (STAFF: entrenadores y delegados) ===== */
+        /* ===== FICHA INVERTIDA (STAFF) ===== */
         .player-card.invertido {
             background: #000000;
             border: 3px solid #FFD700;
@@ -451,10 +451,15 @@
             });
         }
 
+        // ===== FUNCIÓN PARA DETECTAR SI ES STAFF (más robusta) =====
+        function esStaff(valor) {
+            if (!valor) return false;
+            const v = String(valor).toUpperCase().trim();
+            return v === 'SI' || v === 'SÍ' || v === 'TRUE' || v === '1';
+        }
+
         function crearFicha(jugador, equipo) {
-            const esStaff = jugador.entrenador?.toUpperCase() === 'SI' || 
-                            jugador.entrenador?.toUpperCase() === 'TRUE' ||
-                            jugador.entrenador === '1';
+            const esStaffMiembro = esStaff(jugador.entrenador);
             
             const driveBase = equipo === 'femenino' ? CONFIG_PLANTILLAS.driveFemenino : CONFIG_PLANTILLAS.driveMasculino;
             const timestamp = Date.now();
@@ -466,7 +471,7 @@
             if (numDisplay.startsWith('D')) numDisplay = 'D';
 
             const card = document.createElement('div');
-            card.className = `player-card${esStaff ? ' invertido' : ''}`;
+            card.className = `player-card${esStaffMiembro ? ' invertido' : ''}`;
 
             const logoFondo = 'assets/img/logos/club/logo-negro.png';
 
@@ -528,17 +533,11 @@
                 const datos = parseCSV(csv);
                 console.log(`📊 Datos parseados (${datos.length} filas):`, datos);
 
-                // Separar jugadores de staff (entrenadores y delegados)
-                const staff = datos.filter(j => 
-                    j.entrenador?.toUpperCase() === 'SI' || 
-                    j.entrenador?.toUpperCase() === 'TRUE' ||
-                    j.entrenador === '1'
-                );
-                const jugadores = datos.filter(j => 
-                    j.entrenador?.toUpperCase() !== 'SI' && 
-                    j.entrenador?.toUpperCase() !== 'TRUE' &&
-                    j.entrenador !== '1'
-                );
+                // Separar jugadores de staff usando la función esStaff
+                const staff = datos.filter(j => esStaff(j.entrenador));
+                const jugadores = datos.filter(j => !esStaff(j.entrenador));
+
+                console.log(`👥 Jugadores: ${jugadores.length}, Staff: ${staff.length}`);
 
                 // Ordenar jugadores por número (0 va primero)
                 jugadores.sort((a, b) => {
