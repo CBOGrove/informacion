@@ -1,188 +1,598 @@
-/* ===== GRILLA DE JUGADORES ===== */
-.players-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1.5rem;
-    justify-items: center;
-    justify-content: center;
-    max-width: 1100px;
-    margin: 0 auto;
-}
+<!DOCTYPE html>
+<html lang="gl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantillas · Club Baloncesto O Grove</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 
-/* ===== GRILLA DE ENTRENADORES (centrados) ===== */
-.entrenadores-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 200px));
-    justify-content: center;
-    gap: 1.5rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 2px dashed var(--dorado);
-    width: 100%;
-}
+    <style>
+        /* ===== SELECTOR DE EQUIPO ===== */
+        .team-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+        .team-btn {
+            padding: 0.8rem 2.5rem;
+            border: 3px solid var(--azul-club);
+            border-radius: 50px;
+            background: transparent;
+            color: var(--azul-club);
+            font-family: var(--font-titulos);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .team-btn:hover {
+            background: var(--azul-club);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
+        }
+        .team-btn.active {
+            background: var(--azul-club);
+            color: white;
+            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
+        }
+        .team-btn .badge {
+            display: inline-block;
+            background: var(--dorado);
+            color: var(--azul-club);
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 0.3rem;
+        }
 
-/* ===== FICHA DE JUGADOR ===== */
-.player-card {
-    width: 100%;
-    max-width: 180px;
-    background: #FFD700;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 3px solid #000000;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s, box-shadow 0.3s;
-    position: relative;
-    cursor: pointer;
-}
-.player-card:hover {
-    transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-}
+        /* ===== CONTENEDOR DE PLANTILLAS ===== */
+        .team-container { display: none; }
+        .team-container.active { display: block; }
 
-/* ===== ESTILO INVERTIDO (ENTRENADORES) ===== */
-.player-card.invertido {
-    background: #000000;
-    border-color: #FFD700;
-}
-.player-card.invertido .card-background {
-    filter: brightness(1) invert(1) contrast(1);
-}
-.player-card.invertido .photo-container {
-    background: rgba(255, 215, 0, 0.1);
-}
-.player-card.invertido .player-number {
-    background: #FFD700;
-    color: #000000;
-    border-color: #FFD700;
-}
-.player-card.invertido .name-container {
-    background: #FFD700;
-    border-color: #FFD700;
-}
-.player-card.invertido .player-name {
-    color: #000000;
-}
+        /* ===== SECCIÓN DE EQUIPO ===== */
+        .team-section {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .team-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .team-section-header h2 {
+            font-size: 1.8rem;
+            color: var(--azul-club);
+            font-family: var(--font-titulos);
+        }
+        .team-section-header .count {
+            background: var(--azul-club);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+        }
 
-/* ===== ELEMENTOS INTERNOS ===== */
-.card-background {
-    position: absolute;
-    width: 120%;
-    height: 120%;
-    top: -10%;
-    left: -10%;
-    opacity: 0.12;
-    transform: rotate(35deg);
-    background-image: url('assets/img/logos/club/logo-negro.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    filter: brightness(0) contrast(1);
-    pointer-events: none;
-}
-.photo-container {
-    position: relative;
-    padding-top: 60%;   /* ← AQUÍ AJUSTAS EL TAMAÑO DE LA FOTO */
-    overflow: hidden;
-    background: rgba(0, 0, 0, 0.05);
-}
-.photo-container img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.photo-error {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 215, 0, 0.2);
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
-}
-.player-number {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #000000;
-    color: #FFD700;
-    border: 2px solid #000000;
-    font-size: 1.2rem;
-    font-weight: bold;
-    z-index: 3;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-}
-.name-container {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-    padding: 0.5rem;
-    background: #000000;
-    border-radius: 6px;
-    border: 1.5px solid #000000;
-    text-align: center;
-    z-index: 2;
-}
-.player-name {
-    color: #FFD700;
-    font-weight: bold;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    line-height: 1.2;
-}
+        /* ===== GRILLA DE JUGADORES ===== */
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(233px, 1fr));
+            gap: 2rem;
+            justify-items: center;
+            justify-content: center;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1024px) {
-    .players-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-@media (max-width: 768px) {
-    .players-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-    }
-    .player-card { max-width: 150px; }
-    .player-number {
-        width: 35px;
-        height: 35px;
-        font-size: 0.9rem;
-        top: 6px;
-        left: 6px;
-    }
-    .name-container {
-        bottom: 6px;
-        left: 6px;
-        right: 6px;
-        padding: 0.3rem;
-    }
-    .player-name { font-size: 0.7rem; }
-    .team-section-header h2 { font-size: 1.3rem; }
-    .team-btn {
-        padding: 0.5rem 1.5rem;
-        font-size: 0.9rem;
-    }
-    .entrenadores-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 160px));
-    }
-}
-@media (max-width: 480px) {
-    .players-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
+        /* ===== GRILLA DE ENTRENADORES (centrados) ===== */
+        .entrenadores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(233px, 1fr));
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px dashed var(--dorado);
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== FICHA DE JUGADOR - DISEÑO EXACTO ===== */
+        .player-card {
+            width: 233px;
+            height: 350px;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid #000000;
+            background: #FFD700;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .player-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== FICHA INVERTIDA (ENTRENADORES) ===== */
+        .player-card.invertido {
+            background: #000000;
+            border: 3px solid #FFD700;
+        }
+        .player-card.invertido .card-background {
+            filter: brightness(1) invert(1) contrast(1);
+        }
+        .player-card.invertido .photo-container {
+            background: rgba(255, 215, 0, 0.1);
+            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+        .player-card.invertido .player-number {
+            background: #FFD700;
+            color: #000000;
+            border: 2px solid #FFD700;
+            box-shadow: 0 3px 6px rgba(255, 215, 0, 0.3);
+        }
+        .player-card.invertido .name-container {
+            background: #FFD700;
+            border: 1.5px solid #FFD700;
+        }
+        .player-card.invertido .player-name {
+            color: #000000;
+        }
+        .player-card.invertido .photo-error {
+            color: white !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* ===== ELEMENTOS INTERNOS ===== */
+        .card-background {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            opacity: 0.15;
+            transform: rotate(35deg);
+            background-image: url('assets/img/logos/club/logo-negro.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: brightness(0) contrast(1);
+            pointer-events: none;
+        }
+
+        .photo-container {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            right: 25px;
+            bottom: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-error {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #000000;
+            background: rgba(255, 215, 0, 0.3);
+        }
+
+        /* ===== NÚMERO ===== */
+        .player-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            border: 2px solid #000000;
+            background: #000000;
+            color: #FFD700;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            z-index: 3;
+        }
+
+        /* ===== NOMBRE ===== */
+        .name-container {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+            height: 55px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            background: #000000;
+            border: 1.5px solid #000000;
+            z-index: 2;
+        }
+
+        .player-name {
+            font-size: 22px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            color: #FFD700;
+            letter-spacing: 0.8px;
+            line-height: 1.1;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .players-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .entrenadores-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                max-width: 500px;
+            }
+        }
+        @media (max-width: 992px) {
+            .players-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .players-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            .player-card {
+                width: 180px;
+                height: 270px;
+            }
+            .photo-container {
+                top: 18px;
+                left: 18px;
+                right: 18px;
+                bottom: 62px;
+            }
+            .player-number {
+                width: 42px;
+                height: 42px;
+                font-size: 20px;
+                top: 10px;
+                left: 10px;
+            }
+            .name-container {
+                height: 42px;
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+            }
+            .player-name {
+                font-size: 16px;
+                letter-spacing: 0.5px;
+            }
+            .team-section-header h2 { font-size: 1.3rem; }
+            .team-btn {
+                padding: 0.5rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            .entrenadores-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                max-width: 400px;
+                gap: 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .players-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+            .player-card {
+                width: 150px;
+                height: 225px;
+            }
+            .photo-container {
+                top: 14px;
+                left: 14px;
+                right: 14px;
+                bottom: 50px;
+            }
+            .player-number {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+                top: 8px;
+                left: 8px;
+            }
+            .name-container {
+                height: 36px;
+                bottom: 8px;
+                left: 8px;
+                right: 8px;
+                padding: 2px 4px;
+            }
+            .player-name {
+                font-size: 13px;
+                letter-spacing: 0.3px;
+            }
+            .entrenadores-grid {
+                grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+                max-width: 320px;
+                gap: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="main-header">
+        <a href="/" class="logo">
+            <img src="assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
+            CB O GROVE
+        </a>
+        <nav class="main-nav">
+            <a href="/">Inicio</a>
+            <a href="plantillas.html" class="active">Plantillas</a>
+            <a href="jornadas.html">Jornadas</a>
+            <a href="noticias.html">Noticias</a>
+            <a href="sorteos.html">Sorteos</a>
+            <a href="contacto.html">Contacto</a>
+        </nav>
+        <span class="twitch-badge" id="twitchBadge">📺 No en directo</span>
+    </header>
+
+    <!-- ===== CONTENIDO ===== -->
+    <main class="main-content">
+        <h1 style="text-align:center; color:var(--azul-club); font-family:var(--font-titulos); font-size:2.5rem; margin-bottom:0.5rem;">
+            👥 NOSAS PLANTILLAS
+        </h1>
+        <p style="text-align:center; color:var(--gris-texto); margin-bottom:2rem;">
+            Coñece a todos os xogadores e xogadoras do club
+        </p>
+
+        <!-- SELECTOR -->
+        <div class="team-selector">
+            <button class="team-btn active" data-team="femenino" onclick="mostrarEquipo('femenino')">
+                ⚪ Femenino <span class="badge" id="countF">0</span>
+            </button>
+            <button class="team-btn" data-team="masculino" onclick="mostrarEquipo('masculino')">
+                ⚫ Masculino <span class="badge" id="countM">0</span>
+            </button>
+        </div>
+
+        <!-- EQUIPO FEMENINO -->
+        <div class="team-container active" id="equipo-femenino">
+            <div class="team-section">
+                <div class="team-section-header">
+                    <h2>⚪ Femenino</h2>
+                    <span class="count" id="countFemenino">Cargando...</span>
+                </div>
+                <div class="players-grid" id="gridFemenino">
+                    <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto);">Cargando xogadoras...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- EQUIPO MASCULINO -->
+        <div class="team-container" id="equipo-masculino">
+            <div class="team-section">
+                <div class="team-section-header">
+                    <h2>⚫ Masculino</h2>
+                    <span class="count" id="countMasculino">Cargando...</span>
+                </div>
+                <div class="players-grid" id="gridMasculino">
+                    <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto);">Cargando xogadores...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="main-footer">
+        <div class="redes">
+            <a href="https://www.tiktok.com/@cbogrove" target="_blank"><i class="fab fa-tiktok"></i></a>
+            <a href="https://www.youtube.com/@cbogrove" target="_blank"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.instagram.com/cbogrove" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.twitch.tv/cbogrove" target="_blank"><i class="fab fa-twitch"></i></a>
+            <a href="https://x.com/cbogrove" target="_blank"><i class="fab fa-twitter"></i></a>
+        </div>
+        <div class="copy">© 2026 Club Baloncesto O Grove</div>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="js/app.js"></script>
+    <script>
+        // ===== CONFIGURACIÓN =====
+        const CONFIG_PLANTILLAS = {
+            sheetFemenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
+            sheetMasculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205',
+            driveFemenino: 'assets/img/plantillas/femenino/',
+            driveMasculino: 'assets/img/plantillas/masculino/'
+        };
+
+        // ===== FUNCIONES =====
+        function mostrarEquipo(equipo) {
+            document.querySelectorAll('.team-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.team === equipo);
+            });
+            document.querySelectorAll('.team-container').forEach(el => {
+                el.classList.toggle('active', el.id === `equipo-${equipo}`);
+            });
+        }
+
+        function crearFicha(jugador, equipo) {
+            const esEntrenador = jugador.entrenador?.toUpperCase() === 'SI' || 
+                                 jugador.entrenador?.toUpperCase() === 'TRUE' ||
+                                 jugador.entrenador === '1';
+            
+            const driveBase = equipo === 'femenino' ? CONFIG_PLANTILLAS.driveFemenino : CONFIG_PLANTILLAS.driveMasculino;
+            const timestamp = Date.now();
+            const fotoUrl = `${driveBase}${jugador.numero}.png?t=${timestamp}`;
+            const numDisplay = String(jugador.numero || '?');
+
+            const card = document.createElement('div');
+            card.className = `player-card${esEntrenador ? ' invertido' : ''}`;
+
+            const logoFondo = 'assets/img/logos/club/logo-negro.png';
+
+            card.innerHTML = `
+                <div class="card-background" style="background-image: url('${logoFondo}?t=${timestamp}');"></div>
+                <div class="player-number">${numDisplay}</div>
+                <div class="photo-container">
+                    <img src="${fotoUrl}"
+                         alt="${jugador.nombre || 'Jugador'}"
+                         loading="lazy"
+                         onerror="this.parentElement.innerHTML='<div class=\\'photo-error\\'>${numDisplay}</div>'">
+                </div>
+                <div class="name-container">
+                    <div class="player-name">${jugador.nombre || 'Sin nombre'}</div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+
+            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+            
+            const headerMap = {};
+            rawHeaders.forEach((h, index) => {
+                if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) {
+                    headerMap['numero'] = index;
+                } else if (h.includes('nombre') || h.includes('nome') || h.includes('jugador')) {
+                    headerMap['nombre'] = index;
+                } else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) {
+                    headerMap['entrenador'] = index;
+                }
+            });
+
+            if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
+            if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
+            if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
+
+            return lines.slice(1).map(line => {
+                const values = line.split(',').map(v => v.trim());
+                const obj = {};
+                Object.keys(headerMap).forEach(key => {
+                    obj[key] = values[headerMap[key]] || '';
+                });
+                return obj;
+            });
+        }
+
+        async function cargarHoja(url, equipo, gridId, countId) {
+            try {
+                console.log(`🔄 Cargando ${equipo} desde:`, url);
+                const response = await fetch(url);
+                const csv = await response.text();
+                console.log(`📄 CSV recibido (primeros 200 caracteres):`, csv.substring(0, 200));
+                
+                const datos = parseCSV(csv);
+                console.log(`📊 Datos parseados (${datos.length} filas):`, datos);
+
+                // Separar jugadores de entrenadores
+                const entrenadores = datos.filter(j => 
+                    j.entrenador?.toUpperCase() === 'SI' || 
+                    j.entrenador?.toUpperCase() === 'TRUE' ||
+                    j.entrenador === '1'
+                );
+                const jugadores = datos.filter(j => 
+                    j.entrenador?.toUpperCase() !== 'SI' && 
+                    j.entrenador?.toUpperCase() !== 'TRUE' &&
+                    j.entrenador !== '1'
+                );
+
+                // Ordenar jugadores por número (0 va primero, E1/E2 al final)
+                jugadores.sort((a, b) => {
+                    const numA = parseInt(a.numero);
+                    const numB = parseInt(b.numero);
+                    if (isNaN(numA)) return 1;
+                    if (isNaN(numB)) return -1;
+                    return numA - numB;
+                });
+
+                // Ordenar entrenadores por número
+                entrenadores.sort((a, b) => {
+                    const numA = parseInt(a.numero);
+                    const numB = parseInt(b.numero);
+                    if (isNaN(numA)) return 1;
+                    if (isNaN(numB)) return -1;
+                    return numA - numB;
+                });
+
+                const grid = document.getElementById(gridId);
+                grid.innerHTML = '';
+
+                // Renderizar jugadores
+                jugadores.forEach(j => grid.appendChild(crearFicha(j, equipo)));
+
+                // Si hay entrenadores, crear un grid separado FUERA del grid de jugadores
+                if (entrenadores.length > 0) {
+                    const entrenadoresContainer = document.createElement('div');
+                    entrenadoresContainer.className = 'entrenadores-grid';
+                    entrenadores.forEach(j => entrenadoresContainer.appendChild(crearFicha(j, equipo)));
+                    // Insertar DESPUÉS del grid (no dentro)
+                    grid.parentNode.insertBefore(entrenadoresContainer, grid.nextSibling);
+                }
+
+                const countEl = document.getElementById(countId);
+                if (countEl) countEl.textContent = `${datos.length} ${equipo === 'femenino' ? 'xogadoras' : 'xogadores'}`;
+
+                const badgeId = equipo === 'femenino' ? 'countF' : 'countM';
+                document.getElementById(badgeId).textContent = datos.length;
+
+                return datos.length;
+
+            } catch (error) {
+                console.error(`Error cargando ${equipo}:`, error);
+                document.getElementById(gridId).innerHTML =
+                    `<p style="grid-column:1/-1; text-align:center; color:#e74c3c;">⚠️ Erro cargando os datos. Reintentando...</p>`;
+                setTimeout(() => cargarHoja(url, equipo, gridId, countId), 5000);
+                return 0;
+            }
+        }
+
+        async function cargarPlantillas() {
+            const totalF = await cargarHoja(CONFIG_PLANTILLAS.sheetFemenino, 'femenino', 'gridFemenino', 'countFemenino');
+            const totalM = await cargarHoja(CONFIG_PLANTILLAS.sheetMasculino, 'masculino', 'gridMasculino', 'countMasculino');
+            console.log(`✅ Plantillas cargadas: ${totalF} femenino, ${totalM} masculino`);
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarPlantillas);
+    </script>
+</body>
+</html>
