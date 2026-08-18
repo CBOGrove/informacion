@@ -9,37 +9,6 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        /* ===== FONDO CON ESCUDO (como bases-legales) ===== */
-        body {
-            background: linear-gradient(145deg, #f8f9fc 0%, #eef2f7 100%);
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* ===== ESCUDO DE FONDO ===== */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-image: url('assets/img/logos/club/logo-negro.png');
-            background-size: auto 70%;
-            background-repeat: no-repeat;
-            background-position: center center;
-            opacity: 0.06;
-            transform: rotate(0deg);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* ===== TODO EL CONTENIDO POR ENCIMA DEL FONDO ===== */
-        .main-content {
-            position: relative;
-            z-index: 1;
-        }
-
         /* ===== SELECTOR DE EQUIPO ===== */
         .team-selector {
             display: flex;
@@ -72,21 +41,12 @@
             color: white;
             box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
         }
-        .team-btn .badge {
-            display: inline-block;
-            background: var(--dorado);
-            color: var(--azul-club);
-            padding: 0.1rem 0.6rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            margin-left: 0.3rem;
-        }
 
         /* ===== CONTENEDOR DE PLANTILLAS ===== */
         .team-container { display: none; }
         .team-container.active { display: block; }
 
-        /* ===== SECCIÓN DE EQUIPO (sin recuadro blanco) ===== */
+        /* ===== SECCIÓN DE EQUIPO ===== */
         .team-section {
             margin-bottom: 2rem;
         }
@@ -108,13 +68,6 @@
             color: var(--azul-club);
             font-family: var(--font-titulos);
         }
-        .team-section-header .count {
-            background: var(--azul-club);
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-        }
 
         /* ===== GRILLA DE JUGADORES (5 columnas) ===== */
         .players-grid {
@@ -127,7 +80,7 @@
             margin: 0 auto;
         }
 
-        /* ===== STAFF EN HORIZONTAL (entrenadores izq, delegados der) ===== */
+        /* ===== STAFF EN HORIZONTAL ===== */
         .staff-row {
             display: flex;
             justify-content: center;
@@ -146,19 +99,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.8rem;
         }
 
         .staff-group-label {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             color: var(--azul-club);
-            font-weight: 600;
-            opacity: 0.7;
+            font-weight: 700;
+            opacity: 0.8;
             border-bottom: 2px solid var(--dorado);
             padding-bottom: 0.3rem;
-            margin-bottom: 0.5rem;
         }
 
         .staff-group-cards {
@@ -378,9 +330,14 @@
                 flex-direction: column;
                 gap: 1.5rem;
                 align-items: center;
+                padding: 1rem;
             }
             .staff-group-cards {
                 gap: 1rem;
+            }
+            .staff-group-label {
+                font-size: 0.8rem;
+                letter-spacing: 2px;
             }
         }
         @media (max-width: 480px) {
@@ -418,10 +375,14 @@
             }
             .staff-row {
                 gap: 1rem;
-                padding: 1rem;
+                padding: 0.8rem;
             }
             .staff-group-cards {
                 gap: 0.8rem;
+            }
+            .staff-group-label {
+                font-size: 0.7rem;
+                letter-spacing: 1.5px;
             }
         }
     </style>
@@ -447,16 +408,16 @@
 
     <!-- ===== CONTENIDO ===== -->
     <main class="main-content">
-        <h1 class="page-title">👥 NOSAS PLANTILLAS</h1>
+        <h1 class="page-title">NOSAS PLANTILLAS</h1>
         <p class="page-subtitle">Coñece a todos os xogadores e xogadoras do club</p>
 
         <!-- SELECTOR -->
         <div class="team-selector">
             <button class="team-btn active" data-team="femenino" onclick="mostrarEquipo('femenino')">
-                ⚪ Femenino <span class="badge" id="countF">0</span>
+                ⚪ Femenino
             </button>
             <button class="team-btn" data-team="masculino" onclick="mostrarEquipo('masculino')">
-                ⚫ Masculino <span class="badge" id="countM">0</span>
+                ⚫ Masculino
             </button>
         </div>
 
@@ -465,7 +426,6 @@
             <div class="team-section">
                 <div class="team-section-header">
                     <h2>⚪ Femenino</h2>
-                    <span class="count" id="countFemenino">Cargando...</span>
                 </div>
                 <div class="players-grid" id="gridFemenino">
                     <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto);">Cargando xogadoras...</p>
@@ -478,7 +438,6 @@
             <div class="team-section">
                 <div class="team-section-header">
                     <h2>⚫ Masculino</h2>
-                    <span class="count" id="countMasculino">Cargando...</span>
                 </div>
                 <div class="players-grid" id="gridMasculino">
                     <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto);">Cargando xogadores...</p>
@@ -590,7 +549,7 @@
             });
         }
 
-        async function cargarHoja(url, equipo, gridId, countId) {
+        async function cargarHoja(url, equipo, gridId) {
             try {
                 console.log(`🔄 Cargando ${equipo} desde:`, url);
                 const response = await fetch(url);
@@ -640,6 +599,10 @@
                 jugadores.forEach(j => grid.appendChild(crearFicha(j, equipo)));
 
                 // ===== STAFF EN FILA HORIZONTAL =====
+                // Eliminar staff-row anterior si existe
+                const oldStaffRow = grid.parentNode.querySelector('.staff-row');
+                if (oldStaffRow) oldStaffRow.remove();
+
                 if (entrenadores.length > 0 || delegados.length > 0) {
                     const staffRow = document.createElement('div');
                     staffRow.className = 'staff-row';
@@ -648,7 +611,7 @@
                     if (entrenadores.length > 0) {
                         const group = document.createElement('div');
                         group.className = 'staff-group';
-                        group.innerHTML = `<div class="staff-group-label">🧑‍🏫 Entrenadores</div>`;
+                        group.innerHTML = `<div class="staff-group-label">ENTRENADORES</div>`;
                         const cards = document.createElement('div');
                         cards.className = 'staff-group-cards';
                         entrenadores.forEach(j => cards.appendChild(crearFicha(j, equipo)));
@@ -660,7 +623,7 @@
                     if (delegados.length > 0) {
                         const group = document.createElement('div');
                         group.className = 'staff-group';
-                        group.innerHTML = `<div class="staff-group-label">📋 Delegados</div>`;
+                        group.innerHTML = `<div class="staff-group-label">DELEGADOS</div>`;
                         const cards = document.createElement('div');
                         cards.className = 'staff-group-cards';
                         delegados.forEach(j => cards.appendChild(crearFicha(j, equipo)));
@@ -672,27 +635,21 @@
                     grid.parentNode.insertBefore(staffRow, grid.nextSibling);
                 }
 
-                const countEl = document.getElementById(countId);
-                if (countEl) countEl.textContent = `${datos.length} ${equipo === 'femenino' ? 'xogadoras' : 'xogadores'}`;
-
-                const badgeId = equipo === 'femenino' ? 'countF' : 'countM';
-                document.getElementById(badgeId).textContent = datos.length;
-
                 return datos.length;
 
             } catch (error) {
                 console.error(`Error cargando ${equipo}:`, error);
                 document.getElementById(gridId).innerHTML =
                     `<p style="grid-column:1/-1; text-align:center; color:#e74c3c;">⚠️ Erro cargando os datos. Reintentando...</p>`;
-                setTimeout(() => cargarHoja(url, equipo, gridId, countId), 5000);
+                setTimeout(() => cargarHoja(url, equipo, gridId), 5000);
                 return 0;
             }
         }
 
         async function cargarPlantillas() {
-            const totalF = await cargarHoja(CONFIG_PLANTILLAS.sheetFemenino, 'femenino', 'gridFemenino', 'countFemenino');
-            const totalM = await cargarHoja(CONFIG_PLANTILLAS.sheetMasculino, 'masculino', 'gridMasculino', 'countMasculino');
-            console.log(`✅ Plantillas cargadas: ${totalF} femenino, ${totalM} masculino`);
+            await cargarHoja(CONFIG_PLANTILLAS.sheetFemenino, 'femenino', 'gridFemenino');
+            await cargarHoja(CONFIG_PLANTILLAS.sheetMasculino, 'masculino', 'gridMasculino');
+            console.log(`✅ Plantillas cargadas correctamente`);
         }
 
         document.addEventListener('DOMContentLoaded', cargarPlantillas);
