@@ -50,24 +50,6 @@
         .team-section {
             margin-bottom: 2rem;
         }
-        .team-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            background: rgba(255,255,255,0.5);
-            backdrop-filter: blur(4px);
-            padding: 0.8rem 1.5rem;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .team-section-header h2 {
-            font-size: 1.8rem;
-            color: var(--azul-club);
-            font-family: var(--font-titulos);
-        }
 
         /* ===== GRILLA DE JUGADORES (5 columnas) ===== */
         .players-grid {
@@ -321,7 +303,6 @@
                 font-size: 16px;
                 letter-spacing: 0.5px;
             }
-            .team-section-header h2 { font-size: 1.3rem; }
             .team-btn {
                 padding: 0.5rem 1.5rem;
                 font-size: 0.9rem;
@@ -424,9 +405,6 @@
         <!-- EQUIPO FEMENINO -->
         <div class="team-container active" id="equipo-femenino">
             <div class="team-section">
-                <div class="team-section-header">
-                    <h2>⚪ Femenino</h2>
-                </div>
                 <div class="players-grid" id="gridFemenino">
                     <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto);">Cargando xogadoras...</p>
                 </div>
@@ -436,9 +414,6 @@
         <!-- EQUIPO MASCULINO -->
         <div class="team-container" id="equipo-masculino">
             <div class="team-section">
-                <div class="team-section-header">
-                    <h2>⚫ Masculino</h2>
-                </div>
                 <div class="players-grid" id="gridMasculino">
                     <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto);">Cargando xogadores...</p>
                 </div>
