@@ -1,7 +1,9 @@
 // ===== LAYOUT: HEADER Y FOOTER COMPARTIDOS =====
-// Este archivo se carga en todas las páginas para inyectar el header y footer
+
+console.log('🚀 Layout.js cargado');
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 DOM cargado, inyectando header y footer...');
     inyectarHeader();
     inyectarFooter();
     marcarPaginaActiva();
@@ -9,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function inyectarHeader() {
+    console.log('🔄 Inyectando header...');
     const headerHTML = `
         <header class="main-header">
             <a href="/" class="logo">
@@ -30,9 +33,11 @@ function inyectarHeader() {
     `;
 
     document.body.insertAdjacentHTML('afterbegin', headerHTML);
+    console.log('✅ Header inyectado');
 }
 
 function inyectarFooter() {
+    console.log('🔄 Inyectando footer...');
     const footerHTML = `
         <footer class="main-footer">
             <div class="redes">
@@ -47,17 +52,20 @@ function inyectarFooter() {
     `;
 
     document.body.insertAdjacentHTML('beforeend', footerHTML);
+    console.log('✅ Footer inyectado');
 }
 
 function marcarPaginaActiva() {
     const path = window.location.pathname;
     const pagina = path.split('/').pop() || 'index.html';
+    console.log('📍 Página actual:', pagina);
 
     setTimeout(() => {
         document.querySelectorAll('.main-nav a').forEach(link => {
             const href = link.getAttribute('href');
             if (href === pagina) {
                 link.classList.add('active');
+                console.log('✅ Marcado como activo:', href);
             }
         });
     }, 50);
@@ -68,5 +76,6 @@ function checkTwitchLive() {
     if (badge) {
         badge.innerHTML = '📺 No en directo';
         badge.style.background = '#555';
+        console.log('✅ Badge Twitch actualizado');
     }
 }
