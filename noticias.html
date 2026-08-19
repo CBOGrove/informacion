@@ -99,17 +99,63 @@
             font-size: 1rem;
         }
 
-        .noticia-card .detalle .imagen {
+        /* ===== ESTILOS DE IMAGEN MEJORADOS - OPCIÓN 4 ===== */
+        .noticia-card .detalle .imagen,
+        .noticia-destacada .detalle .imagen {
             margin-top: 1rem;
             border-radius: 10px;
             overflow: hidden;
+            background: #f5f5f5;
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #eee;
         }
 
-        .noticia-card .detalle .imagen img {
-            width: 100%;
+        .noticia-card .detalle .imagen {
             max-height: 400px;
-            object-fit: cover;
-            border-radius: 10px;
+            min-height: 100px;
+        }
+
+        .noticia-destacada .detalle .imagen {
+            max-height: 500px;
+            min-height: 150px;
+        }
+
+        .noticia-card .detalle .imagen img,
+        .noticia-destacada .detalle .imagen img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+        }
+
+        .noticia-destacada .detalle .imagen img {
+            max-height: 500px;
+        }
+
+        /* Imagen en carga - skeleton loader */
+        .noticia-card .detalle .imagen img.loading,
+        .noticia-destacada .detalle .imagen img.loading {
+            opacity: 0;
+        }
+
+        .noticia-card .detalle .imagen img.loaded,
+        .noticia-destacada .detalle .imagen img.loaded {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Fallback para imágenes que no cargan */
+        .noticia-card .detalle .imagen img[style*="display: none"],
+        .noticia-destacada .detalle .imagen img[style*="display: none"] {
+            display: none !important;
         }
 
         /* ===== NOTICIA DESTACADA ===== */
@@ -185,19 +231,6 @@
             font-size: 1.05rem;
         }
 
-        .noticia-destacada .detalle .imagen {
-            margin-top: 1rem;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .noticia-destacada .detalle .imagen img {
-            width: 100%;
-            max-height: 450px;
-            object-fit: cover;
-            border-radius: 12px;
-        }
-
         /* ===== TÍTULO DE PÁGINA ===== */
         .page-title {
             text-align: center;
@@ -244,6 +277,39 @@
             }
             .noticia-destacada .detalle .texto-largo {
                 font-size: 0.95rem;
+            }
+            
+            /* Responsive imágenes */
+            .noticia-card .detalle .imagen {
+                max-height: 300px;
+                min-height: 80px;
+            }
+            .noticia-destacada .detalle .imagen {
+                max-height: 350px;
+                min-height: 100px;
+            }
+            .noticia-card .detalle .imagen img {
+                max-height: 300px;
+            }
+            .noticia-destacada .detalle .imagen img {
+                max-height: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .noticia-card .detalle .imagen {
+                max-height: 200px;
+                min-height: 60px;
+            }
+            .noticia-destacada .detalle .imagen {
+                max-height: 250px;
+                min-height: 80px;
+            }
+            .noticia-card .detalle .imagen img {
+                max-height: 200px;
+            }
+            .noticia-destacada .detalle .imagen img {
+                max-height: 250px;
             }
         }
     </style>
@@ -449,11 +515,16 @@
             // Detalle (oculto inicialmente)
             html += `<div class="detalle">`;
 
-            // Imagen (solo en el detalle)
+            // Imagen (solo en el detalle) - con carga suave
             if (tieneImagen && imagenUrl) {
                 html += `
                     <div class="imagen">
-                        <img src="${imagenUrl}" alt="${noticia.cabecera || 'Imaxe'}" loading="lazy" onerror="this.style.display='none'">
+                        <img src="${imagenUrl}" 
+                             alt="${noticia.cabecera || 'Imaxe'}" 
+                             loading="lazy" 
+                             onerror="this.style.display='none'"
+                             onload="this.classList.add('loaded')"
+                             class="loading">
                     </div>
                 `;
             }
