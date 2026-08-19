@@ -64,10 +64,10 @@
             opacity: 1;
         }
 
-        /* ===== LOGO - OPTIMIZADO PARA 300×200px ===== */
+        /* ===== LOGO - MÁS GRANDE ===== */
         .patrocinador-card .logo-container {
-            width: 150px;      /* Tamaño estándar para PC */
-            height: 100px;     /* Proporción 3:2 */
+            width: 200px;      /* Más grande: 200px en PC */
+            height: 133px;     /* Mantiene proporción 3:2 */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -118,7 +118,7 @@
             color: #555;
             line-height: 1.5;
             font-size: 0.9rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             flex: 1;
             width: 100%;
         }
@@ -127,7 +127,7 @@
             display: block;
         }
 
-        /* ===== TELÉFONO ===== */
+        /* ===== TELÉFONO - SOLO SI EXISTE ===== */
         .patrocinador-card .telefono {
             font-size: 0.9rem;
             color: var(--azul-club);
@@ -157,7 +157,7 @@
             font-size: 0.85rem;
             font-weight: 600;
             transition: all 0.3s;
-            margin-top: 0.5rem;
+            margin-top: 0.3rem;
         }
 
         .patrocinador-card .maps-link:hover {
@@ -169,6 +169,15 @@
 
         .patrocinador-card .maps-link i {
             font-size: 1rem;
+        }
+
+        /* ===== ESPACIO FLEXIBLE ENTRE ELEMENTOS ===== */
+        .patrocinador-card .info-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
         }
 
         /* ===== TARJETA "ANÚNCIESE AQUÍ" ===== */
@@ -335,7 +344,7 @@
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .patrocinadores-grid {
-                grid-template-columns: 1fr 1fr; /* 2 columnas en tablet */
+                grid-template-columns: 1fr 1fr;
                 gap: 1rem;
                 padding: 0 0.5rem;
             }
@@ -346,8 +355,8 @@
             }
             
             .patrocinador-card .logo-container {
-                width: 130px;   /* Ligeramente más pequeño para tablet */
-                height: 87px;   /* Mantiene proporción 3:2 */
+                width: 170px;   /* Más grande en tablet */
+                height: 113px;  /* Mantiene proporción 3:2 */
             }
             
             .patrocinador-card .nombre {
@@ -377,13 +386,13 @@
 
         @media (max-width: 480px) {
             .patrocinadores-grid {
-                grid-template-columns: 1fr; /* 1 columna en móvil */
+                grid-template-columns: 1fr;
                 gap: 1rem;
             }
             
             .patrocinador-card .logo-container {
-                width: 180px;   /* ¡Más grande en móvil! */
-                height: 120px;  /* Mantiene proporción 3:2 */
+                width: 220px;   /* Aún más grande en móvil */
+                height: 147px;  /* Mantiene proporción 3:2 */
             }
             
             .patrocinador-card {
