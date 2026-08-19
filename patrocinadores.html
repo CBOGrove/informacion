@@ -33,7 +33,7 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            min-height: 280px;
+            min-height: 320px;
             position: relative;
             overflow: hidden;
         }
@@ -64,10 +64,10 @@
             opacity: 1;
         }
 
-        /* ===== LOGO - MÁS GRANDE ===== */
+        /* ===== LOGO - TAMAÑO OPTIMIZADO ===== */
         .patrocinador-card .logo-container {
-            width: 200px;      /* Más grande: 200px en PC */
-            height: 133px;     /* Mantiene proporción 3:2 */
+            width: 200px;
+            height: 133px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -107,6 +107,9 @@
             font-family: var(--font-titulos);
             margin-bottom: 0.5rem;
             transition: color 0.3s;
+            min-height: 2.5rem;
+            display: flex;
+            align-items: center;
         }
 
         .patrocinador-card:hover .nombre {
@@ -116,22 +119,38 @@
         /* ===== DESCRIPCIÓN ===== */
         .patrocinador-card .descripcion {
             color: #555;
-            line-height: 1.5;
-            font-size: 0.9rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
             margin-bottom: 0.8rem;
             flex: 1;
             width: 100%;
+            min-height: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .patrocinador-card .descripcion .linea {
             display: block;
+            padding: 0.05rem 0;
         }
 
-        /* ===== TELÉFONO - SOLO SI EXISTE ===== */
+        /* ===== INFO EXTRA (teléfono + maps) ===== */
+        .patrocinador-card .info-extra {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(201, 160, 61, 0.15);
+        }
+
+        /* ===== TELÉFONO ===== */
         .patrocinador-card .telefono {
             font-size: 0.9rem;
             color: var(--azul-club);
-            margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -151,13 +170,12 @@
             gap: 0.5rem;
             background: var(--azul-club);
             color: white;
-            padding: 0.5rem 1.5rem;
+            padding: 0.4rem 1.5rem;
             border-radius: 30px;
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 600;
             transition: all 0.3s;
-            margin-top: 0.3rem;
         }
 
         .patrocinador-card .maps-link:hover {
@@ -169,15 +187,6 @@
 
         .patrocinador-card .maps-link i {
             font-size: 1rem;
-        }
-
-        /* ===== ESPACIO FLEXIBLE ENTRE ELEMENTOS ===== */
-        .patrocinador-card .info-group {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
         }
 
         /* ===== TARJETA "ANÚNCIESE AQUÍ" ===== */
@@ -351,16 +360,22 @@
             
             .patrocinador-card {
                 padding: 1.2rem 1rem;
-                min-height: 220px;
+                min-height: 250px;
             }
             
             .patrocinador-card .logo-container {
-                width: 170px;   /* Más grande en tablet */
-                height: 113px;  /* Mantiene proporción 3:2 */
+                width: 170px;
+                height: 113px;
             }
             
             .patrocinador-card .nombre {
                 font-size: 1rem;
+                min-height: 2rem;
+            }
+            
+            .patrocinador-card .descripcion {
+                font-size: 0.85rem;
+                min-height: 40px;
             }
             
             .page-title {
@@ -391,13 +406,13 @@
             }
             
             .patrocinador-card .logo-container {
-                width: 220px;   /* Aún más grande en móvil */
-                height: 147px;  /* Mantiene proporción 3:2 */
+                width: 220px;
+                height: 147px;
             }
             
             .patrocinador-card {
                 padding: 1.5rem 1rem;
-                min-height: 200px;
+                min-height: 220px;
             }
             
             .patrocinador-card .maps-link {
@@ -523,6 +538,8 @@
 
         function formatearTextoConSaltos(texto) {
             if (!texto) return '';
+            // SOLO usa '|' como separador de líneas
+            // Las comas y otros signos se mantienen como texto normal
             const lineas = texto.split('|').map(line => line.trim());
             return lineas.map(line => `<span class="linea">${line}</span>`).join('');
         }
@@ -537,26 +554,41 @@
             const telefono = patrocinador.telefono || '';
             const mapsUrl = patrocinador.maps || '';
 
-            container.innerHTML = `
+            // Formatear descripción respetando solo |
+            const descripcionHTML = formatearTextoConSaltos(descripcion);
+
+            let html = `
                 <div class="logo-container">
                     <img src="${logoUrl}" alt="${nombre}" loading="lazy" onerror="this.style.display='none'">
                 </div>
                 <div class="nombre">${nombre}</div>
-                <div class="descripcion">${formatearTextoConSaltos(descripcion)}</div>
-                ${telefono ? `
+                <div class="descripcion">${descripcionHTML}</div>
+                <div class="info-extra">
+            `;
+
+            // Añadir teléfono si existe
+            if (telefono) {
+                html += `
                     <div class="telefono">
                         <i class="fas fa-phone"></i>
                         <span>${telefono}</span>
                     </div>
-                ` : ''}
-                ${mapsUrl ? `
+                `;
+            }
+
+            // Añadir enlace maps si existe
+            if (mapsUrl) {
+                html += `
                     <a href="${mapsUrl}" target="_blank" rel="noopener" class="maps-link">
                         <i class="fas fa-map-marker-alt"></i>
                         Ver localización
                     </a>
-                ` : ''}
-            `;
+                `;
+            }
 
+            html += `</div>`;
+
+            container.innerHTML = html;
             return container;
         }
 
