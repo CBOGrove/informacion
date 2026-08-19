@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="gl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patrocinadores · Club Baloncesto O Grove</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* ===== CONTENEDOR DE PATROCINADORES ===== */
+        .patrocinadores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ===== TARJETA DE PATROCINADOR ===== */
+        .patrocinador-card {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border-left: 5px solid var(--dorado);
+            box-shadow: var(--sombra-suave);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            min-height: 200px;
+        }
+
+        .patrocinador-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--sombra-media);
+        }
+
+        /* ===== LOGO ===== */
+        .patrocinador-card .logo-container {
+            width: 100%;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(201, 160, 61, 0.15);
+        }
+
+        .patrocinador-card .logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* ===== NOMBRE ===== */
+        .patrocinador-card .nombre {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--azul-club);
+            font-family: var(--font-titulos);
+            margin-bottom: 0.3rem;
+            text-align: center;
+        }
+
+        /* ===== DESCRIPCIÓN CORTA ===== */
+        .patrocinador-card .descripcion-corta {
+            color: #444;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            text-align: center;
+            flex: 1;
+        }
+
+        .patrocinador-card .descripcion-corta .linea {
+            display: block;
+        }
+
+        /* ===== BOTÓN SABER MÁIS ===== */
+        .patrocinador-card .toggle-btn {
+            display: inline-block;
+            margin-top: 0.8rem;
+            color: var(--dorado);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font-textos);
+            padding: 0;
+            align-self: center;
+        }
+
+        .patrocinador-card .toggle-btn:hover {
+            color: var(--azul-club);
+        }
+
+        /* ===== DETALLE DESPLEGABLE ===== */
+        .patrocinador-card .detalle {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.3s ease-in-out;
+            padding: 0;
+            margin-top: 0;
+        }
+
+        .patrocinador-card.abierta .detalle {
+            max-height: 800px;
+            padding: 1rem 0 0 0;
+            margin-top: 0.5rem;
+            border-top: 1px solid rgba(201, 160, 61, 0.3);
+        }
+
+        .patrocinador-card .detalle .descripcion-larga {
+            color: #444;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .patrocinador-card .detalle .descripcion-larga .linea {
+            display: block;
+        }
+
+        .patrocinador-card .detalle .enlace {
+            display: inline-block;
+            margin-top: 0.8rem;
+            background: var(--azul-club);
+            color: white;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .patrocinador-card .detalle .enlace:hover {
+            background: var(--dorado);
+            color: var(--azul-club);
+            transform: translateY(-2px);
+        }
+
+        /* ===== TÍTULO DE PÁGINA ===== */
+        .page-title {
+            text-align: center;
+            color: var(--azul-club);
+            font-family: var(--font-titulos);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+        }
+        .page-subtitle {
+            text-align: center;
+            color: var(--gris-texto);
+            margin-bottom: 2rem;
+        }
+
+        .loading-text {
+            text-align: center;
+            color: var(--gris-texto);
+            padding: 2rem;
+        }
+
+        .no-patrocinadores {
+            text-align: center;
+            color: var(--gris-texto);
+            padding: 2rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .patrocinadores-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .patrocinador-card {
+                padding: 1rem;
+                min-height: 160px;
+            }
+            .patrocinador-card .logo-container {
+                height: 80px;
+            }
+            .patrocinador-card .nombre {
+                font-size: 1.1rem;
+            }
+            .page-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="main-header">
+        <a href="/" class="logo">
+            <img src="assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
+            CB O GROVE
+        </a>
+        <nav class="main-nav">
+            <a href="/">Inicio</a>
+            <a href="plantillas.html">Plantillas</a>
+            <a href="jornadas.html">Jornadas</a>
+            <a href="noticias.html">Noticias</a>
+            <a href="sorteos.html">Sorteos</a>
+            <a href="patrocinadores.html" class="active">Patrocinadores</a>
+            <a href="contacto.html">Contacto</a>
+        </nav>
+        <span class="twitch-badge" id="twitchBadge">📺 No en directo</span>
+    </header>
+
+    <!-- ===== CONTENIDO ===== -->
+    <main class="main-content">
+        <h1 class="page-title">🏆 PATROCINADORES</h1>
+        <p class="page-subtitle">Empresas e entidades que fan posible o noso club</p>
+
+        <div class="patrocinadores-grid" id="patrocinadoresGrid">
+            <p class="loading-text">Cargando patrocinadores...</p>
+        </div>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="main-footer">
+        <div class="redes">
+            <a href="https://www.tiktok.com/@cbogrove" target="_blank"><i class="fab fa-tiktok"></i></a>
+            <a href="https://www.youtube.com/@cbogrove" target="_blank"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.instagram.com/cbogrove" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.twitch.tv/cbogrove" target="_blank"><i class="fab fa-twitch"></i></a>
+            <a href="https://x.com/cbogrove" target="_blank"><i class="fab fa-twitter"></i></a>
+        </div>
+        <div class="copy">© 2026 Club Baloncesto O Grove</div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        // ===== CONFIGURACIÓN =====
+        const CONFIG_PATROCINADORES = {
+            sheetUrl: 'https://docs.google.com/spreadsheets/d/1vTw0TksIAImMJy4zUnmkgum_FTpLdFe_0UDghEOPbiA/export?format=csv'
+        };
+
+        // ===== FUNCIONES =====
+        function parseCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+
+            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+            
+            const headerMap = {};
+            rawHeaders.forEach((h, index) => {
+                if (h.includes('nombre')) headerMap['nombre'] = index;
+                else if (h.includes('logo')) headerMap['logo'] = index;
+                else if (h.includes('descripcion_corta') || h.includes('descripcion corta')) headerMap['descripcion_corta'] = index;
+                else if (h.includes('descripcion_larga') || h.includes('descripcion larga')) headerMap['descripcion_larga'] = index;
+                else if (h.includes('enlace') || h.includes('web') || h.includes('url') || h.includes('maps')) headerMap['enlace'] = index;
+            });
+
+            if (headerMap['nombre'] === undefined) headerMap['nombre'] = 0;
+            if (headerMap['logo'] === undefined) headerMap['logo'] = 1;
+            if (headerMap['descripcion_corta'] === undefined) headerMap['descripcion_corta'] = 2;
+            if (headerMap['descripcion_larga'] === undefined) headerMap['descripcion_larga'] = 3;
+            if (headerMap['enlace'] === undefined) headerMap['enlace'] = 4;
+
+            return lines.slice(1).map(line => {
+                const values = line.split(',').map(v => v.trim());
+                const obj = {};
+                Object.keys(headerMap).forEach(key => {
+                    let value = values[headerMap[key]] || '';
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.slice(1, -1);
+                    }
+                    obj[key] = value;
+                });
+                return obj;
+            });
+        }
+
+        function convertirURLImagen(url) {
+            if (!url) return '';
+            if (url.includes('github.com') && url.includes('/blob/')) {
+                return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+            }
+            if (url.includes('raw.githubusercontent.com')) return url;
+            if (url.includes('drive.google.com')) {
+                const match = url.match(/[-\w]{25,}/);
+                if (match) {
+                    return `https://drive.google.com/uc?export=view&id=${match[0]}`;
+                }
+            }
+            return url;
+        }
+
+        function formatearTextoConSaltos(texto) {
+            if (!texto) return '';
+            const lineas = texto.split('|').map(line => line.trim());
+            return lineas.map(line => `<span class="linea">${line}</span>`).join('');
+        }
+
+        function crearPatrocinador(patrocinador) {
+            const container = document.createElement('div');
+            container.className = 'patrocinador-card';
+
+            const tieneDescripcionLarga = patrocinador.descripcion_larga && patrocinador.descripcion_larga.length > 0;
+            const tieneEnlace = patrocinador.enlace && patrocinador.enlace.length > 0;
+            const logoUrl = patrocinador.logo ? convertirURLImagen(patrocinador.logo) : '';
+
+            let html = `
+                <div class="logo-container">
+                    <img src="${logoUrl}" alt="${patrocinador.nombre || 'Patrocinador'}" loading="lazy" onerror="this.style.display='none'">
+                </div>
+                <div class="nombre">${patrocinador.nombre || 'Sen nome'}</div>
+                <div class="descripcion-corta">${formatearTextoConSaltos(patrocinador.descripcion_corta)}</div>
+            `;
+
+            if (tieneDescripcionLarga || tieneEnlace) {
+                html += `
+                    <button class="toggle-btn" onclick="togglePatrocinador(this)">
+                        <span class="btn-text">▶ Saber máis</span>
+                    </button>
+                `;
+            }
+
+            html += `<div class="detalle">`;
+
+            if (tieneDescripcionLarga) {
+                html += `<div class="descripcion-larga">${formatearTextoConSaltos(patrocinador.descripcion_larga)}</div>`;
+            }
+
+            if (tieneEnlace) {
+                const textoEnlace = patrocinador.enlace.includes('google.com/maps') ? '📍 Ver no mapa' : '🔗 Visitar web';
+                html += `<a href="${patrocinador.enlace}" target="_blank" rel="noopener" class="enlace">${textoEnlace}</a>`;
+            }
+
+            html += `</div>`;
+
+            container.innerHTML = html;
+            return container;
+        }
+
+        function togglePatrocinador(btn) {
+            const card = btn.closest('.patrocinador-card');
+            if (!card) return;
+
+            const isOpen = card.classList.contains('abierta');
+            const btnText = btn.querySelector('.btn-text');
+
+            if (isOpen) {
+                card.classList.remove('abierta');
+                if (btnText) btnText.textContent = '▶ Saber máis';
+            } else {
+                card.classList.add('abierta');
+                if (btnText) btnText.textContent = '▲ Ler menos';
+            }
+        }
+
+        window.togglePatrocinador = togglePatrocinador;
+
+        async function cargarPatrocinadores() {
+            const grid = document.getElementById('patrocinadoresGrid');
+
+            try {
+                console.log('🔄 Cargando patrocinadores desde:', CONFIG_PATROCINADORES.sheetUrl);
+                const response = await fetch(CONFIG_PATROCINADORES.sheetUrl);
+                const csv = await response.text();
+                console.log('📄 CSV recibido (primeros 200 caracteres):', csv.substring(0, 200));
+                
+                const patrocinadores = parseCSV(csv);
+                console.log('📊 Patrocinadores parseados:', patrocinadores);
+
+                if (patrocinadores.length === 0) {
+                    grid.innerHTML = '<p class="no-patrocinadores">Non hai patrocinadores rexistrados.</p>';
+                    return;
+                }
+
+                // Filtrar los que tengan al menos nombre
+                const validos = patrocinadores.filter(p => p.nombre);
+
+                if (validos.length === 0) {
+                    grid.innerHTML = '<p class="no-patrocinadores">Non hai patrocinadores rexistrados.</p>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                validos.forEach(p => {
+                    grid.appendChild(crearPatrocinador(p));
+                });
+
+                console.log(`✅ Patrocinadores cargados: ${validos.length}`);
+
+            } catch (error) {
+                console.error('Error cargando patrocinadores:', error);
+                grid.innerHTML = '<p class="no-patrocinadores" style="color:#e74c3c;">⚠️ Erro cargando os patrocinadores. Reintentando...</p>';
+                setTimeout(cargarPatrocinadores, 5000);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarPatrocinadores);
+    </script>
+</body>
+</html>
