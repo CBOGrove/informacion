@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/style.css">
     
     <style>
+        /* ===== HERO ===== */
         .hero {
             background: linear-gradient(135deg, var(--azul-club) 0%, #0d1f33 100%);
             border-radius: 25px;
@@ -72,6 +73,7 @@
             color: var(--azul-club);
         }
         
+        /* ===== MOSAICO REDES ===== */
         .mosaico-redes {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -92,6 +94,8 @@
             padding: 1.5rem;
             text-align: center;
             border: 1px solid rgba(0,0,0,0.05);
+            text-decoration: none;
+            color: inherit;
         }
         
         .mosaico-redes .item:hover {
@@ -123,6 +127,7 @@
         .mosaico-redes .item.instagram .icono { color: #E4405F; }
         .mosaico-redes .item.twitter .icono { color: #000000; }
         
+        /* ===== ÚLTIMA NOTICIA ===== */
         .ultima-noticia {
             background: var(--blanco);
             border-radius: 15px;
@@ -140,6 +145,7 @@
         .ultima-noticia h2 {
             color: var(--azul-club);
             margin: 0.3rem 0;
+            font-family: var(--font-titulos);
         }
         
         .ultima-noticia p {
@@ -147,9 +153,10 @@
             line-height: 1.6;
         }
         
+        /* ===== ACCESOS RÁPIDOS ===== */
         .accesos-rapidos {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 1rem;
         }
         
@@ -178,6 +185,12 @@
             font-size: 2rem;
             margin-bottom: 0.3rem;
         }
+
+        .loading-text {
+            text-align: center;
+            color: var(--gris-texto);
+            padding: 0.5rem 0;
+        }
         
         @media (max-width: 768px) {
             .hero h1 {
@@ -199,9 +212,11 @@
     </style>
 </head>
 <body>
+
+    <!-- ===== HEADER ===== -->
     <header class="main-header">
         <a href="/" class="logo">
-            <img src="assets/img/logo.png" alt="CB O Grove" onerror="this.style.display='none'">
+            <img src="assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
             CB O GROVE
         </a>
         <nav class="main-nav">
@@ -209,14 +224,18 @@
             <a href="plantillas.html">Plantillas</a>
             <a href="jornadas.html">Jornadas</a>
             <a href="noticias.html">Noticias</a>
+            <a href="patrocinadores.html">Patrocinadores</a>
             <a href="sorteos.html">Sorteos</a>
+            <a href="juegos.html">Xogos</a>
             <a href="contacto.html">Contacto</a>
         </nav>
         <span class="twitch-badge" id="twitchBadge">📺 No en directo</span>
     </header>
 
+    <!-- ===== CONTENIDO ===== -->
     <main class="main-content">
         
+        <!-- HERO -->
         <section class="hero">
             <div class="hero-logo">🏀</div>
             <h1>CLUB BALONCESTO O GROVE</h1>
@@ -227,43 +246,44 @@
             </div>
         </section>
 
+        <!-- MOSAICO DE REDES -->
         <section class="mosaico-redes">
-            <div class="item item-grande twitch">
+            <a href="https://www.twitch.tv/cbogrove" target="_blank" class="item item-grande twitch">
                 <div>
                     <div class="icono"><i class="fab fa-twitch"></i></div>
                     <div class="nombre">Twitch</div>
                     <div class="estado">🔴 No en directo</div>
                 </div>
-            </div>
-            <div class="item youtube">
+            </a>
+            <a href="https://www.youtube.com/@cbogrove" target="_blank" class="item youtube">
                 <div>
                     <div class="icono"><i class="fab fa-youtube"></i></div>
                     <div class="nombre">YouTube</div>
                     <div class="estado">Último video: hace 3 días</div>
                 </div>
-            </div>
-            <div class="item instagram">
+            </a>
+            <a href="https://www.instagram.com/cbogrove" target="_blank" class="item instagram">
                 <div>
                     <div class="icono"><i class="fab fa-instagram"></i></div>
                     <div class="nombre">Instagram</div>
                     <div class="estado">@cbogrove</div>
                 </div>
-            </div>
-            <div class="item twitter">
+            </a>
+            <a href="https://x.com/cbogrove" target="_blank" class="item twitter">
                 <div>
                     <div class="icono"><i class="fab fa-twitter"></i></div>
                     <div class="nombre">X (Twitter)</div>
                     <div class="estado">@cbogrove</div>
                 </div>
-            </div>
+            </a>
         </section>
 
+        <!-- ÚLTIMA NOTICIA (cargada desde Google Sheets) -->
         <section class="ultima-noticia" id="ultimaNoticia">
-            <div class="fecha">📅 17 de agosto de 2026</div>
-            <h2>🏀 Benvidos á nova web do club</h2>
-            <p>Estamos de estrea! Esta é a nova páxina web do Club Baloncesto O Grove. Aquí poderás atopar toda a información sobre as nosas plantillas, próximos partidos, noticias e moito máis. Agardamos que vos guste!</p>
+            <div class="loading-text">📰 Cargando última nova...</div>
         </section>
 
+        <!-- ACCESOS RÁPIDOS -->
         <section class="accesos-rapidos">
             <a href="plantillas.html">
                 <span class="emoji">👥</span>
@@ -277,9 +297,17 @@
                 <span class="emoji">📰</span>
                 Noticias
             </a>
+            <a href="patrocinadores.html">
+                <span class="emoji">🏆</span>
+                Patrocinadores
+            </a>
             <a href="sorteos.html">
                 <span class="emoji">🎰</span>
                 Sorteos
+            </a>
+            <a href="juegos.html">
+                <span class="emoji">🎮</span>
+                Xogos
             </a>
             <a href="contacto.html">
                 <span class="emoji">📬</span>
@@ -289,17 +317,108 @@
 
     </main>
 
+    <!-- ===== FOOTER ===== -->
     <footer class="main-footer">
         <div class="redes">
-            <a href="https://www.tiktok.com/@cbogrove" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-            <a href="https://www.youtube.com/@cbogrove" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-            <a href="https://www.instagram.com/cbogrove" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.twitch.tv/cbogrove" target="_blank" aria-label="Twitch"><i class="fab fa-twitch"></i></a>
-            <a href="https://x.com/cbogrove" target="_blank" aria-label="X (Twitter)"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.tiktok.com/@cbogrove" target="_blank"><i class="fab fa-tiktok"></i></a>
+            <a href="https://www.youtube.com/@cbogrove" target="_blank"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.instagram.com/cbogrove" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.twitch.tv/cbogrove" target="_blank"><i class="fab fa-twitch"></i></a>
+            <a href="https://x.com/cbogrove" target="_blank"><i class="fab fa-twitter"></i></a>
         </div>
         <div class="copy">© 2026 Club Baloncesto O Grove</div>
     </footer>
 
+    <!-- ===== SCRIPTS ===== -->
     <script src="js/app.js"></script>
+    <script>
+        // ===== CONFIGURACIÓN =====
+        const CONFIG_INICIO = {
+            noticiasSheet: 'https://docs.google.com/spreadsheets/d/1WyAXYg7YZXG3jhr2y1LjgoRMbq7nWtHReJmBTk-FkcQ/export?format=csv'
+        };
+
+        // ===== FUNCIONES =====
+        function parseCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+
+            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+            
+            const headerMap = {};
+            rawHeaders.forEach((h, index) => {
+                if (h.includes('fecha')) headerMap['fecha'] = index;
+                else if (h.includes('cabecera') || h.includes('titulo')) headerMap['cabecera'] = index;
+                else if (h.includes('texto_corto') || h.includes('resumen') || h.includes('texto corto')) headerMap['texto_corto'] = index;
+                else if (h.includes('texto_largo') || h.includes('articulo') || h.includes('texto largo')) headerMap['texto_largo'] = index;
+                else if (h.includes('imagen') || h.includes('enlace') || h.includes('foto')) headerMap['enlace_imagen'] = index;
+            });
+
+            if (headerMap['fecha'] === undefined) headerMap['fecha'] = 0;
+            if (headerMap['cabecera'] === undefined) headerMap['cabecera'] = 1;
+            if (headerMap['texto_corto'] === undefined) headerMap['texto_corto'] = 2;
+            if (headerMap['texto_largo'] === undefined) headerMap['texto_largo'] = 3;
+            if (headerMap['enlace_imagen'] === undefined) headerMap['enlace_imagen'] = 4;
+
+            return lines.slice(1).map(line => {
+                const values = line.split(',').map(v => v.trim());
+                const obj = {};
+                Object.keys(headerMap).forEach(key => {
+                    let value = values[headerMap[key]] || '';
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.slice(1, -1);
+                    }
+                    obj[key] = value;
+                });
+                return obj;
+            });
+        }
+
+        function formatearFecha(fecha) {
+            if (!fecha) return '';
+            const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(fecha).toLocaleDateString('gl-ES', opciones);
+        }
+
+        async function cargarUltimaNoticia() {
+            const container = document.getElementById('ultimaNoticia');
+
+            try {
+                const response = await fetch(CONFIG_INICIO.noticiasSheet);
+                const csv = await response.text();
+                const noticias = parseCSV(csv);
+
+                const validas = noticias.filter(n => n.fecha && n.cabecera);
+
+                if (validas.length === 0) {
+                    container.innerHTML = `
+                        <div class="fecha">📅 --</div>
+                        <h2>🏀 Benvidos á nova web do club</h2>
+                        <p>Estamos de estrea! Esta é a nova páxina web do Club Baloncesto O Grove. Aquí poderás atopar toda a información sobre as nosas plantillas, próximos partidos, noticias e moito máis. Agardamos que vos guste!</p>
+                    `;
+                    return;
+                }
+
+                validas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+                const ultima = validas[0];
+
+                container.innerHTML = `
+                    <div class="fecha">📅 ${formatearFecha(ultima.fecha)}</div>
+                    <h2>${ultima.cabecera}</h2>
+                    <p>${ultima.texto_corto || ultima.texto_largo || ''}</p>
+                    ${ultima.enlace_imagen ? `<p style="margin-top:0.5rem;"><a href="noticias.html" style="color:var(--dorado); font-weight:600;">📰 Ver todas as novas</a></p>` : ''}
+                `;
+
+            } catch (error) {
+                console.error('Error cargando la última noticia:', error);
+                container.innerHTML = `
+                    <div class="fecha">📅 --</div>
+                    <h2>🏀 Benvidos á nova web do club</h2>
+                    <p>Estamos de estrea! Esta é a nova páxina web do Club Baloncesto O Grove. Aquí poderás atopar toda a información sobre as nosas plantillas, próximos partidos, noticias e moito máis. Agardamos que vos guste!</p>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarUltimaNoticia);
+    </script>
 </body>
 </html>
