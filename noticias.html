@@ -54,7 +54,6 @@
         .noticia-card .texto-corto {
             color: #444;
             line-height: 1.6;
-            /* Eliminamos cualquier corte de texto */
             overflow: visible;
             max-height: none;
         }
@@ -303,30 +302,55 @@
             sheetUrl: 'https://docs.google.com/spreadsheets/d/1WyAXYg7YZXG3jhr2y1LjgoRMbq7nWtHReJmBTk-FkcQ/export?format=csv'
         };
 
-        // ===== FUNCIONES =====
+        // ===== FUNCIÓN MEJORADA PARA PARSEAR CSV =====
         function parseCSV(csv) {
-            const lines = csv.split('\n').filter(line => line.trim());
+            // Dividir por líneas respetando las comillas
+            const lines = [];
+            let currentLine = '';
+            let insideQuotes = false;
+            
+            for (let i = 0; i < csv.length; i++) {
+                const char = csv[i];
+                if (char === '"') {
+                    insideQuotes = !insideQuotes;
+                    currentLine += char;
+                } else if (char === '\n' && !insideQuotes) {
+                    if (currentLine.trim()) {
+                        lines.push(currentLine);
+                    }
+                    currentLine = '';
+                } else {
+                    currentLine += char;
+                }
+            }
+            if (currentLine.trim()) {
+                lines.push(currentLine);
+            }
+
             if (lines.length < 2) return [];
 
-            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
-            
+            // Parsear la primera línea para los encabezados
+            const headers = parseCSVLine(lines[0]);
             const headerMap = {};
-            rawHeaders.forEach((h, index) => {
-                if (h.includes('fecha')) headerMap['fecha'] = index;
-                else if (h.includes('cabecera') || h.includes('titulo')) headerMap['cabecera'] = index;
-                else if (h.includes('texto_corto') || h.includes('resumen') || h.includes('texto corto')) headerMap['texto_corto'] = index;
-                else if (h.includes('texto_largo') || h.includes('articulo') || h.includes('texto largo')) headerMap['texto_largo'] = index;
-                else if (h.includes('imagen') || h.includes('enlace') || h.includes('foto')) headerMap['enlace_imagen'] = index;
+            headers.forEach((h, index) => {
+                const lower = h.toLowerCase().trim();
+                if (lower.includes('fecha')) headerMap['fecha'] = index;
+                else if (lower.includes('cabecera') || lower.includes('titulo') || lower.includes('título')) headerMap['cabecera'] = index;
+                else if (lower.includes('texto_corto') || lower.includes('resumen') || lower.includes('texto corto') || lower.includes('intro')) headerMap['texto_corto'] = index;
+                else if (lower.includes('texto_largo') || lower.includes('articulo') || lower.includes('texto largo') || lower.includes('descripción') || lower.includes('descripcion')) headerMap['texto_largo'] = index;
+                else if (lower.includes('imagen') || lower.includes('enlace') || lower.includes('foto') || lower.includes('url')) headerMap['enlace_imagen'] = index;
             });
 
+            // Asignar índices por defecto si no se encontraron
             if (headerMap['fecha'] === undefined) headerMap['fecha'] = 0;
             if (headerMap['cabecera'] === undefined) headerMap['cabecera'] = 1;
             if (headerMap['texto_corto'] === undefined) headerMap['texto_corto'] = 2;
             if (headerMap['texto_largo'] === undefined) headerMap['texto_largo'] = 3;
             if (headerMap['enlace_imagen'] === undefined) headerMap['enlace_imagen'] = 4;
 
+            // Parsear el resto de líneas
             return lines.slice(1).map(line => {
-                const values = line.split(',').map(v => v.trim());
+                const values = parseCSVLine(line);
                 const obj = {};
                 Object.keys(headerMap).forEach(key => {
                     let value = values[headerMap[key]] || '';
@@ -334,16 +358,42 @@
                     if (value.startsWith('"') && value.endsWith('"')) {
                         value = value.slice(1, -1);
                     }
+                    // Reemplazar dobles comillas dentro del texto
+                    value = value.replace(/""/g, '"');
                     obj[key] = value;
                 });
                 return obj;
             });
         }
 
+        function parseCSVLine(line) {
+            const values = [];
+            let current = '';
+            let insideQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    insideQuotes = !insideQuotes;
+                } else if (char === ',' && !insideQuotes) {
+                    values.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            values.push(current.trim());
+            return values;
+        }
+
         function formatearFecha(fecha) {
             if (!fecha) return '';
-            const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(fecha).toLocaleDateString('gl-ES', opciones);
+            try {
+                const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
+                return new Date(fecha).toLocaleDateString('gl-ES', opciones);
+            } catch (e) {
+                return fecha;
+            }
         }
 
         function convertirURLImagen(url) {
@@ -356,7 +406,6 @@
             if (url.includes('raw.githubusercontent.com')) return url;
             // Si es una URL de Drive, asegurar formato de exportación
             if (url.includes('drive.google.com')) {
-                // Intentar extraer el ID si es posible
                 const match = url.match(/[-\w]{25,}/);
                 if (match) {
                     return `https://drive.google.com/uc?export=view&id=${match[0]}`;
@@ -372,6 +421,15 @@
             const tieneImagen = noticia.enlace_imagen && noticia.enlace_imagen.length > 0;
             const tieneTextoLargo = noticia.texto_largo && noticia.texto_largo.length > 0;
             const imagenUrl = tieneImagen ? convertirURLImagen(noticia.enlace_imagen) : '';
+
+            // Debug: Mostrar en consola lo que se está parseando
+            console.log('Noticia:', {
+                fecha: noticia.fecha,
+                cabecera: noticia.cabecera,
+                texto_corto: noticia.texto_corto ? noticia.texto_corto.substring(0, 50) + '...' : '(vacío)',
+                texto_largo: noticia.texto_largo ? noticia.texto_largo.substring(0, 50) + '...' : '(vacío)',
+                enlace_imagen: noticia.enlace_imagen ? noticia.enlace_imagen.substring(0, 30) + '...' : '(vacío)'
+            });
 
             let html = `
                 <div class="fecha">📅 ${formatearFecha(noticia.fecha)}</div>
