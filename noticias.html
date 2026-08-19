@@ -18,6 +18,7 @@
             margin: 0 auto;
         }
 
+        /* ===== TARJETA DE NOTICIA ===== */
         .noticia-card {
             background: rgba(255,255,255,0.85);
             backdrop-filter: blur(4px);
@@ -27,6 +28,7 @@
             box-shadow: var(--sombra-suave);
             transition: transform 0.3s, box-shadow 0.3s;
             border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
         }
 
         .noticia-card:hover {
@@ -49,33 +51,75 @@
             margin-bottom: 0.3rem;
         }
 
-        .noticia-card .texto {
+        .noticia-card .texto-corto {
             color: #444;
             line-height: 1.6;
         }
 
-        .noticia-card .imagen {
+        /* ===== BOTÓN LER MÁIS ===== */
+        .noticia-card .toggle-btn {
+            display: inline-block;
+            margin-top: 0.8rem;
+            color: var(--dorado);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font-textos);
+            padding: 0;
+        }
+
+        .noticia-card .toggle-btn:hover {
+            color: var(--azul-club);
+        }
+
+        /* ===== CONTENIDO DESPLEGABLE ===== */
+        .noticia-card .detalle {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.3s ease-in-out;
+            padding: 0;
+            margin-top: 0;
+        }
+
+        .noticia-card.abierta .detalle {
+            max-height: 2000px;
+            padding: 1rem 0 0 0;
+            margin-top: 0.5rem;
+            border-top: 1px solid rgba(201, 160, 61, 0.3);
+        }
+
+        .noticia-card .detalle .texto-largo {
+            color: #444;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .noticia-card .detalle .imagen {
             margin-top: 1rem;
             border-radius: 10px;
             overflow: hidden;
         }
 
-        .noticia-card .imagen img {
+        .noticia-card .detalle .imagen img {
             width: 100%;
-            max-height: 300px;
+            max-height: 400px;
             object-fit: cover;
             border-radius: 10px;
         }
 
         /* ===== NOTICIA DESTACADA (la más reciente) ===== */
         .noticia-destacada {
-            background: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.92);
             backdrop-filter: blur(4px);
             border-radius: 20px;
             padding: 2rem;
             margin-bottom: 2.5rem;
             border: 2px solid var(--dorado);
             box-shadow: var(--sombra-media);
+            cursor: pointer;
         }
 
         .noticia-destacada .fecha {
@@ -92,21 +136,60 @@
             margin-bottom: 0.5rem;
         }
 
-        .noticia-destacada .texto {
+        .noticia-destacada .texto-corto {
             font-size: 1.1rem;
             color: #444;
             line-height: 1.7;
         }
 
-        .noticia-destacada .imagen {
+        .noticia-destacada .toggle-btn {
+            display: inline-block;
+            margin-top: 0.8rem;
+            color: var(--dorado);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font-textos);
+            padding: 0;
+        }
+
+        .noticia-destacada .toggle-btn:hover {
+            color: var(--azul-club);
+        }
+
+        .noticia-destacada .detalle {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.3s ease-in-out;
+            padding: 0;
+            margin-top: 0;
+        }
+
+        .noticia-destacada.abierta .detalle {
+            max-height: 2000px;
+            padding: 1rem 0 0 0;
+            margin-top: 0.5rem;
+            border-top: 1px solid rgba(201, 160, 61, 0.3);
+        }
+
+        .noticia-destacada .detalle .texto-largo {
+            color: #444;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .noticia-destacada .detalle .imagen {
             margin-top: 1rem;
             border-radius: 12px;
             overflow: hidden;
         }
 
-        .noticia-destacada .imagen img {
+        .noticia-destacada .detalle .imagen img {
             width: 100%;
-            max-height: 400px;
+            max-height: 450px;
             object-fit: cover;
             border-radius: 12px;
         }
@@ -132,12 +215,18 @@
             padding: 2rem;
         }
 
+        .no-noticias {
+            text-align: center;
+            color: var(--gris-texto);
+            padding: 2rem;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .noticia-destacada .cabecera {
                 font-size: 1.5rem;
             }
-            .noticia-destacada .texto {
+            .noticia-destacada .texto-corto {
                 font-size: 1rem;
             }
             .noticia-card {
@@ -148,6 +237,9 @@
             }
             .noticia-destacada {
                 padding: 1.2rem;
+            }
+            .noticia-destacada .detalle .texto-largo {
+                font-size: 0.95rem;
             }
         }
     </style>
@@ -217,14 +309,16 @@
             rawHeaders.forEach((h, index) => {
                 if (h.includes('fecha')) headerMap['fecha'] = index;
                 else if (h.includes('cabecera') || h.includes('titulo')) headerMap['cabecera'] = index;
-                else if (h.includes('texto') || h.includes('descripcion')) headerMap['texto'] = index;
+                else if (h.includes('texto_corto') || h.includes('resumen') || h.includes('texto corto')) headerMap['texto_corto'] = index;
+                else if (h.includes('texto_largo') || h.includes('articulo') || h.includes('texto largo')) headerMap['texto_largo'] = index;
                 else if (h.includes('imagen') || h.includes('enlace') || h.includes('foto')) headerMap['enlace_imagen'] = index;
             });
 
             if (headerMap['fecha'] === undefined) headerMap['fecha'] = 0;
             if (headerMap['cabecera'] === undefined) headerMap['cabecera'] = 1;
-            if (headerMap['texto'] === undefined) headerMap['texto'] = 2;
-            if (headerMap['enlace_imagen'] === undefined) headerMap['enlace_imagen'] = 3;
+            if (headerMap['texto_corto'] === undefined) headerMap['texto_corto'] = 2;
+            if (headerMap['texto_largo'] === undefined) headerMap['texto_largo'] = 3;
+            if (headerMap['enlace_imagen'] === undefined) headerMap['enlace_imagen'] = 4;
 
             return lines.slice(1).map(line => {
                 const values = line.split(',').map(v => v.trim());
@@ -251,14 +345,29 @@
             const container = document.createElement('div');
             container.className = destacada ? 'noticia-destacada' : 'noticia-card';
 
+            const tieneImagen = noticia.enlace_imagen && noticia.enlace_imagen.length > 0;
+            const tieneTextoLargo = noticia.texto_largo && noticia.texto_largo.length > 0;
+
             let html = `
                 <div class="fecha">📅 ${formatearFecha(noticia.fecha)}</div>
                 <div class="cabecera">${noticia.cabecera || 'Sen título'}</div>
-                <div class="texto">${noticia.texto || ''}</div>
+                <div class="texto-corto">${noticia.texto_corto || ''}</div>
             `;
 
-            // Si hay imagen, mostrarla
-            if (noticia.enlace_imagen && noticia.enlace_imagen.length > 0) {
+            // Botón "Ler máis" SOLO si hay texto largo (y opcionalmente imagen)
+            if (tieneTextoLargo || tieneImagen) {
+                html += `
+                    <button class="toggle-btn" onclick="toggleNoticia(this)">
+                        <span class="btn-text">▶ Ler máis</span>
+                    </button>
+                `;
+            }
+
+            // Detalle (oculto inicialmente)
+            html += `<div class="detalle">`;
+
+            // Imagen (solo en el detalle)
+            if (tieneImagen) {
                 html += `
                     <div class="imagen">
                         <img src="${noticia.enlace_imagen}" alt="${noticia.cabecera || 'Imaxe'}" loading="lazy" onerror="this.style.display='none'">
@@ -266,9 +375,45 @@
                 `;
             }
 
+            // Texto largo (solo en el detalle)
+            if (tieneTextoLargo) {
+                html += `<div class="texto-largo">${noticia.texto_largo}</div>`;
+            }
+
+            html += `</div>`; // fin detalle
+
             container.innerHTML = html;
             return container;
         }
+
+        // ===== FUNCIÓN PARA TOGGLE (desplegar/contraer) =====
+        function toggleNoticia(btn) {
+            const card = btn.closest('.noticia-card, .noticia-destacada');
+            if (!card) return;
+
+            const isOpen = card.classList.contains('abierta');
+            const btnText = btn.querySelector('.btn-text');
+
+            if (isOpen) {
+                card.classList.remove('abierta');
+                if (btnText) btnText.textContent = '▶ Ler máis';
+            } else {
+                // Cerrar otras noticias abiertas (opcional: para mantener solo una abierta)
+                // document.querySelectorAll('.noticia-card.abierta, .noticia-destacada.abierta').forEach(el => {
+                //     if (el !== card) {
+                //         el.classList.remove('abierta');
+                //         const otherBtn = el.querySelector('.toggle-btn .btn-text');
+                //         if (otherBtn) otherBtn.textContent = '▶ Ler máis';
+                //     }
+                // });
+
+                card.classList.add('abierta');
+                if (btnText) btnText.textContent = '▲ Ler menos';
+            }
+        }
+
+        // Exponer la función al ámbito global para que funcione desde el HTML
+        window.toggleNoticia = toggleNoticia;
 
         async function cargarNoticias() {
             const destacadaContainer = document.getElementById('noticiaDestacada');
@@ -284,7 +429,7 @@
                 console.log('📊 Noticias parseadas:', noticias);
 
                 if (noticias.length === 0) {
-                    destacadaContainer.innerHTML = '<p style="text-align:center; color:var(--gris-texto);">Non hai novas dispoñibles.</p>';
+                    destacadaContainer.innerHTML = '<p class="no-noticias">Non hai novas dispoñibles.</p>';
                     gridContainer.innerHTML = '';
                     return;
                 }
@@ -293,7 +438,7 @@
                 const validas = noticias.filter(n => n.fecha && n.cabecera);
 
                 if (validas.length === 0) {
-                    destacadaContainer.innerHTML = '<p style="text-align:center; color:var(--gris-texto);">Non hai novas dispoñibles.</p>';
+                    destacadaContainer.innerHTML = '<p class="no-noticias">Non hai novas dispoñibles.</p>';
                     gridContainer.innerHTML = '';
                     return;
                 }
@@ -316,11 +461,12 @@
 
             } catch (error) {
                 console.error('Error cargando noticias:', error);
-                destacadaContainer.innerHTML = '<p style="text-align:center; color:#e74c3c;">⚠️ Erro cargando as novas. Reintentando...</p>';
+                destacadaContainer.innerHTML = '<p class="no-noticias" style="color:#e74c3c;">⚠️ Erro cargando as novas. Reintentando...</p>';
                 setTimeout(cargarNoticias, 5000);
             }
         }
 
+        // ===== INICIALIZAR =====
         document.addEventListener('DOMContentLoaded', cargarNoticias);
     </script>
 </body>
