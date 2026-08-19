@@ -54,6 +54,9 @@
         .noticia-card .texto-corto {
             color: #444;
             line-height: 1.6;
+            /* Eliminamos cualquier corte de texto */
+            overflow: visible;
+            max-height: none;
         }
 
         /* ===== BOTÓN LER MÁIS ===== */
@@ -110,7 +113,7 @@
             border-radius: 10px;
         }
 
-        /* ===== NOTICIA DESTACADA (la más reciente) ===== */
+        /* ===== NOTICIA DESTACADA ===== */
         .noticia-destacada {
             background: rgba(255,255,255,0.92);
             backdrop-filter: blur(4px);
@@ -140,6 +143,8 @@
             font-size: 1.1rem;
             color: #444;
             line-height: 1.7;
+            overflow: visible;
+            max-height: none;
         }
 
         .noticia-destacada .toggle-btn {
@@ -268,7 +273,7 @@
         <h1 class="page-title">📰 NOVAS DO CLUB</h1>
         <p class="page-subtitle">Mantéñente ao día de todo o que acontece no CB O Grove</p>
 
-        <!-- NOTICIA DESTACADA (la más reciente) -->
+        <!-- NOTICIA DESTACADA -->
         <div id="noticiaDestacada" class="noticia-destacada">
             <p class="loading-text">Cargando última nova...</p>
         </div>
@@ -341,12 +346,32 @@
             return new Date(fecha).toLocaleDateString('gl-ES', opciones);
         }
 
+        function convertirURLImagen(url) {
+            if (!url) return '';
+            // Si es una URL de GitHub (blob o raw), convertir a raw
+            if (url.includes('github.com') && url.includes('/blob/')) {
+                return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+            }
+            // Si ya es una URL de raw, dejar igual
+            if (url.includes('raw.githubusercontent.com')) return url;
+            // Si es una URL de Drive, asegurar formato de exportación
+            if (url.includes('drive.google.com')) {
+                // Intentar extraer el ID si es posible
+                const match = url.match(/[-\w]{25,}/);
+                if (match) {
+                    return `https://drive.google.com/uc?export=view&id=${match[0]}`;
+                }
+            }
+            return url;
+        }
+
         function crearNoticia(noticia, destacada = false) {
             const container = document.createElement('div');
             container.className = destacada ? 'noticia-destacada' : 'noticia-card';
 
             const tieneImagen = noticia.enlace_imagen && noticia.enlace_imagen.length > 0;
             const tieneTextoLargo = noticia.texto_largo && noticia.texto_largo.length > 0;
+            const imagenUrl = tieneImagen ? convertirURLImagen(noticia.enlace_imagen) : '';
 
             let html = `
                 <div class="fecha">📅 ${formatearFecha(noticia.fecha)}</div>
@@ -354,7 +379,7 @@
                 <div class="texto-corto">${noticia.texto_corto || ''}</div>
             `;
 
-            // Botón "Ler máis" SOLO si hay texto largo (y opcionalmente imagen)
+            // Botón "Ler máis" SOLO si hay texto largo o imagen
             if (tieneTextoLargo || tieneImagen) {
                 html += `
                     <button class="toggle-btn" onclick="toggleNoticia(this)">
@@ -367,10 +392,10 @@
             html += `<div class="detalle">`;
 
             // Imagen (solo en el detalle)
-            if (tieneImagen) {
+            if (tieneImagen && imagenUrl) {
                 html += `
                     <div class="imagen">
-                        <img src="${noticia.enlace_imagen}" alt="${noticia.cabecera || 'Imaxe'}" loading="lazy" onerror="this.style.display='none'">
+                        <img src="${imagenUrl}" alt="${noticia.cabecera || 'Imaxe'}" loading="lazy" onerror="this.style.display='none'">
                     </div>
                 `;
             }
@@ -386,7 +411,7 @@
             return container;
         }
 
-        // ===== FUNCIÓN PARA TOGGLE (desplegar/contraer) =====
+        // ===== FUNCIÓN PARA TOGGLE =====
         function toggleNoticia(btn) {
             const card = btn.closest('.noticia-card, .noticia-destacada');
             if (!card) return;
@@ -398,21 +423,11 @@
                 card.classList.remove('abierta');
                 if (btnText) btnText.textContent = '▶ Ler máis';
             } else {
-                // Cerrar otras noticias abiertas (opcional: para mantener solo una abierta)
-                // document.querySelectorAll('.noticia-card.abierta, .noticia-destacada.abierta').forEach(el => {
-                //     if (el !== card) {
-                //         el.classList.remove('abierta');
-                //         const otherBtn = el.querySelector('.toggle-btn .btn-text');
-                //         if (otherBtn) otherBtn.textContent = '▶ Ler máis';
-                //     }
-                // });
-
                 card.classList.add('abierta');
                 if (btnText) btnText.textContent = '▲ Ler menos';
             }
         }
 
-        // Exponer la función al ámbito global para que funcione desde el HTML
         window.toggleNoticia = toggleNoticia;
 
         async function cargarNoticias() {
@@ -434,7 +449,6 @@
                     return;
                 }
 
-                // Filtrar noticias que tengan al menos fecha y cabecera
                 const validas = noticias.filter(n => n.fecha && n.cabecera);
 
                 if (validas.length === 0) {
@@ -443,21 +457,18 @@
                     return;
                 }
 
-                // Ordenar por fecha (más reciente primero)
                 validas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
-                // Primera noticia = destacada
                 const destacada = validas[0];
                 destacadaContainer.innerHTML = '';
                 destacadaContainer.appendChild(crearNoticia(destacada, true));
 
-                // Resto de noticias
                 gridContainer.innerHTML = '';
                 validas.slice(1).forEach(noticia => {
                     gridContainer.appendChild(crearNoticia(noticia, false));
                 });
 
-                console.log(`✅ Noticias cargadas: ${validas.length} (1 destacada + ${validas.length - 1} no listado)`);
+                console.log(`✅ Noticias cargadas: ${validas.length}`);
 
             } catch (error) {
                 console.error('Error cargando noticias:', error);
@@ -466,7 +477,6 @@
             }
         }
 
-        // ===== INICIALIZAR =====
         document.addEventListener('DOMContentLoaded', cargarNoticias);
     </script>
 </body>
