@@ -515,7 +515,7 @@
             // Detalle (oculto inicialmente)
             html += `<div class="detalle">`;
 
-            // Imagen (solo en el detalle) - con carga suave
+            // Imagen (solo en el detalle)
             if (tieneImagen && imagenUrl) {
                 html += `
                     <div class="imagen">
@@ -529,9 +529,11 @@
                 `;
             }
 
-            // Texto largo (solo en el detalle)
+            // Texto largo (solo en el detalle) - CONVIERTE | EN SALTO DE LÍNEA
             if (tieneTextoLargo) {
-                html += `<div class="texto-largo">${noticia.texto_largo}</div>`;
+                // Reemplazar | por <br> para saltos de línea
+                const textoConSaltos = noticia.texto_largo.replace(/\|/g, '<br><br>');
+                html += `<div class="texto-largo">${textoConSaltos}</div>`;
             }
 
             html += `</div>`; // fin detalle
