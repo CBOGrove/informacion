@@ -20,15 +20,15 @@ function inyectarHeader() {
                 <a href="plantillas.html">Plantillas</a>
                 <a href="jornadas.html">Jornadas</a>
                 <a href="noticias.html">Noticias</a>
-                <a href="sorteos.html">Sorteos</a>
                 <a href="patrocinadores.html">Patrocinadores</a>
+                <a href="sorteos.html">Sorteos</a>
+                <a href="xogos.html">Xogos</a>
                 <a href="contacto.html">Contacto</a>
             </nav>
             <span class="twitch-badge" id="twitchBadge">📺 No en directo</span>
         </header>
     `;
 
-    // Insertar al principio del body
     document.body.insertAdjacentHTML('afterbegin', headerHTML);
 }
 
@@ -46,16 +46,13 @@ function inyectarFooter() {
         </footer>
     `;
 
-    // Insertar al final del body
     document.body.insertAdjacentHTML('beforeend', footerHTML);
 }
 
 function marcarPaginaActiva() {
-    // Obtener el nombre del archivo actual
     const path = window.location.pathname;
     const pagina = path.split('/').pop() || 'index.html';
 
-    // Esperar a que el nav esté en el DOM
     setTimeout(() => {
         document.querySelectorAll('.main-nav a').forEach(link => {
             const href = link.getAttribute('href');
@@ -67,7 +64,6 @@ function marcarPaginaActiva() {
 }
 
 function checkTwitchLive() {
-    // Simulación del badge de Twitch (se puede ampliar con API)
     const badge = document.getElementById('twitchBadge');
     if (badge) {
         badge.innerHTML = '📺 No en directo';
