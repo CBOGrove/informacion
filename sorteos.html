@@ -19,7 +19,6 @@
             margin: 0 auto;
         }
 
-        /* ===== TARJETA DE SORTEO ===== */
         .sorteo-card {
             background: rgba(255,255,255,0.85);
             backdrop-filter: blur(4px);
@@ -40,7 +39,6 @@
             box-shadow: var(--sombra-media);
         }
 
-        /* ===== TARJETA INACTIVA (gris apagado) ===== */
         .sorteo-card.inactivo {
             opacity: 0.6;
             filter: grayscale(0.4);
@@ -68,7 +66,6 @@
             transform: none;
         }
 
-        /* ===== ICONO ===== */
         .sorteo-card .icono {
             font-size: 3.5rem;
             margin-bottom: 0.5rem;
@@ -175,7 +172,6 @@
             box-shadow: 0 8px 30px rgba(201, 160, 61, 0.4);
         }
 
-        /* ===== TÍTULOS ===== */
         .page-title {
             text-align: center;
             color: var(--azul-club);
@@ -190,7 +186,6 @@
             margin-bottom: 2.5rem;
         }
 
-        /* ===== SPINNER ===== */
         .spinner-container {
             text-align: center;
             padding: 3rem 0;
@@ -217,7 +212,6 @@
             padding: 2rem;
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .sorteos-grid {
                 grid-template-columns: 1fr;
@@ -237,7 +231,6 @@
             .page-title {
                 font-size: 1.8rem;
             }
-            
             .bases-legais-btn {
                 bottom: 20px;
                 right: 20px;
@@ -261,7 +254,6 @@
 </head>
 <body>
 
-    <!-- ===== CONTENIDO PRINCIPAL ===== -->
     <main class="main-content">
         <h1 class="page-title">🎰 SORTEOS</h1>
         <p class="page-subtitle">Participa nos nosos sorteos e gaña premios exclusivos</p>
@@ -274,72 +266,75 @@
         </div>
     </main>
 
-    <!-- ===== BOTÓN BASES LEGAIS ===== -->
     <a href="https://cbogrove.github.io/Bases_legais/" target="_blank" class="bases-legais-btn">
         <i class="fas fa-file-alt"></i>
         Bases legais
     </a>
 
-    <!-- ===== SCRIPTS ===== -->
     <script src="js/app.js"></script>
     <script src="js/layout.js"></script>
     <script>
-        // ===== CONFIGURACIÓN =====
         const CONFIG_SORTEOS = {
             sheetUrl: 'https://docs.google.com/spreadsheets/d/1we-1DRNJjbrut1lzJZFwBwxSWCcGrRZ1D4Afb4QYIyY/export?format=csv'
         };
 
-        // ===== FUNCIÓN PARA LIMPIAR TEXTO =====
+        function parseCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+
+            // La primera línea son los headers
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+            
+            // Buscar índices por nombre (más fiable)
+            const getIndex = (nombre) => {
+                const idx = headers.findIndex(h => h.includes(nombre));
+                return idx !== -1 ? idx : null;
+            };
+
+            const idxIcono = getIndex('icono') ?? 0;
+            const idxTitulo = getIndex('titulo') ?? 1;
+            const idxExplicacion = getIndex('explicacion') ?? 2;
+            const idxEnlace = getIndex('enlace') ?? 3;
+            const idxInicio = getIndex('inicio') ?? 4;
+            const idxFin = getIndex('fin') ?? 5;
+            const idxActivo = getIndex('activo') ?? 6;
+            const idxGanador = getIndex('ganador') ?? 7;
+
+            // Debug para ver qué índices se están usando
+            console.log('🔍 Índices encontrados:', {
+                icono: idxIcono,
+                titulo: idxTitulo,
+                explicacion: idxExplicacion,
+                enlace: idxEnlace,
+                inicio: idxInicio,
+                fin: idxFin,
+                activo: idxActivo,
+                ganador: idxGanador
+            });
+
+            const result = [];
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseCSVLine(lines[i]);
+                result.push({
+                    icono: limpiarTexto(values[idxIcono] || ''),
+                    titulo: limpiarTexto(values[idxTitulo] || ''),
+                    explicacion: limpiarTexto(values[idxExplicacion] || ''),
+                    enlace: limpiarTexto(values[idxEnlace] || ''),
+                    inicio: limpiarTexto(values[idxInicio] || ''),
+                    fin: limpiarTexto(values[idxFin] || ''),
+                    activo: limpiarTexto(values[idxActivo] || ''),
+                    ganador: limpiarTexto(values[idxGanador] || '')
+                });
+            }
+            return result;
+        }
+
         function limpiarTexto(texto) {
             if (!texto) return '';
             texto = texto.replace(/^["']+|["']+$/g, '');
             texto = texto.replace(/\n/g, ' ').replace(/\r/g, ' ');
             texto = texto.replace(/\s+/g, ' ');
             return texto.trim();
-        }
-
-        // ===== PARSE CSV MEJORADO (por NOMBRE de columna) =====
-        function parseCSV(csv) {
-            const lines = csv.split('\n').filter(line => line.trim());
-            if (lines.length < 2) return [];
-
-            // Obtener headers
-            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
-            
-            // Mapear índices por nombre
-            const headerMap = {};
-            rawHeaders.forEach((h, index) => {
-                const lower = h.toLowerCase().trim();
-                if (lower.includes('icono') || lower.includes('icon')) headerMap['icono'] = index;
-                else if (lower.includes('titulo') || lower.includes('título') || lower.includes('nombre')) headerMap['titulo'] = index;
-                else if (lower.includes('explicacion') || lower.includes('descripcion') || lower.includes('descripción')) headerMap['explicacion'] = index;
-                else if (lower.includes('enlace') || lower.includes('url') || lower.includes('link')) headerMap['enlace'] = index;
-                else if (lower.includes('inicio') || lower.includes('fechainicio')) headerMap['inicio'] = index;
-                else if (lower.includes('fin') || lower.includes('fechafin')) headerMap['fin'] = index;
-                else if (lower.includes('activo') || lower.includes('actiu')) headerMap['activo'] = index;
-                else if (lower.includes('ganador') || lower.includes('gañador')) headerMap['ganador'] = index;
-            });
-
-            // Asignar índices por defecto si no se encontraron
-            if (headerMap['icono'] === undefined) headerMap['icono'] = 0;
-            if (headerMap['titulo'] === undefined) headerMap['titulo'] = 1;
-            if (headerMap['explicacion'] === undefined) headerMap['explicacion'] = 2;
-            if (headerMap['enlace'] === undefined) headerMap['enlace'] = 3;
-            if (headerMap['inicio'] === undefined) headerMap['inicio'] = 4;
-            if (headerMap['fin'] === undefined) headerMap['fin'] = 5;
-            if (headerMap['activo'] === undefined) headerMap['activo'] = 6;
-            if (headerMap['ganador'] === undefined) headerMap['ganador'] = 7;
-
-            return lines.slice(1).map(line => {
-                const values = parseCSVLine(line);
-                const obj = {};
-                Object.keys(headerMap).forEach(key => {
-                    let value = values[headerMap[key]] || '';
-                    value = limpiarTexto(value);
-                    obj[key] = value;
-                });
-                return obj;
-            });
         }
 
         function parseCSVLine(line) {
@@ -354,15 +349,13 @@
                     continue;
                 }
                 if (char === ',' && !inQuotes) {
-                    result.push(current.trim());
+                    result.push(current);
                     current = '';
                     continue;
                 }
                 current += char;
             }
-            if (current.trim() || result.length > 0) {
-                result.push(current.trim());
-            }
+            result.push(current);
             return result;
         }
 
@@ -386,16 +379,9 @@
             return texto.startsWith('http://') || texto.startsWith('https://') || texto.startsWith('data:image');
         }
 
-        /**
-         * Parsea el texto de ganadores con formato:
-         * - "Kampa" → texto plano
-         * - "[Instagram](https://...)" → enlace con texto "Instagram"
-         * - "Camiseta: Kampa | Balón: Jose" → múltiples ganadores
-         */
         function parsearGanadores(texto) {
             if (!texto || texto.trim() === '') return null;
 
-            // Si tiene | separa múltiples ganadores
             if (texto.includes('|')) {
                 const partes = texto.split('|').map(p => p.trim());
                 return partes.map(p => parsearGanadorIndividual(p)).filter(g => g !== null);
@@ -405,7 +391,6 @@
         }
 
         function parsearGanadorIndividual(texto) {
-            // Busca enlaces con formato [texto](url)
             const enlaceRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
             let match;
             let resultado = [];
@@ -468,7 +453,6 @@
             const activo = esActivo(sorteo.activo);
             container.className = `sorteo-card${!activo ? ' inactivo' : ''}`;
 
-            // Icono
             let iconoHTML = '';
             if (sorteo.icono) {
                 if (esImagenURL(sorteo.icono)) {
@@ -478,7 +462,6 @@
                 }
             }
 
-            // Estado
             let estadoHTML = '';
             if (sorteo.ganador) {
                 const ganadoresParsed = parsearGanadores(sorteo.ganador);
@@ -488,7 +471,6 @@
                 estadoHTML = `<div class="estado">📅 Remata o ${formatearFecha(sorteo.fin)}</div>`;
             }
 
-            // Botón
             let botonHTML = '';
             if (activo && sorteo.enlace) {
                 botonHTML = `<a href="${sorteo.enlace}" target="_blank" class="btn-participar">▶ Participar</a>`;
@@ -514,7 +496,6 @@
                 console.log('🔄 Cargando sorteos...');
                 const response = await fetch(CONFIG_SORTEOS.sheetUrl);
                 const csv = await response.text();
-                console.log('📄 CSV recibido');
                 
                 const sorteos = parseCSV(csv);
                 console.log('📊 Sorteos parseados:', sorteos);
