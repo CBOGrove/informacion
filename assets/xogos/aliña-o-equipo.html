@@ -4,30 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aliña o equipo! · CB O Grove</title>
-    
-    <!-- ===== FONTS (solo las necesarias) ===== -->
-    <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
 
+    <!-- ========================================================= -->
+    <!-- 1. CSS COPIADO DE style.css (con rutas ajustadas) -->
+    <!-- ========================================================= -->
     <style>
-        /* ===== RESET Y BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
+        /* ===== VARIABLES GLOBALES ===== */
+        :root {
+            --azul-club: #1e3a5f;
+            --azul-claro: #2c4a7a;
+            --dorado: #c9a03d;
+            --dorado-claro: #ffd700;
+            --negro: #000000;
+            --blanco: #ffffff;
+            --gris-fondo: #f5f6fa;
+            --gris-texto: #555555;
+            --gris-claro: #e8ecf1;
+            --font-titulos: 'Graduate', 'Segoe UI', sans-serif;
+            --font-textos: 'Segoe UI', Arial, sans-serif;
+            --sombra-suave: 0 4px 20px rgba(0,0,0,0.08);
+            --sombra-media: 0 8px 30px rgba(0,0,0,0.12);
+            --sombra-fuerte: 0 12px 40px rgba(0,0,0,0.2);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
-            min-height: 100vh;
+            font-family: var(--font-textos);
             background: linear-gradient(145deg, #f8f9fc 0%, #eef2f7 100%);
-            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #333;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 20px;
+            position: relative;
         }
 
-        /* ===== ESCUDO DE FONDO ===== */
+        /* ===== ESCUDO DE FONDO (RUTA AJUSTADA) ===== */
         body::before {
             content: "";
             position: fixed;
@@ -40,86 +53,204 @@
             background-repeat: no-repeat;
             background-position: center center;
             opacity: 0.06;
+            transform: rotate(0deg);
             z-index: 0;
             pointer-events: none;
         }
 
-        /* ===== HEADER DEL JUEGO ===== */
-        .game-header {
-            width: 100%;
-            max-width: 1100px;
-            background: #1e3a5f;
-            padding: 0.8rem 2rem;
+        /* ===== HEADER ===== */
+        .main-header {
+            background: var(--azul-club);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-radius: 15px 15px 0 0;
+            flex-wrap: wrap;
+            gap: 1rem;
             box-shadow: 0 4px 20px rgba(30, 58, 95, 0.3);
-            position: relative;
-            z-index: 1;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .game-header .logo {
+        .logo {
             display: flex;
             align-items: center;
             gap: 1rem;
-            color: white;
+            color: var(--blanco);
             text-decoration: none;
             font-size: 1.3rem;
             font-weight: 700;
-            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-family: var(--font-titulos);
         }
 
-        .game-header .logo img {
-            height: 45px;
+        .logo img {
+            height: 50px;
             border-radius: 50%;
-            border: 2px solid #c9a03d;
+            border: 2px solid var(--dorado);
         }
 
-        .game-header .header-title {
-            font-family: 'Graduate', 'Segoe UI', sans-serif;
-            font-size: 1.5rem;
-            color: #c9a03d;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+        .main-nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
-        /* ===== CONTENEDOR PRINCIPAL ===== */
-        .game-wrapper {
+        .main-nav a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            background: var(--dorado);
+            color: var(--azul-club);
+        }
+
+        .twitch-badge {
+            background: #9146FF;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .twitch-badge.live {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
             width: 100%;
-            max-width: 1100px;
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(4px);
-            padding: 2rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 0 0 15px 15px;
             position: relative;
             z-index: 1;
         }
 
-        /* ===== CONTADOR ===== */
+        /* ===== FOOTER ===== */
+        .main-footer {
+            background: var(--azul-club);
+            color: var(--blanco);
+            text-align: center;
+            padding: 2rem;
+            margin-top: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-footer .redes {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .main-footer .redes a {
+            color: var(--blanco);
+            transition: all 0.3s;
+        }
+
+        .main-footer .redes a:hover {
+            color: var(--dorado);
+            transform: translateY(-3px);
+        }
+
+        .main-footer .copy {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* ===== UTILIDADES ===== */
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 1rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mb-2 { margin-bottom: 2rem; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .main-header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            .main-nav {
+                justify-content: center;
+                gap: 0.3rem;
+            }
+            .main-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+            .logo {
+                font-size: 1.1rem;
+            }
+            .main-footer .redes {
+                font-size: 1.5rem;
+                gap: 1rem;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+        }
+
+        /* ========================================================= */
+        /* ESTILOS ESPECÍFICOS DEL JUEGO */
+        /* ========================================================= */
+        .game-wrapper {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .game-container {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: var(--sombra-media);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
         .countdown-container {
-            background: #1e3a5f;
+            background: var(--azul-club);
             padding: 0.8rem 1.5rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 1.5rem;
-            border: 2px solid #c9a03d;
+            border: 2px solid var(--dorado);
         }
 
         .countdown-text {
-            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-family: var(--font-titulos);
             font-size: 0.9rem;
-            color: white;
+            color: var(--blanco);
             opacity: 0.8;
             letter-spacing: 1px;
         }
 
         .countdown-number {
-            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-family: var(--font-titulos);
             font-size: 3rem;
             font-weight: 700;
-            color: #c9a03d;
+            color: var(--dorado);
             text-shadow: 0 0 20px rgba(201, 160, 61, 0.3);
             transition: all 0.3s ease;
         }
@@ -138,12 +269,12 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
         }
+
         @keyframes pulse-emergencia {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(0.95); }
         }
 
-        /* ===== TABLERO DE JUGADORES ===== */
         .formation-container {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -153,7 +284,6 @@
             min-height: 320px;
         }
 
-        /* ===== CARTA IDÉNTICA A PLANTILLAS ===== */
         .player-card {
             width: 100%;
             max-width: 200px;
@@ -175,7 +305,7 @@
 
         .player-card.selected {
             transform: scale(1.05);
-            border-color: #c9a03d;
+            border-color: var(--dorado);
             box-shadow: 0 0 25px rgba(201, 160, 61, 0.5);
         }
 
@@ -261,7 +391,7 @@
         }
 
         .player-card .player-name {
-            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-family: var(--font-titulos);
             font-size: 1rem;
             font-weight: bold;
             text-transform: uppercase;
@@ -276,25 +406,24 @@
             -webkit-box-orient: vertical;
         }
 
-        /* ===== ESTADO Y MENSAJES ===== */
         .status-container {
             margin: 1.2rem 0;
             padding: 0.8rem;
             background: rgba(30, 58, 95, 0.08);
             border-radius: 12px;
-            border-left: 4px solid #c9a03d;
+            border-left: 4px solid var(--dorado);
         }
 
         .status-text {
-            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-family: var(--font-titulos);
             font-size: 1.3rem;
-            color: #1e3a5f;
+            color: var(--azul-club);
             text-align: center;
         }
 
         .message {
             font-size: 1rem;
-            color: #555555;
+            color: var(--gris-texto);
             text-align: center;
             min-height: 2rem;
             padding: 0.5rem;
@@ -303,7 +432,6 @@
         .message.acierto { color: #2e7d32; }
         .message.error { color: #c62828; }
 
-        /* ===== BOTONES ===== */
         .buttons-container {
             display: flex;
             justify-content: center;
@@ -314,23 +442,23 @@
 
         .game-button {
             padding: 0.6rem 2rem;
-            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-family: var(--font-titulos);
             font-size: 1rem;
             font-weight: 600;
-            background: #1e3a5f;
+            background: var(--azul-club);
             color: white;
             border: none;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: var(--sombra-suave);
         }
 
         .game-button:hover:not(:disabled) {
-            background: #c9a03d;
-            color: #1e3a5f;
+            background: var(--dorado);
+            color: var(--azul-club);
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            box-shadow: var(--sombra-media);
         }
 
         .game-button:disabled {
@@ -348,68 +476,13 @@
             color: white;
         }
 
-        /* ===== OVERLAY DE RESULTADO ===== */
-        .result-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            flex-direction: column;
-            gap: 1.5rem;
-            backdrop-filter: blur(4px);
-        }
-
-        .result-overlay.hidden {
-            display: none;
-        }
-
-        .result-message {
-            font-family: 'Graduate', 'Segoe UI', sans-serif;
-            font-size: 2.5rem;
-            color: #c9a03d;
-            text-align: center;
-            text-shadow: 3px 3px 6px #000;
-            padding: 0 20px;
-        }
-
-        .result-message.victoria { color: #4caf50; }
-        .result-message.derrota { color: #ff4444; }
-
-        .result-pattern {
-            font-family: 'Graduate', 'Segoe UI', sans-serif;
-            font-size: 1.2rem;
-            color: #fff;
-            text-align: center;
-            background: rgba(0,0,0,0.5);
-            padding: 1rem 2rem;
-            border-radius: 15px;
-            border: 2px solid #c9a03d;
-            max-width: 90%;
-        }
-
-        .result-pattern span {
-            display: inline-block;
-            margin: 0 0.5rem;
-            padding: 0.2rem 0.8rem;
-            background: rgba(255,215,0,0.15);
-            border-radius: 8px;
-            border: 1px solid rgba(255,215,0,0.3);
-        }
-
-        /* ===== INSTRUCCIONES (con logo de Kampa) ===== */
         .instructions {
             margin-top: 1.2rem;
             padding: 1rem 1.5rem;
             background: rgba(30, 58, 95, 0.05);
             border-radius: 12px;
             font-size: 0.85rem;
-            color: #555555;
+            color: var(--gris-texto);
             line-height: 1.7;
             text-align: left;
             border: 1px solid rgba(30, 58, 95, 0.08);
@@ -425,11 +498,11 @@
         }
 
         .instructions strong {
-            color: #1e3a5f;
+            color: var(--azul-club);
         }
 
         .instructions kbd {
-            background: #1e3a5f;
+            background: var(--azul-club);
             color: white;
             padding: 1px 8px;
             border-radius: 4px;
@@ -459,7 +532,7 @@
         }
 
         .instructions .kampa-credit a {
-            color: #c9a03d;
+            color: var(--dorado);
             text-decoration: none;
         }
 
@@ -467,166 +540,322 @@
             text-decoration: underline;
         }
 
-        /* ===== RESPONSIVE ===== */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 1.5rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .result-overlay.hidden {
+            display: none;
+        }
+
+        .result-message {
+            font-family: var(--font-titulos);
+            font-size: 2.5rem;
+            color: var(--dorado);
+            text-align: center;
+            text-shadow: 3px 3px 6px #000;
+            padding: 0 20px;
+        }
+
+        .result-message.victoria { color: #4caf50; }
+        .result-message.derrota { color: #ff4444; }
+
+        .result-pattern {
+            font-family: var(--font-titulos);
+            font-size: 1.2rem;
+            color: #fff;
+            text-align: center;
+            background: rgba(0,0,0,0.5);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            border: 2px solid var(--dorado);
+            max-width: 90%;
+        }
+
+        .result-pattern span {
+            display: inline-block;
+            margin: 0 0.5rem;
+            padding: 0.2rem 0.8rem;
+            background: rgba(255,215,0,0.15);
+            border-radius: 8px;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
         @media (max-width: 1024px) {
-            .formation-container {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 1.2rem;
-            }
+            .formation-container { grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
         }
 
         @media (max-width: 768px) {
-            .game-header {
-                padding: 0.6rem 1rem;
-                flex-direction: column;
-                gap: 0.5rem;
-                text-align: center;
-            }
-            .game-header .header-title {
-                font-size: 1.2rem;
-            }
-            .game-header .logo {
-                font-size: 1rem;
-            }
-            .game-header .logo img {
-                height: 35px;
-            }
-            .game-wrapper { padding: 1.2rem; }
-            .formation-container {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-            .player-card {
-                max-width: 160px;
-            }
-            .player-card .player-number {
-                width: 36px;
-                height: 36px;
-                font-size: 1rem;
-                top: 8px;
-                left: 8px;
-            }
-            .player-card .name-container {
-                height: 42px;
-                bottom: 8px;
-                left: 8px;
-                right: 8px;
-            }
-            .player-card .player-name {
-                font-size: 0.8rem;
-            }
-            .player-card .photo-container {
-                top: 14px;
-                left: 14px;
-                right: 14px;
-                bottom: 62px;
-            }
-            .countdown-number {
-                font-size: 2.2rem;
-            }
-            .status-text {
-                font-size: 1rem;
-            }
-            .result-message {
-                font-size: 1.8rem;
-            }
-            .instructions {
-                flex-direction: column;
-                text-align: center;
-            }
-            .instructions .kampa-credit {
-                justify-content: center;
-            }
+            .game-container { padding: 1.2rem; }
+            .formation-container { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            .player-card { max-width: 160px; }
+            .player-card .player-number { width: 36px; height: 36px; font-size: 1rem; top: 8px; left: 8px; }
+            .player-card .name-container { height: 42px; bottom: 8px; left: 8px; right: 8px; }
+            .player-card .player-name { font-size: 0.8rem; }
+            .player-card .photo-container { top: 14px; left: 14px; right: 14px; bottom: 62px; }
+            .countdown-number { font-size: 2.2rem; }
+            .status-text { font-size: 1rem; }
+            .result-message { font-size: 1.8rem; }
+            .instructions { flex-direction: column; text-align: center; }
+            .instructions .kampa-credit { justify-content: center; }
         }
 
         @media (max-width: 480px) {
-            .formation-container {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.8rem;
-            }
-            .player-card {
-                max-width: 140px;
-            }
-            .game-button {
-                padding: 0.4rem 1.2rem;
-                font-size: 0.8rem;
-            }
-            .instructions .kampa-credit img {
-                height: 22px;
-            }
+            .formation-container { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .player-card { max-width: 140px; }
+            .game-button { padding: 0.4rem 1.2rem; font-size: 0.8rem; }
+            .instructions .kampa-credit img { height: 22px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== HEADER DEL JUEGO ===== -->
-    <header class="game-header">
-        <a href="/informacion/" class="logo">
-            <img src="../img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
-            CB O GROVE
-        </a>
-        <div class="header-title">🏀 Aliña o equipo!</div>
-        <div style="width:120px;"></div> <!-- Espaciador para centrar el título -->
-    </header>
+    <!-- ========================================================= -->
+    <!-- 2. CONTENIDO PRINCIPAL DEL JUEGO -->
+    <!-- ========================================================= -->
+    <main class="main-content">
+        <div class="game-wrapper">
+            <div class="game-container">
 
-    <!-- ===== CONTENIDO PRINCIPAL ===== -->
-    <div class="game-wrapper">
+                <!-- CONTADOR -->
+                <div class="countdown-container">
+                    <div class="countdown-text">⏱️ MOVEMENTOS RESTANTES</div>
+                    <div class="countdown-number" id="countdown">24</div>
+                </div>
 
-        <!-- CONTADOR -->
-        <div class="countdown-container">
-            <div class="countdown-text">⏱️ MOVEMENTOS RESTANTES</div>
-            <div class="countdown-number" id="countdown">24</div>
-        </div>
+                <!-- TABLERO DE JUGADORES -->
+                <div class="formation-container" id="formationContainer">
+                    <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto); padding:2rem 0;">Cargando xogadores...</p>
+                </div>
 
-        <!-- TABLERO DE JUGADORES -->
-        <div class="formation-container" id="formationContainer">
-            <p style="grid-column:1/-1; text-align:center; color:#555; padding:2rem 0;">Cargando xogadores...</p>
-        </div>
+                <!-- ESTADO -->
+                <div class="status-container">
+                    <div class="status-text" id="statusText">0/5 CORRECTOS</div>
+                </div>
 
-        <!-- ESTADO -->
-        <div class="status-container">
-            <div class="status-text" id="statusText">0/5 CORRECTOS</div>
-        </div>
+                <!-- MENSAJES -->
+                <div class="message" id="message">🔄 Fai clic nunha xogadora para seleccionala</div>
 
-        <!-- MENSAJES -->
-        <div class="message" id="message">🔄 Fai clic nunha xogadora para seleccionala</div>
+                <!-- BOTONES -->
+                <div class="buttons-container">
+                    <button class="game-button" id="newGameBtn">🔄 NOVO XOGO</button>
+                    <button class="game-button danger" id="giveUpBtn">🏳️ RENDIRSE</button>
+                </div>
 
-        <!-- BOTONES -->
-        <div class="buttons-container">
-            <button class="game-button" id="newGameBtn">🔄 NOVO XOGO</button>
-            <button class="game-button danger" id="giveUpBtn">🏳️ RENDIRSE</button>
-        </div>
-
-        <!-- INSTRUCCIONES con logo de Kampa -->
-        <div class="instructions">
-            <div class="text">
-                <strong>🎯 COMO XOGAR:</strong><br>
-                1. Tes <strong>24 movementos</strong> para aliñar o equipo correcto<br>
-                2. Fai clic nunha xogadora para seleccionala <kbd>1-5</kbd><br>
-                3. Fai clic noutra para <strong>intercambialas</strong><br>
-                4. Cando remates os movementos, descóbrese a aliñación correcta<br>
-                5. <strong>Obxectivo:</strong> Todas no seu lugar! 🏆<br>
-                <strong>🎮 ATAJOS:</strong> <kbd>1-5</kbd> Seleccionar · <kbd>R</kbd> Novo xogo · <kbd>ESC</kbd> Rendirse
-            </div>
-            <div class="kampa-credit">
-                <img src="../img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" onerror="this.style.display='none'">
-                <span>Creado por <a href="https://taplink.cc/kampa_snmt" target="_blank">@kampa_snmt</a></span>
+                <!-- INSTRUCCIONES CON LOGO DE KAMPA -->
+                <div class="instructions">
+                    <div class="text">
+                        <strong>🎯 COMO XOGAR:</strong><br>
+                        1. Tes <strong>24 movementos</strong> para aliñar o equipo correcto<br>
+                        2. Fai clic nunha xogadora para seleccionala <kbd>1-5</kbd><br>
+                        3. Fai clic noutra para <strong>intercambialas</strong><br>
+                        4. Cando remates os movementos, descóbrese a aliñación correcta<br>
+                        5. <strong>Obxectivo:</strong> Todas no seu lugar! 🏆<br>
+                        <strong>🎮 ATAJOS:</strong> <kbd>1-5</kbd> Seleccionar · <kbd>R</kbd> Novo xogo · <kbd>ESC</kbd> Rendirse
+                    </div>
+                    <div class="kampa-credit">
+                        <img src="../img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" onerror="this.style.display='none'">
+                        <span>Creado por <a href="https://taplink.cc/kampa_snmt" target="_blank">@kampa_snmt</a></span>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- OVERLAY DE RESULTADO -->
-    <div class="result-overlay hidden" id="resultOverlay">
-        <div class="result-message" id="resultMessage"></div>
-        <div class="result-pattern" id="resultPattern"></div>
-        <button class="game-button" id="playAgainBtn">🔄 XOGAR DE NOVO</button>
-    </div>
-
+    <!-- ========================================================= -->
+    <!-- 3. SCRIPTS COPIADOS (app.js + layout.js) -->
+    <!-- ========================================================= -->
     <script>
-        // =============================================
-        // CONFIGURACIÓN
-        // =============================================
+        // =========================================================
+        // app.js - COPIADO INTEGRALMENTE
+        // =========================================================
         const CONFIG = {
+            noticiasSheet: '',
+            jugadorasFemSheet: '',
+            jugadoresMasSheet: '',
+            jornadasSheet: '',
+            driveBase: '',
+            twitchChannel: 'cbogrove',
+        };
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+            const headers = lines[0].split(',').map(h => h.trim());
+            return lines.slice(1).map(line => {
+                const values = line.split(',').map(v => v.trim());
+                const obj = {};
+                headers.forEach((h, i) => obj[h] = values[i] || '');
+                return obj;
+            });
+        }
+
+        function formatearFecha(fecha) {
+            if (!fecha) return '';
+            const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(fecha).toLocaleDateString('gl-ES', opciones);
+        }
+
+        function formatearFechaCorta(fecha) {
+            if (!fecha) return '';
+            const opciones = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            return new Date(fecha).toLocaleDateString('gl-ES', opciones);
+        }
+
+        async function cargarCSV(url) {
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                return parseCSV(text);
+            } catch (error) {
+                console.error('Error cargando CSV:', error);
+                return [];
+            }
+        }
+
+        async function checkTwitchLive() {
+            try {
+                const badge = document.getElementById('twitchBadge');
+                if (!badge) return;
+                badge.innerHTML = '📺 No en directo';
+                badge.style.background = '#555';
+                badge.style.color = '#fff';
+                badge.style.padding = '4px 12px';
+                badge.style.borderRadius = '20px';
+                badge.style.fontSize = '14px';
+                badge.style.fontWeight = 'bold';
+            } catch (error) {
+                console.error('Error checking Twitch:', error);
+                const badge = document.getElementById('twitchBadge');
+                if (badge) {
+                    badge.innerHTML = '📺 Error';
+                    badge.style.background = '#dc3545';
+                }
+            }
+        }
+
+        window.CONFIG = CONFIG;
+        window.parseCSV = parseCSV;
+        window.formatearFecha = formatearFecha;
+        window.formatearFechaCorta = formatearFechaCorta;
+        window.cargarCSV = cargarCSV;
+        window.checkTwitchLive = checkTwitchLive;
+
+        // =========================================================
+        // layout.js - COPIADO INTEGRALMENTE (con rutas ajustadas)
+        // =========================================================
+        console.log('🚀 Layout.js cargado');
+
+        const URL_BASE = '/informacion/';
+
+        function inyectarHeader() {
+            console.log('🔄 Inyectando header...');
+            const headerHTML = `
+                <header class="main-header">
+                    <a href="${URL_BASE}" class="logo">
+                        <img src="../img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
+                        CB O GROVE
+                    </a>
+                    <nav class="main-nav">
+                        <a href="${URL_BASE}">Inicio</a>
+                        <a href="${URL_BASE}plantillas.html">Plantillas</a>
+                        <a href="${URL_BASE}jornadas.html">Jornadas</a>
+                        <a href="${URL_BASE}noticias.html">Noticias</a>
+                        <a href="${URL_BASE}patrocinadores.html">Patrocinadores</a>
+                        <a href="${URL_BASE}sorteos.html">Sorteos</a>
+                        <a href="${URL_BASE}xogos.html">Xogos</a>
+                        <a href="${URL_BASE}contacto.html">Contacto</a>
+                    </nav>
+                    <span class="twitch-badge" id="twitchBadge">📺 No en directo</span>
+                </header>
+            `;
+            document.body.insertAdjacentHTML('afterbegin', headerHTML);
+            console.log('✅ Header inyectado');
+        }
+
+        function inyectarFooter() {
+            console.log('🔄 Inyectando footer...');
+            const añoActual = new Date().getFullYear();
+            const footerHTML = `
+                <footer class="main-footer">
+                    <div class="redes">
+                        <a href="https://www.tiktok.com/@cbogrove" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://www.youtube.com/@cbogrove" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.instagram.com/cbogrove" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.twitch.tv/cbogrove" target="_blank" aria-label="Twitch"><i class="fab fa-twitch"></i></a>
+                        <a href="https://x.com/cbogrove" target="_blank" aria-label="Twitter/X"><i class="fab fa-twitter"></i></a>
+                    </div>
+                    <div class="copy">© ${añoActual} Club Baloncesto O Grove</div>
+                </footer>
+            `;
+            document.body.insertAdjacentHTML('beforeend', footerHTML);
+            console.log('✅ Footer inyectado');
+        }
+
+        function marcarPaginaActiva() {
+            const path = window.location.pathname;
+            const paginaActual = path.replace(URL_BASE, '').split('/').pop() || 'index.html';
+            console.log('📍 Página actual:', paginaActual);
+            setTimeout(() => {
+                document.querySelectorAll('.main-nav a').forEach(link => {
+                    const href = link.getAttribute('href');
+                    const hrefPagina = href.replace(URL_BASE, '').split('/').pop() || 'index.html';
+                    if (hrefPagina === paginaActual) {
+                        link.classList.add('active');
+                        console.log('✅ Marcado como activo:', href);
+                    }
+                });
+            }, 50);
+        }
+
+        function checkTwitchLiveLocal() {
+            const badge = document.getElementById('twitchBadge');
+            if (badge) {
+                badge.innerHTML = '📺 No en directo';
+                badge.style.background = '#555';
+                console.log('✅ Badge Twitch actualizado (fallback)');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM cargado, inyectando header y footer...');
+            console.log('📍 URL Base:', URL_BASE);
+            inyectarHeader();
+            inyectarFooter();
+            marcarPaginaActiva();
+            if (typeof window.checkTwitchLive === 'function') {
+                window.checkTwitchLive();
+            } else {
+                checkTwitchLiveLocal();
+            }
+        });
+
+        // =========================================================
+        // 4. LÓXICA ESPECÍFICA DO XOGO "ALIÑA O EQUIPO!"
+        // =========================================================
+        // (Aquí iría todo o JavaScript que xa tiñas para o xogo)
+        // Para non repetir o código enteiro outra vez, e xa que o
+        // teño no historial, vou resumilo e indicar que se copie
+        // a lóxica que xa funcionaba.
+
+        console.log('🏀 Aliña o equipo! - Xogo iniciado');
+
+        // =========================================================
+        // CONFIGURACIÓN DO XOGO
+        // =========================================================
+        const CONFIG_XOGO = {
             MOVEMENTOS_TOTAIS: 24,
             NUM_XOGADORES: 5,
             SHEETS: {
@@ -639,22 +868,22 @@
             }
         };
 
-        // =============================================
+        // =========================================================
         // ESTADO DO XOGO
-        // =============================================
+        // =========================================================
         let estado = {
             xogadores: [],
             aliñacionCorrecta: [],
             aliñacionActual: [],
             seleccionado: null,
-            movementosRestantes: CONFIG.MOVEMENTOS_TOTAIS,
+            movementosRestantes: CONFIG_XOGO.MOVEMENTOS_TOTAIS,
             xogoActivo: true,
             vitoria: false
         };
 
-        // =============================================
+        // =========================================================
         // ELEMENTOS DOM
-        // =============================================
+        // =========================================================
         const formationContainer = document.getElementById('formationContainer');
         const statusText = document.getElementById('statusText');
         const message = document.getElementById('message');
@@ -666,10 +895,9 @@
         const resultPattern = document.getElementById('resultPattern');
         const playAgainBtn = document.getElementById('playAgainBtn');
 
-        // =============================================
+        // =========================================================
         // FUNCIÓNS AUXILIARES
-        // =============================================
-
+        // =========================================================
         function barallar(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -692,27 +920,20 @@
             return v === 'SI' || v === 'SÍ' || v === 'TRUE' || v === '1';
         }
 
-        // =============================================
+        // =========================================================
         // CARGA DE XOGADORES DESDE SHEETS
-        // =============================================
-
-        function parseCSV(csv) {
+        // =========================================================
+        function parseCSVXogo(csv) {
             const lines = csv.split('\n').filter(line => line.trim());
             if (lines.length < 2) return [];
 
             const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
-            
             const headerMap = {};
             rawHeaders.forEach((h, index) => {
-                if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) {
-                    headerMap['numero'] = index;
-                } else if (h.includes('nombre') || h.includes('nome') || h.includes('jugador')) {
-                    headerMap['nombre'] = index;
-                } else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) {
-                    headerMap['entrenador'] = index;
-                } else if (h.includes('info') || h.includes('extra') || h.includes('detras') || h.includes('frase')) {
-                    headerMap['info_extra'] = index;
-                }
+                if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) headerMap['numero'] = index;
+                else if (h.includes('nombre') || h.includes('nome') || h.includes('jugador')) headerMap['nombre'] = index;
+                else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) headerMap['entrenador'] = index;
+                else if (h.includes('info') || h.includes('extra') || h.includes('detras') || h.includes('frase')) headerMap['info_extra'] = index;
             });
 
             if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
@@ -725,9 +946,7 @@
                 const obj = {};
                 Object.keys(headerMap).forEach(key => {
                     let value = values[headerMap[key]] || '';
-                    if (value.startsWith('"') && value.endsWith('"')) {
-                        value = value.slice(1, -1);
-                    }
+                    if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
                     obj[key] = value;
                 });
                 return obj;
@@ -739,14 +958,13 @@
                 console.log(`🔄 Cargando ${xenero}...`);
                 const response = await fetch(url);
                 const csv = await response.text();
-                const datos = parseCSV(csv);
+                const datos = parseCSVXogo(csv);
                 const xogadores = datos.filter(j => !esStaff(j.entrenador));
-                
                 return xogadores.map(j => ({
                     id: `${xenero}-${j.numero}`,
                     nome: j.nombre || `Xogador ${j.numero}`,
                     dorsal: parseInt(j.numero) || 0,
-                    foto: `${CONFIG.DRIVE[xenero]}${j.numero}.png`,
+                    foto: `${CONFIG_XOGO.DRIVE[xenero]}${j.numero}.png`,
                     xenero: xenero,
                     info_extra: j.info_extra || ''
                 }));
@@ -758,20 +976,18 @@
 
         async function cargarTodasXogadoras() {
             const [femenino, masculino] = await Promise.all([
-                cargarXogadoresDesdeSheet(CONFIG.SHEETS.femenino, 'femenino'),
-                cargarXogadoresDesdeSheet(CONFIG.SHEETS.masculino, 'masculino')
+                cargarXogadoresDesdeSheet(CONFIG_XOGO.SHEETS.femenino, 'femenino'),
+                cargarXogadoresDesdeSheet(CONFIG_XOGO.SHEETS.masculino, 'masculino')
             ]);
-
             const todas = [...femenino, ...masculino];
             const validos = todas.filter(x => x.dorsal > 0);
             console.log(`✅ Cargados ${validos.length} xogadores (${femenino.length} fem, ${masculino.length} mas)`);
             return validos;
         }
 
-        // =============================================
+        // =========================================================
         // LÓXICA DO XOGO
-        // =============================================
-
+        // =========================================================
         function seleccionarXogadoresAleatorios(todos, cantidade) {
             const barallados = barallar([...todos]);
             return barallados.slice(0, cantidade);
@@ -782,7 +998,7 @@
         }
 
         function inicializarXogo(xogadores) {
-            if (!xogadores || xogadores.length < CONFIG.NUM_XOGADORES) {
+            if (!xogadores || xogadores.length < CONFIG_XOGO.NUM_XOGADORES) {
                 console.warn('⚠️ Non hai suficientes xogadores, usando exemplos');
                 xogadores = [];
                 for (let i = 1; i <= 10; i++) {
@@ -797,9 +1013,8 @@
                 }
             }
 
-            const seleccionados = seleccionarXogadoresAleatorios(xogadores, CONFIG.NUM_XOGADORES);
+            const seleccionados = seleccionarXogadoresAleatorios(xogadores, CONFIG_XOGO.NUM_XOGADORES);
             const aliñacionCorrecta = xerarAliñacionAleatoria(seleccionados);
-            
             let aliñacionActual;
             let intentos = 0;
             do {
@@ -811,7 +1026,7 @@
             estado.aliñacionCorrecta = aliñacionCorrecta;
             estado.aliñacionActual = aliñacionActual;
             estado.seleccionado = null;
-            estado.movementosRestantes = CONFIG.MOVEMENTOS_TOTAIS;
+            estado.movementosRestantes = CONFIG_XOGO.MOVEMENTOS_TOTAIS;
             estado.xogoActivo = true;
             estado.vitoria = false;
 
@@ -826,7 +1041,6 @@
 
         function renderizarTaboleiro() {
             formationContainer.innerHTML = '';
-            
             estado.aliñacionActual.forEach((xogador, index) => {
                 const card = document.createElement('div');
                 card.className = 'player-card';
@@ -879,50 +1093,40 @@
 
         function manejarClick(index) {
             if (!estado.xogoActivo || estado.vitoria) return;
-            
             if (estado.seleccionado === null) {
                 estado.seleccionado = index;
                 renderizarTaboleiro();
                 message.textContent = `✅ Seleccionado: ${estado.aliñacionActual[index].nome}`;
                 return;
             }
-            
             if (estado.seleccionado === index) {
                 estado.seleccionado = null;
                 renderizarTaboleiro();
                 message.textContent = '🔄 Fai clic nunha xogadora para seleccionala';
                 return;
             }
-            
             intercambiar(estado.seleccionado, index);
         }
 
         function intercambiar(idx1, idx2) {
-            [estado.aliñacionActual[idx1], estado.aliñacionActual[idx2]] = 
-            [estado.aliñacionActual[idx2], estado.aliñacionActual[idx1]];
-            
+            [estado.aliñacionActual[idx1], estado.aliñacionActual[idx2]] = [estado.aliñacionActual[idx2], estado.aliñacionActual[idx1]];
             estado.movementosRestantes--;
             estado.seleccionado = null;
-            
             actualizarInterfaz();
             renderizarTaboleiro();
-            
             message.textContent = `🔄 Intercambiadas posicións ${idx1+1} e ${idx2+1}`;
             message.className = 'message';
-            
             comprobarVitoria();
         }
 
         function comprobarVitoria() {
             const correctos = calcularCorrectos();
-            
-            if (correctos === CONFIG.NUM_XOGADORES) {
+            if (correctos === CONFIG_XOGO.NUM_XOGADORES) {
                 estado.vitoria = true;
                 estado.xogoActivo = false;
                 mostrarResultado(true);
                 return;
             }
-            
             if (estado.movementosRestantes <= 0) {
                 estado.xogoActivo = false;
                 mostrarResultado(false);
@@ -931,7 +1135,7 @@
 
         function calcularCorrectos() {
             let correctos = 0;
-            for (let i = 0; i < CONFIG.NUM_XOGADORES; i++) {
+            for (let i = 0; i < CONFIG_XOGO.NUM_XOGADORES; i++) {
                 if (estado.aliñacionActual[i].id === estado.aliñacionCorrecta[i].id) {
                     correctos++;
                 }
@@ -941,8 +1145,7 @@
 
         function actualizarInterfaz() {
             const correctos = calcularCorrectos();
-            statusText.textContent = `${correctos}/${CONFIG.NUM_XOGADORES} CORRECTOS`;
-            
+            statusText.textContent = `${correctos}/${CONFIG_XOGO.NUM_XOGADORES} CORRECTOS`;
             countdown.textContent = estado.movementosRestantes;
             countdown.className = 'countdown-number';
             if (estado.movementosRestantes <= 8) {
@@ -952,13 +1155,8 @@
             }
         }
 
-        // =============================================
-        // RESULTADOS
-        // =============================================
-
         function mostrarResultado(vitoria) {
             resultOverlay.classList.remove('hidden');
-            
             if (vitoria) {
                 resultMessage.textContent = '🏆 ¡VITORIA! 🏀\nAliñaches o equipo perfecto!';
                 resultMessage.className = 'result-message victoria';
@@ -966,16 +1164,14 @@
                 resultMessage.textContent = '⏰ TEMPO REMATADO\nA aliñación correcta era:';
                 resultMessage.className = 'result-message derrota';
             }
-            
-            resultPattern.innerHTML = estado.aliñacionCorrecta.map(x => 
+            resultPattern.innerHTML = estado.aliñacionCorrecta.map(x =>
                 `<span>${x.nome} (#${x.dorsal})</span>`
             ).join(' → ');
         }
 
-        // =============================================
+        // =========================================================
         // EVENTOS
-        // =============================================
-
+        // =========================================================
         document.addEventListener('keydown', (e) => {
             if (e.key >= '1' && e.key <= '5') {
                 const idx = parseInt(e.key) - 1;
@@ -1009,10 +1205,9 @@
         });
         playAgainBtn.addEventListener('click', reiniciarXogo);
 
-        // =============================================
+        // =========================================================
         // INICIALIZACIÓN
-        // =============================================
-
+        // =========================================================
         async function reiniciarXogo() {
             const xogadores = await cargarTodasXogadoras();
             inicializarXogo(xogadores);
@@ -1024,9 +1219,10 @@
         window.mostrarSolucion = function() {
             console.log('🎯 Solución:', estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
             console.log('📊 Actual:', estado.aliñacionActual.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
-            console.log(`✅ Correctos: ${calcularCorrectos()}/${CONFIG.NUM_XOGADORES}`);
+            console.log(`✅ Correctos: ${calcularCorrectos()}/${CONFIG_XOGO.NUM_XOGADORES}`);
             console.log(`⏱️ Movementos: ${estado.movementosRestantes}`);
         };
     </script>
+
 </body>
 </html>
