@@ -43,9 +43,18 @@
         /* ===== TARJETA INACTIVA (gris apagado) ===== */
         .sorteo-card.inactivo {
             opacity: 0.6;
-            filter: grayscale(0.6);
+            filter: grayscale(0.4);
             border-left-color: #999;
-            pointer-events: none;
+        }
+
+        .sorteo-card.inactivo .ganadores a {
+            pointer-events: auto;
+            color: var(--dorado);
+            text-decoration: underline;
+        }
+
+        .sorteo-card.inactivo .ganadores a:hover {
+            color: var(--azul-club);
         }
 
         .sorteo-card.inactivo .btn-participar {
@@ -130,10 +139,12 @@
             color: var(--dorado);
             text-decoration: none;
             font-weight: 600;
+            pointer-events: auto;
         }
 
         .sorteo-card .ganadores a:hover {
             text-decoration: underline;
+            color: var(--azul-club);
         }
 
         /* ===== BOTÓN BASES LEGAIS ===== */
@@ -278,25 +289,38 @@
             sheetUrl: 'https://docs.google.com/spreadsheets/d/1we-1DRNJjbrut1lzJZFwBwxSWCcGrRZ1D4Afb4QYIyY/export?format=csv'
         };
 
-        // ===== FUNCIONES =====
+        // ===== FUNCIÓN PARA LIMPIAR TEXTO =====
+        function limpiarTexto(texto) {
+            if (!texto) return '';
+            texto = texto.replace(/^["']+|["']+$/g, '');
+            texto = texto.replace(/\n/g, ' ').replace(/\r/g, ' ');
+            texto = texto.replace(/\s+/g, ' ');
+            return texto.trim();
+        }
+
+        // ===== PARSE CSV MEJORADO (por NOMBRE de columna) =====
         function parseCSV(csv) {
             const lines = csv.split('\n').filter(line => line.trim());
             if (lines.length < 2) return [];
 
+            // Obtener headers
             const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
             
+            // Mapear índices por nombre
             const headerMap = {};
             rawHeaders.forEach((h, index) => {
-                if (h.includes('icono') || h.includes('icon')) headerMap['icono'] = index;
-                else if (h.includes('titulo') || h.includes('título') || h.includes('nombre')) headerMap['titulo'] = index;
-                else if (h.includes('explicacion') || h.includes('descripcion') || h.includes('descripción')) headerMap['explicacion'] = index;
-                else if (h.includes('enlace') || h.includes('url')) headerMap['enlace'] = index;
-                else if (h.includes('inicio')) headerMap['inicio'] = index;
-                else if (h.includes('fin')) headerMap['fin'] = index;
-                else if (h.includes('activo')) headerMap['activo'] = index;
-                else if (h.includes('ganador') || h.includes('gañador')) headerMap['ganador'] = index;
+                const lower = h.toLowerCase().trim();
+                if (lower.includes('icono') || lower.includes('icon')) headerMap['icono'] = index;
+                else if (lower.includes('titulo') || lower.includes('título') || lower.includes('nombre')) headerMap['titulo'] = index;
+                else if (lower.includes('explicacion') || lower.includes('descripcion') || lower.includes('descripción')) headerMap['explicacion'] = index;
+                else if (lower.includes('enlace') || lower.includes('url') || lower.includes('link')) headerMap['enlace'] = index;
+                else if (lower.includes('inicio') || lower.includes('fechainicio')) headerMap['inicio'] = index;
+                else if (lower.includes('fin') || lower.includes('fechafin')) headerMap['fin'] = index;
+                else if (lower.includes('activo') || lower.includes('actiu')) headerMap['activo'] = index;
+                else if (lower.includes('ganador') || lower.includes('gañador')) headerMap['ganador'] = index;
             });
 
+            // Asignar índices por defecto si no se encontraron
             if (headerMap['icono'] === undefined) headerMap['icono'] = 0;
             if (headerMap['titulo'] === undefined) headerMap['titulo'] = 1;
             if (headerMap['explicacion'] === undefined) headerMap['explicacion'] = 2;
@@ -311,10 +335,8 @@
                 const obj = {};
                 Object.keys(headerMap).forEach(key => {
                     let value = values[headerMap[key]] || '';
-                    if (value.startsWith('"') && value.endsWith('"')) {
-                        value = value.slice(1, -1);
-                    }
-                    obj[key] = value.trim();
+                    value = limpiarTexto(value);
+                    obj[key] = value;
                 });
                 return obj;
             });
@@ -369,7 +391,6 @@
          * - "Kampa" → texto plano
          * - "[Instagram](https://...)" → enlace con texto "Instagram"
          * - "Camiseta: Kampa | Balón: Jose" → múltiples ganadores
-         * - "Camiseta: [Instagram](https://...)" → mezcla
          */
         function parsearGanadores(texto) {
             if (!texto || texto.trim() === '') return null;
@@ -390,21 +411,17 @@
             let resultado = [];
             let ultimoIndex = 0;
 
-            // Si tiene enlaces, procesarlos
             while ((match = enlaceRegex.exec(texto)) !== null) {
-                // Texto antes del enlace
                 if (match.index > ultimoIndex) {
                     const textoAntes = texto.substring(ultimoIndex, match.index).trim();
                     if (textoAntes) {
                         resultado.push({ texto: textoAntes, url: null });
                     }
                 }
-                // El enlace
                 resultado.push({ texto: match[1], url: match[2] });
                 ultimoIndex = enlaceRegex.lastIndex;
             }
 
-            // Texto después del último enlace
             if (ultimoIndex < texto.length) {
                 const textoRestante = texto.substring(ultimoIndex).trim();
                 if (textoRestante) {
@@ -412,7 +429,6 @@
                 }
             }
 
-            // Si no hay enlaces, devolver todo como texto plano
             if (resultado.length === 0) {
                 return { texto: texto.trim(), url: null };
             }
@@ -423,18 +439,15 @@
         function renderizarGanadores(ganadoresData) {
             if (!ganadoresData) return '';
 
-            // Si es un array (múltiples ganadores)
             if (Array.isArray(ganadoresData)) {
                 return ganadoresData.map(g => renderizarGanador(g)).join('<br>');
             }
 
-            // Si es un solo ganador
             return renderizarGanador(ganadoresData);
         }
 
         function renderizarGanador(ganador) {
             if (Array.isArray(ganador)) {
-                // Caso con múltiples partes (texto + enlaces)
                 return ganador.map(part => {
                     if (part.url) {
                         return `<a href="${part.url}" target="_blank" rel="noopener">${part.texto}</a>`;
@@ -443,7 +456,6 @@
                 }).join(' ');
             }
 
-            // Caso simple
             if (ganador.url) {
                 return `<a href="${ganador.url}" target="_blank" rel="noopener">${ganador.texto}</a>`;
             }
@@ -453,11 +465,10 @@
         function crearSorteo(sorteo) {
             const container = document.createElement('div');
             
-            // Determinar si está activo
             const activo = esActivo(sorteo.activo);
             container.className = `sorteo-card${!activo ? ' inactivo' : ''}`;
 
-            // Icono (puede ser emoji o URL de imagen)
+            // Icono
             let iconoHTML = '';
             if (sorteo.icono) {
                 if (esImagenURL(sorteo.icono)) {
@@ -467,7 +478,7 @@
                 }
             }
 
-            // Estado (fecha fin o ganador)
+            // Estado
             let estadoHTML = '';
             if (sorteo.ganador) {
                 const ganadoresParsed = parsearGanadores(sorteo.ganador);
@@ -477,7 +488,7 @@
                 estadoHTML = `<div class="estado">📅 Remata o ${formatearFecha(sorteo.fin)}</div>`;
             }
 
-            // Botón (solo si está activo)
+            // Botón
             let botonHTML = '';
             if (activo && sorteo.enlace) {
                 botonHTML = `<a href="${sorteo.enlace}" target="_blank" class="btn-participar">▶ Participar</a>`;
@@ -506,15 +517,12 @@
                 console.log('📄 CSV recibido');
                 
                 const sorteos = parseCSV(csv);
-                console.log('📊 Sorteos:', sorteos);
+                console.log('📊 Sorteos parseados:', sorteos);
 
                 grid.innerHTML = '';
 
-                // Filtrar solo activos si quieres, o mostrar todos
                 const activos = sorteos.filter(s => esActivo(s.activo));
                 const inactivos = sorteos.filter(s => !esActivo(s.activo));
-
-                // Primero activos, luego inactivos
                 const ordenados = [...activos, ...inactivos];
 
                 if (ordenados.length === 0) {
