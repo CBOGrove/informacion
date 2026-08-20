@@ -1,10 +1,15 @@
 // ===== LAYOUT: HEADER Y FOOTER COMPARTIDOS =====
-// Versión 1.2 - Optimizado
+// Versión 1.3 - Corregida URL base para GitHub Pages
 
 console.log('🚀 Layout.js cargado');
 
+// ===== CONFIGURACIÓN DE URL BASE =====
+// Cambia esto según la URL de tu repositorio
+const URL_BASE = '/informacion/';  // ✅ URL correcta
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 DOM cargado, inyectando header y footer...');
+    console.log('📍 URL Base:', URL_BASE);
     inyectarHeader();
     inyectarFooter();
     marcarPaginaActiva();
@@ -21,19 +26,19 @@ function inyectarHeader() {
     console.log('🔄 Inyectando header...');
     const headerHTML = `
         <header class="main-header">
-            <a href="/" class="logo">
+            <a href="${URL_BASE}" class="logo">
                 <img src="assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
                 CB O GROVE
             </a>
             <nav class="main-nav">
-                <a href="/">Inicio</a>
-                <a href="plantillas.html">Plantillas</a>
-                <a href="jornadas.html">Jornadas</a>
-                <a href="noticias.html">Noticias</a>
-                <a href="patrocinadores.html">Patrocinadores</a>
-                <a href="sorteos.html">Sorteos</a>
-                <a href="xogos.html">Xogos</a>
-                <a href="contacto.html">Contacto</a>
+                <a href="${URL_BASE}">Inicio</a>
+                <a href="${URL_BASE}plantillas.html">Plantillas</a>
+                <a href="${URL_BASE}jornadas.html">Jornadas</a>
+                <a href="${URL_BASE}noticias.html">Noticias</a>
+                <a href="${URL_BASE}patrocinadores.html">Patrocinadores</a>
+                <a href="${URL_BASE}sorteos.html">Sorteos</a>
+                <a href="${URL_BASE}xogos.html">Xogos</a>
+                <a href="${URL_BASE}contacto.html">Contacto</a>
             </nav>
             <span class="twitch-badge" id="twitchBadge">📺 No en directo</span>
         </header>
@@ -75,14 +80,17 @@ function inyectarFooter() {
 
 function marcarPaginaActiva() {
     const path = window.location.pathname;
-    const pagina = path.split('/').pop() || 'index.html';
-    console.log('📍 Página actual:', pagina);
+    // Extraer el nombre de la página actual (ignorando la carpeta /informacion/)
+    const paginaActual = path.replace(URL_BASE, '').split('/').pop() || 'index.html';
+    console.log('📍 Página actual:', paginaActual);
 
     setTimeout(() => {
         document.querySelectorAll('.main-nav a').forEach(link => {
             const href = link.getAttribute('href');
-            // Coincidencia exacta o para index
-            if (href === pagina || (pagina === '' && href === '/')) {
+            // Extraer el nombre de la página del href
+            const hrefPagina = href.replace(URL_BASE, '').split('/').pop() || 'index.html';
+            
+            if (hrefPagina === paginaActual) {
                 link.classList.add('active');
                 console.log('✅ Marcado como activo:', href);
             }
