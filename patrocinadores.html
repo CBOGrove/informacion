@@ -39,7 +39,6 @@
             overflow: hidden;
         }
 
-        /* ===== EFECTO HOVER MEJORADO ===== */
         .patrocinador-card:hover {
             transform: translateY(-6px) scale(1.02);
             box-shadow: 0 12px 40px rgba(201, 160, 61, 0.25);
@@ -65,7 +64,7 @@
             opacity: 1;
         }
 
-        /* ===== LOGO - TAMAÑO OPTIMIZADO ===== */
+        /* ===== LOGO ===== */
         .patrocinador-card .logo-container {
             width: 200px;
             height: 133px;
@@ -136,7 +135,7 @@
             padding: 0.05rem 0;
         }
 
-        /* ===== INFO EXTRA (teléfono + maps) ===== */
+        /* ===== INFO EXTRA ===== */
         .patrocinador-card .info-extra {
             width: 100%;
             display: flex;
@@ -184,10 +183,6 @@
             color: var(--azul-club);
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(201, 160, 61, 0.4);
-        }
-
-        .patrocinador-card .maps-link i {
-            font-size: 1rem;
         }
 
         /* ===== TARJETA "ANÚNCIESE AQUÍ" ===== */
@@ -246,7 +241,7 @@
             box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4);
         }
 
-        /* ===== TÍTULO DE PÁGINA ===== */
+        /* ===== TÍTULO ===== */
         .page-title {
             text-align: center;
             color: var(--azul-club);
@@ -261,7 +256,7 @@
             margin-bottom: 2rem;
         }
 
-        /* ===== SPINNER DE CARGA ===== */
+        /* ===== SPINNER ===== */
         .spinner-container {
             text-align: center;
             padding: 3rem 0;
@@ -374,11 +369,6 @@
                 min-height: 2rem;
             }
             
-            .patrocinador-card .descripcion {
-                font-size: 0.85rem;
-                min-height: 40px;
-            }
-            
             .page-title {
                 font-size: 1.8rem;
             }
@@ -393,10 +383,6 @@
             
             .footer-sponsors .logo-item img {
                 max-width: 90px;
-            }
-            
-            .patrocinador-card.anunciate .icono-anuncio {
-                font-size: 2.5rem;
             }
         }
 
@@ -457,7 +443,19 @@
             sheetUrl: 'https://docs.google.com/spreadsheets/d/1vTw0TksIAImMJy4zUnmkgum_FTpLdFe_0UDghEOPbiA/export?format=csv'
         };
 
-        // ===== FUNCIONES =====
+        // ===== FUNCIÓN PARA LIMPIAR TEXTO =====
+        function limpiarTexto(texto) {
+            if (!texto) return '';
+            // Eliminar comillas al inicio y final
+            texto = texto.replace(/^["']+|["']+$/g, '');
+            // Eliminar saltos de línea
+            texto = texto.replace(/\n/g, ' ').replace(/\r/g, ' ');
+            // Eliminar espacios múltiples
+            texto = texto.replace(/\s+/g, ' ');
+            return texto.trim();
+        }
+
+        // ===== FUNCIÓN PARSE CSV MEJORADA =====
         function parseCSV(csv) {
             const lines = csv.split('\n').filter(line => line.trim());
             if (lines.length < 2) return [];
@@ -473,7 +471,6 @@
                 else if (h.includes('maps') || h.includes('ubicacion') || h.includes('ubicación') || h.includes('direccion') || h.includes('dirección')) headerMap['maps'] = index;
             });
 
-            // Asignar índices por defecto
             if (headerMap['nombre'] === undefined) headerMap['nombre'] = 0;
             if (headerMap['logo'] === undefined) headerMap['logo'] = 1;
             if (headerMap['descripcion'] === undefined) headerMap['descripcion'] = 2;
@@ -481,19 +478,51 @@
             if (headerMap['maps'] === undefined) headerMap['maps'] = 4;
 
             return lines.slice(1).map(line => {
-                const values = line.split(',').map(v => v.trim());
+                // Parsear línea respetando comillas
+                const values = parseCSVLine(line);
                 const obj = {};
+                
                 Object.keys(headerMap).forEach(key => {
                     let value = values[headerMap[key]] || '';
-                    if (value.startsWith('"') && value.endsWith('"')) {
-                        value = value.slice(1, -1);
-                    }
+                    // Limpiar completamente el texto
+                    value = limpiarTexto(value);
                     obj[key] = value;
                 });
                 return obj;
             });
         }
 
+        // ===== FUNCIÓN PARA PARSEAR UNA LÍNEA CSV =====
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                    continue;
+                }
+                
+                if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                    continue;
+                }
+                
+                current += char;
+            }
+            
+            if (current.trim() || result.length > 0) {
+                result.push(current.trim());
+            }
+            
+            return result;
+        }
+
+        // ===== CONVERTIR URL DE IMAGEN =====
         function convertirURLImagen(url) {
             if (!url) return '';
             if (url.includes('github.com') && url.includes('/blob/')) {
@@ -509,14 +538,15 @@
             return url;
         }
 
+        // ===== FORMATEAR TEXTO CON SALTOS =====
         function formatearTextoConSaltos(texto) {
             if (!texto) return '';
             // SOLO usa '|' como separador de líneas
-            // Las comas y otros signos se mantienen como texto normal
             const lineas = texto.split('|').map(line => line.trim());
             return lineas.map(line => `<span class="linea">${line}</span>`).join('');
         }
 
+        // ===== CREAR TARJETA DE PATROCINADOR =====
         function crearPatrocinador(patrocinador) {
             const container = document.createElement('div');
             container.className = 'patrocinador-card';
@@ -527,7 +557,7 @@
             const telefono = patrocinador.telefono || '';
             const mapsUrl = patrocinador.maps || '';
 
-            // Formatear descripción respetando solo |
+            // La descripción ya viene limpia de comillas y saltos
             const descripcionHTML = formatearTextoConSaltos(descripcion);
 
             let html = `
@@ -539,7 +569,6 @@
                 <div class="info-extra">
             `;
 
-            // Añadir teléfono si existe
             if (telefono) {
                 html += `
                     <div class="telefono">
@@ -549,7 +578,6 @@
                 `;
             }
 
-            // Añadir enlace maps si existe
             if (mapsUrl) {
                 html += `
                     <a href="${mapsUrl}" target="_blank" rel="noopener" class="maps-link">
@@ -560,11 +588,11 @@
             }
 
             html += `</div>`;
-
             container.innerHTML = html;
             return container;
         }
 
+        // ===== CREAR TARJETA "ANÚNCIESE AQUÍ" =====
         function crearTarjetaAnunciate() {
             const container = document.createElement('div');
             container.className = 'patrocinador-card anunciate';
@@ -576,7 +604,7 @@
                     Apoia ao Club Baloncesto O Grove<br>
                     e dá visibilidade á túa empresa
                 </div>
-                <a href="contacto.html" class="btn-contacto">
+                <a href="/informacion/contacto.html" class="btn-contacto">
                     <i class="fas fa-envelope"></i> Contactar
                 </a>
             `;
@@ -584,11 +612,11 @@
             return container;
         }
 
+        // ===== ACTUALIZAR FOOTER =====
         function actualizarFooterSponsors(patrocinadores) {
             const grid = document.getElementById('footerLogosGrid');
             if (!grid) return;
 
-            // Tomar primeros 6 patrocinadores para el footer
             const sponsors = patrocinadores.slice(0, 6);
 
             grid.innerHTML = sponsors.map(p => {
@@ -603,7 +631,6 @@
                 return '';
             }).join('');
 
-            // Si no hay logos, mostrar texto placeholder
             if (grid.innerHTML.trim() === '') {
                 grid.innerHTML = `
                     <div class="logo-item placeholder">🚀 Patrocinadores</div>
@@ -613,51 +640,44 @@
             }
         }
 
+        // ===== CARGAR PATROCINADORES =====
         async function cargarPatrocinadores() {
             const grid = document.getElementById('patrocinadoresGrid');
 
             try {
-                console.log('🔄 Cargando patrocinadores desde:', CONFIG_PATROCINADORES.sheetUrl);
+                console.log('🔄 Cargando patrocinadores...');
                 const response = await fetch(CONFIG_PATROCINADORES.sheetUrl);
                 const csv = await response.text();
-                console.log('📄 CSV recibido (primeros 200 caracteres):', csv.substring(0, 200));
                 
                 const patrocinadores = parseCSV(csv);
-                console.log('📊 Patrocinadores parseados:', patrocinadores);
+                console.log('📊 Patrocinadores:', patrocinadores);
 
-                // Filtrar los que tengan al menos nombre
                 const validos = patrocinadores.filter(p => p.nombre);
 
                 grid.innerHTML = '';
 
-                // Si hay patrocinadores, añadirlos
                 if (validos.length > 0) {
                     validos.forEach(p => {
                         grid.appendChild(crearPatrocinador(p));
                     });
                 }
 
-                // Siempre añadir la tarjeta "Anúnciese aquí"
                 grid.appendChild(crearTarjetaAnunciate());
-
-                // Actualizar footer con los patrocinadores
                 actualizarFooterSponsors(validos);
 
-                console.log(`✅ Patrocinadores cargados: ${validos.length} + tarjeta anuncio`);
+                console.log(`✅ ${validos.length} patrocinadores cargados`);
 
             } catch (error) {
-                console.error('Error cargando patrocinadores:', error);
+                console.error('Error:', error);
                 grid.innerHTML = `
                     <div class="no-patrocinadores" style="color:#e74c3c;">
-                        ⚠️ Erro cargando os patrocinadores. Reintentando...
+                        ⚠️ Erro cargando os patrocinadores.
                     </div>
                 `;
-                // Añadir tarjeta anuncio aunque falle
                 setTimeout(() => {
                     grid.innerHTML = '';
                     grid.appendChild(crearTarjetaAnunciate());
-                    cargarPatrocinadores();
-                }, 5000);
+                }, 1000);
             }
         }
 
