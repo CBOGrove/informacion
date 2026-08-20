@@ -4,114 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aliña o equipo! · CB O Grove</title>
+    
+    <!-- ===== FONTS Y CSS GLOBAL ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/style.css">
+
     <style>
-        /* ===== ESTILOS BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-        }
-
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a472a, #0e2a1a);
-            font-family: 'Arial', 'Segoe UI', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
+        /* ===== ESTILOS ESPECÍFICOS DEL JUEGO ===== */
         .game-wrapper {
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 40px;
-            padding: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
             max-width: 1100px;
             width: 100%;
+            margin: 0 auto;
         }
 
         .game-container {
-            background: linear-gradient(145deg, #1e3a5f, #0f2440);
-            border-radius: 30px;
-            padding: 25px 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            text-align: center;
-            border: 2px solid #c9a03d;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: var(--sombra-media);
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        /* ===== CABECERA ===== */
+        /* ===== CABECERA DEL JUEGO ===== */
         .game-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 1rem;
         }
 
         .game-title {
-            font-size: 32px;
-            font-weight: bold;
-            color: #ffcc00;
-            text-shadow: 3px 3px 0 #5a3e00;
-            letter-spacing: 2px;
+            font-family: var(--font-titulos);
+            font-size: 2rem;
+            color: var(--azul-club);
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
         }
 
-        .logo-container {
+        .game-title span {
+            color: var(--dorado);
+        }
+
+        .logo-wrapper {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 0.3rem;
         }
 
-        .logo-club {
+        .logo-wrapper img {
             height: 50px;
             width: auto;
-            filter: drop-shadow(0 0 10px rgba(255, 204, 0, 0.3));
-        }
-
-        .logo-kampa {
-            height: 35px;
-            width: auto;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.3s, transform 0.3s;
             border-radius: 50%;
+            border: 2px solid var(--dorado);
         }
 
-        .logo-kampa:hover {
-            opacity: 1;
-            transform: scale(1.1);
+        .logo-wrapper .logo-label {
+            font-size: 0.65rem;
+            color: var(--gris-texto);
+            opacity: 0.7;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-wrapper .logo-label a {
+            color: var(--dorado);
+            text-decoration: none;
+        }
+
+        .logo-wrapper .logo-label a:hover {
+            text-decoration: underline;
         }
 
         /* ===== CONTADOR ===== */
         .countdown-container {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 12px 20px;
+            background: var(--azul-club);
+            padding: 0.8rem 1.5rem;
             border-radius: 15px;
-            border: 2px solid #ffcc00;
-            margin-bottom: 20px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            border: 2px solid var(--dorado);
         }
 
         .countdown-text {
-            font-size: 18px;
-            color: #ffcc00;
-            font-weight: bold;
+            font-family: var(--font-titulos);
+            font-size: 0.9rem;
+            color: var(--blanco);
+            opacity: 0.8;
+            letter-spacing: 1px;
         }
 
         .countdown-number {
-            font-size: 44px;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 2px 2px 4px #000;
+            font-family: var(--font-titulos);
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--dorado);
+            text-shadow: 0 0 20px rgba(201, 160, 61, 0.3);
             transition: all 0.3s ease;
         }
 
-        .countdown-normal { color: #4caf50; }
-        .countdown-warning { color: #ffcc00; animation: pulse-warning 1s infinite; }
-        .countdown-emergencia { color: #ff4444; animation: pulse-emergencia 0.6s infinite; }
+        .countdown-number.warning {
+            color: #ffcc00;
+            animation: pulse-warning 1s infinite;
+        }
+
+        .countdown-number.emergencia {
+            color: #ff4444;
+            animation: pulse-emergencia 0.6s infinite;
+        }
 
         @keyframes pulse-warning {
             0%, 100% { opacity: 1; }
@@ -122,144 +125,194 @@
             50% { opacity: 0.5; transform: scale(0.95); }
         }
 
-        /* ===== TABLERO DE JUGADORES ===== */
+        /* ===== TABLERO DE JUGADORES (IDÉNTICO A PLANTILLAS) ===== */
         .formation-container {
-            display: flex;
-            justify-content: center;
-            gap: 18px;
-            margin: 25px 0;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+            justify-items: center;
+            margin: 1.5rem 0;
         }
 
+        /* ===== CARTA IDÉNTICA A PLANTILLAS ===== */
         .player-card {
-            width: 130px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 12px 10px 10px;
-            border: 3px solid #2a4a6a;
+            width: 100%;
+            max-width: 200px;
+            aspect-ratio: 2 / 3;
+            background: #FFD700;
+            border-radius: 12px;
+            border: 3px solid #000000;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
         }
 
         .player-card:hover:not(.selected) {
-            transform: translateY(-5px);
-            border-color: #4a8aba;
+            transform: translateY(-4px) scale(1.02);
         }
 
         .player-card.selected {
             transform: scale(1.05);
-            border-color: #ffcc00;
-            box-shadow: 0 0 25px rgba(255, 204, 0, 0.4);
+            border-color: var(--dorado);
+            box-shadow: 0 0 25px rgba(201, 160, 61, 0.5);
         }
 
-        .player-card .photo {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            border-radius: 10px;
+        /* Fondo con escudo */
+        .player-card .card-background {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            opacity: 0.15;
+            transform: rotate(35deg);
+            background-image: url('../../assets/img/logos/club/logo-negro.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: brightness(0) contrast(1);
+            pointer-events: none;
+        }
+
+        .player-card .photo-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 75px;
+            border-radius: 8px;
             overflow: hidden;
-            background: #1a2a3a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
-        .player-card .photo img {
+        .player-card .photo-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .player-card .photo .placeholder {
-            font-size: 40px;
-            color: #4a6a8a;
-        }
-
-        .player-card .name {
-            font-size: 14px;
+        .player-card .photo-container .placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
             font-weight: bold;
-            color: #fff;
-            margin-top: 8px;
-            text-align: center;
-            line-height: 1.2;
-            min-height: 34px;
+            color: #000;
+            background: rgba(255, 215, 0, 0.3);
         }
 
-        .player-card .number {
+        .player-card .player-number {
             position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #ffcc00;
-            color: #1a2a3a;
+            top: 12px;
+            left: 12px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
             font-weight: bold;
-            font-size: 16px;
-            padding: 2px 10px;
-            border-radius: 20px;
-            border: 2px solid #1a2a3a;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 2px solid #000000;
+            background: #000000;
+            color: #FFD700;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            z-index: 3;
         }
 
-        .player-card .position-label {
-            font-size: 11px;
-            color: #8aaa8a;
-            margin-top: 4px;
+        .player-card .name-container {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            height: 50px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            background: #000000;
+            border: 1.5px solid #000000;
+            z-index: 2;
+        }
+
+        .player-card .player-name {
+            font-family: var(--font-titulos);
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
             text-align: center;
-            font-style: italic;
+            color: #FFD700;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
 
         /* ===== ESTADO Y MENSAJES ===== */
         .status-container {
-            margin: 15px 0;
-            padding: 12px;
-            background: rgba(0,0,0,0.3);
+            margin: 1.2rem 0;
+            padding: 0.8rem;
+            background: rgba(30, 58, 95, 0.08);
             border-radius: 12px;
+            border-left: 4px solid var(--dorado);
         }
 
         .status-text {
-            font-size: 22px;
-            font-weight: bold;
-            color: #ffcc00;
-            text-shadow: 2px 2px 4px #000;
+            font-family: var(--font-titulos);
+            font-size: 1.3rem;
+            color: var(--azul-club);
+            text-align: center;
         }
 
         .message {
-            font-size: 18px;
-            color: #aaccaa;
-            margin: 10px 0;
-            min-height: 28px;
+            font-size: 1rem;
+            color: var(--gris-texto);
+            text-align: center;
+            min-height: 2rem;
+            padding: 0.5rem;
         }
 
-        .message.acierto { color: #4caf50; }
-        .message.error { color: #ff4444; }
+        .message.acierto { color: #2e7d32; }
+        .message.error { color: #c62828; }
 
         /* ===== BOTONES ===== */
         .buttons-container {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin: 20px 0 10px;
+            gap: 1rem;
+            margin: 1.2rem 0 0.5rem;
             flex-wrap: wrap;
         }
 
         .game-button {
-            padding: 12px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            background: #ffcc00;
-            color: #1a2a3a;
+            padding: 0.6rem 2rem;
+            font-family: var(--font-titulos);
+            font-size: 1rem;
+            font-weight: 600;
+            background: var(--azul-club);
+            color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 30px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            font-family: inherit;
+            transition: all 0.3s;
+            box-shadow: var(--sombra-suave);
         }
 
         .game-button:hover:not(:disabled) {
-            background: #ffd740;
+            background: var(--dorado);
+            color: var(--azul-club);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            box-shadow: var(--sombra-media);
         }
 
         .game-button:disabled {
@@ -270,11 +323,11 @@
 
         .game-button.danger {
             background: #c62828;
-            color: white;
         }
 
         .game-button.danger:hover:not(:disabled) {
             background: #d32f2f;
+            color: white;
         }
 
         /* ===== OVERLAY DE RESULTADO ===== */
@@ -288,9 +341,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 1000;
             flex-direction: column;
-            gap: 20px;
+            gap: 1.5rem;
             backdrop-filter: blur(4px);
         }
 
@@ -299,8 +352,9 @@
         }
 
         .result-message {
-            font-size: 48px;
-            color: #ffcc00;
+            font-family: var(--font-titulos);
+            font-size: 2.5rem;
+            color: var(--dorado);
             text-align: center;
             text-shadow: 3px 3px 6px #000;
             padding: 0 20px;
@@ -310,553 +364,611 @@
         .result-message.derrota { color: #ff4444; }
 
         .result-pattern {
-            font-size: 28px;
+            font-family: var(--font-titulos);
+            font-size: 1.2rem;
             color: #fff;
-            letter-spacing: 2px;
+            text-align: center;
             background: rgba(0,0,0,0.5);
-            padding: 15px 30px;
+            padding: 1rem 2rem;
             border-radius: 15px;
-            border: 2px solid #ffcc00;
+            border: 2px solid var(--dorado);
+            max-width: 90%;
+        }
+
+        .result-pattern span {
+            display: inline-block;
+            margin: 0 0.5rem;
+            padding: 0.2rem 0.8rem;
+            background: rgba(255,215,0,0.15);
+            border-radius: 8px;
+            border: 1px solid rgba(255,215,0,0.3);
         }
 
         /* ===== INSTRUCCIONES ===== */
         .instructions {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
+            margin-top: 1.2rem;
+            padding: 1rem 1.5rem;
+            background: rgba(30, 58, 95, 0.05);
             border-radius: 12px;
-            font-size: 13px;
-            color: #8aaa8a;
-            line-height: 1.6;
+            font-size: 0.85rem;
+            color: var(--gris-texto);
+            line-height: 1.7;
             text-align: left;
+            border: 1px solid rgba(30, 58, 95, 0.08);
         }
 
         .instructions strong {
-            color: #ffcc00;
+            color: var(--azul-club);
         }
 
         .instructions kbd {
-            background: #2a3a4a;
+            background: var(--azul-club);
+            color: white;
             padding: 1px 8px;
             border-radius: 4px;
-            font-size: 12px;
-            color: #ffcc00;
-            border: 1px solid #4a5a6a;
+            font-size: 0.75rem;
+            font-family: monospace;
         }
 
         /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .formation-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.2rem;
+            }
+        }
+
         @media (max-width: 768px) {
-            .game-wrapper { padding: 15px; }
-            .game-container { padding: 15px; }
-            .game-title { font-size: 24px; }
-            .player-card { width: 100px; }
-            .player-card .name { font-size: 12px; }
-            .player-card .number { font-size: 13px; padding: 1px 8px; }
-            .formation-container { gap: 12px; }
-            .countdown-number { font-size: 32px; }
-            .status-text { font-size: 18px; }
-            .result-message { font-size: 32px; }
-            .logo-club { height: 35px; }
-            .logo-kampa { height: 28px; }
+            .game-container { padding: 1.2rem; }
+            .game-title { font-size: 1.5rem; }
+            .formation-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            .player-card {
+                max-width: 160px;
+            }
+            .player-card .player-number {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+                top: 8px;
+                left: 8px;
+            }
+            .player-card .name-container {
+                height: 42px;
+                bottom: 8px;
+                left: 8px;
+                right: 8px;
+            }
+            .player-card .player-name {
+                font-size: 0.8rem;
+            }
+            .player-card .photo-container {
+                top: 14px;
+                left: 14px;
+                right: 14px;
+                bottom: 62px;
+            }
+            .countdown-number {
+                font-size: 2.2rem;
+            }
+            .status-text {
+                font-size: 1rem;
+            }
+            .result-message {
+                font-size: 1.8rem;
+            }
+            .logo-wrapper img {
+                height: 38px;
+            }
         }
 
         @media (max-width: 480px) {
-            .player-card { width: 80px; padding: 8px; }
-            .player-card .name { font-size: 10px; min-height: 24px; }
-            .player-card .number { font-size: 11px; padding: 1px 6px; top: -6px; right: -6px; }
-            .game-title { font-size: 18px; }
-            .game-button { padding: 8px 16px; font-size: 14px; }
-            .formation-container { gap: 8px; }
+            .formation-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+            .player-card {
+                max-width: 140px;
+            }
+            .game-title {
+                font-size: 1.2rem;
+            }
+            .game-button {
+                padding: 0.4rem 1.2rem;
+                font-size: 0.8rem;
+            }
+            .logo-wrapper img {
+                height: 32px;
+            }
+            .logo-wrapper .logo-label {
+                font-size: 0.5rem;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="game-wrapper">
-    <div class="game-container">
-        <!-- CABECERA -->
-        <div class="game-header">
-            <div class="game-title">🏀 Aliña o equipo!</div>
-            <div class="logo-container">
-                <img src="../../assets/img/logos/club/logo-dorado.png" alt="CB O Grove" class="logo-club" onerror="this.style.display='none'">
-                <img src="../../assets/img/logos/patrocinadores/kampa.png" alt="Kampa" class="logo-kampa" title="Creado por Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" onerror="this.style.display='none'">
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <main class="main-content">
+        <div class="game-wrapper">
+            <div class="game-container">
+                <!-- CABECERA DEL JUEGO -->
+                <div class="game-header">
+                    <div class="logo-wrapper">
+                        <img src="../../assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
+                        <div class="logo-label">CB O GROVE</div>
+                    </div>
+
+                    <div class="game-title">🏀 Aliña o <span>equipo!</span></div>
+
+                    <div class="logo-wrapper">
+                        <img src="../../assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" style="cursor:pointer;" onerror="this.style.display='none'">
+                        <div class="logo-label">Creado por <a href="https://taplink.cc/kampa_snmt" target="_blank">@kampa_snmt</a></div>
+                    </div>
+                </div>
+
+                <!-- CONTADOR -->
+                <div class="countdown-container">
+                    <div class="countdown-text">⏱️ MOVEMENTOS RESTANTES</div>
+                    <div class="countdown-number" id="countdown">24</div>
+                </div>
+
+                <!-- TABLERO DE JUGADORES -->
+                <div class="formation-container" id="formationContainer">
+                    <!-- Generado por JavaScript -->
+                </div>
+
+                <!-- ESTADO -->
+                <div class="status-container">
+                    <div class="status-text" id="statusText">0/5 CORRECTOS</div>
+                </div>
+
+                <!-- MENSAJES -->
+                <div class="message" id="message">🔄 Fai clic nunha xogadora para seleccionala</div>
+
+                <!-- BOTONES -->
+                <div class="buttons-container">
+                    <button class="game-button" id="newGameBtn">🔄 NOVO XOGO</button>
+                    <button class="game-button danger" id="giveUpBtn">🏳️ RENDIRSE</button>
+                </div>
+
+                <!-- INSTRUCCIONES -->
+                <div class="instructions">
+                    <strong>🎯 COMO XOGAR:</strong><br>
+                    1. Tes <strong>24 movementos</strong> para aliñar o equipo correcto<br>
+                    2. Fai clic nunha xogadora para seleccionala <kbd>1-5</kbd><br>
+                    3. Fai clic noutra para <strong>intercambialas</strong><br>
+                    4. Cando remates os movementos, descóbrese a aliñación correcta<br>
+                    5. <strong>Obxectivo:</strong> Todas no seu lugar! 🏆<br>
+                    <br>
+                    <strong>🎮 ATAJOS:</strong> <kbd>1-5</kbd> Seleccionar · <kbd>R</kbd> Novo xogo · <kbd>ESC</kbd> Rendirse
+                </div>
             </div>
         </div>
+    </main>
 
-        <!-- CONTADOR -->
-        <div class="countdown-container">
-            <div class="countdown-text">⏱️ MOVEMENTOS RESTANTES</div>
-            <div class="countdown-number countdown-normal" id="countdown">24</div>
-        </div>
+    <!-- ===== SCRIPTS ===== -->
+    <script src="../../js/app.js"></script>
+    <script src="../../js/layout.js"></script>
 
-        <!-- TABLERO DE JUGADORES -->
-        <div class="formation-container" id="formationContainer">
-            <!-- Generado por JavaScript -->
-        </div>
-
-        <!-- ESTADO -->
-        <div class="status-container">
-            <div class="status-text" id="statusText">0/5 CORRECTOS</div>
-        </div>
-
-        <!-- MENSAJES -->
-        <div class="message" id="message">🔄 Fai clic nunha xogadora para seleccionala</div>
-
-        <!-- BOTONES -->
-        <div class="buttons-container">
-            <button class="game-button" id="newGameBtn">🔄 NOVO XOGO</button>
-            <button class="game-button danger" id="giveUpBtn">🏳️ RENDIRSE</button>
-        </div>
-
-        <!-- INSTRUCCIONES -->
-        <div class="instructions">
-            <strong>🎯 COMO XOGAR:</strong><br>
-            1. Tes <strong>24 movementos</strong> para aliñar o equipo correcto<br>
-            2. Fai clic nunha xogadora para seleccionala <kbd>1-5</kbd><br>
-            3. Fai clic noutra para <strong>intercambialas</strong><br>
-            4. Cando remates os movementos, descóbrese a aliñación correcta<br>
-            5. <strong>Obxectivo:</strong> Todas no seu lugar! 🏆<br>
-            <br>
-            <strong>🎮 ATAJOS:</strong> <kbd>1-5</kbd> Seleccionar · <kbd>R</kbd> Novo xogo · <kbd>ESC</kbd> Rendirse
-        </div>
+    <!-- OVERLAY DE RESULTADO -->
+    <div class="result-overlay hidden" id="resultOverlay">
+        <div class="result-message" id="resultMessage"></div>
+        <div class="result-pattern" id="resultPattern"></div>
+        <button class="game-button" id="playAgainBtn">🔄 XOGAR DE NOVO</button>
     </div>
-</div>
 
-<!-- OVERLAY DE RESULTADO -->
-<div class="result-overlay hidden" id="resultOverlay">
-    <div class="result-message" id="resultMessage"></div>
-    <div class="result-pattern" id="resultPattern"></div>
-    <button class="game-button" id="playAgainBtn">🔄 XOGAR DE NOVO</button>
-</div>
-
-<script>
-    // =============================================
-    // CONFIGURACIÓN
-    // =============================================
-    const CONFIG = {
-        MOVEMENTOS_TOTAIS: 24,
-        NUM_XOGADORES: 5,
-        // Mesmos sheets que plantillas.html
-        SHEETS: {
-            femenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
-            masculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205'
-        },
-        DRIVE: {
-            femenino: '../../assets/img/plantillas/femenino/',
-            masculino: '../../assets/img/plantillas/masculino/'
-        }
-    };
-
-    // Posicións posibles (en galego)
-    const POSICIONS = ['Base', 'Escolta', 'Aleiro', 'Ala-pívot', 'Pívot'];
-
-    // =============================================
-    // ESTADO DO XOGO
-    // =============================================
-    let estado = {
-        xogadores: [],
-        aliñacionCorrecta: [],
-        aliñacionActual: [],
-        seleccionado: null,
-        movementosRestantes: CONFIG.MOVEMENTOS_TOTAIS,
-        xogoActivo: true,
-        vitoria: false
-    };
-
-    // =============================================
-    // ELEMENTOS DOM
-    // =============================================
-    const formationContainer = document.getElementById('formationContainer');
-    const statusText = document.getElementById('statusText');
-    const message = document.getElementById('message');
-    const countdown = document.getElementById('countdown');
-    const newGameBtn = document.getElementById('newGameBtn');
-    const giveUpBtn = document.getElementById('giveUpBtn');
-    const resultOverlay = document.getElementById('resultOverlay');
-    const resultMessage = document.getElementById('resultMessage');
-    const resultPattern = document.getElementById('resultPattern');
-    const playAgainBtn = document.getElementById('playAgainBtn');
-
-    // =============================================
-    // FUNCIÓNS AUXILIARES
-    // =============================================
-
-    function aleatorio(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function barallar(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
-
-    function arraysIguais(arr1, arr2) {
-        if (arr1.length !== arr2.length) return false;
-        for (let i = 0; i < arr1.length; i++) {
-            if (arr1[i].id !== arr2[i].id) return false;
-        }
-        return true;
-    }
-
-    function esStaff(valor) {
-        if (!valor) return false;
-        const v = String(valor).toUpperCase().trim();
-        return v === 'SI' || v === 'SÍ' || v === 'TRUE' || v === '1';
-    }
-
-    // =============================================
-    // CARGA DE XOGADORES DESDE SHEETS
-    // =============================================
-
-    function parseCSV(csv) {
-        const lines = csv.split('\n').filter(line => line.trim());
-        if (lines.length < 2) return [];
-
-        const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
-        
-        const headerMap = {};
-        rawHeaders.forEach((h, index) => {
-            if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) {
-                headerMap['numero'] = index;
-            } else if (h.includes('nombre') || h.includes('nome') || h.includes('jugador')) {
-                headerMap['nombre'] = index;
-            } else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) {
-                headerMap['entrenador'] = index;
-            } else if (h.includes('info') || h.includes('extra') || h.includes('detras') || h.includes('frase')) {
-                headerMap['info_extra'] = index;
+    <script>
+        // =============================================
+        // CONFIGURACIÓN
+        // =============================================
+        const CONFIG = {
+            MOVEMENTOS_TOTAIS: 24,
+            NUM_XOGADORES: 5,
+            SHEETS: {
+                femenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
+                masculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205'
+            },
+            DRIVE: {
+                femenino: '../../assets/img/plantillas/femenino/',
+                masculino: '../../assets/img/plantillas/masculino/'
             }
-        });
+        };
 
-        if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
-        if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
-        if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
-        if (headerMap['info_extra'] === undefined) headerMap['info_extra'] = 3;
+        // =============================================
+        // ESTADO DO XOGO
+        // =============================================
+        let estado = {
+            xogadores: [],
+            aliñacionCorrecta: [],
+            aliñacionActual: [],
+            seleccionado: null,
+            movementosRestantes: CONFIG.MOVEMENTOS_TOTAIS,
+            xogoActivo: true,
+            vitoria: false
+        };
 
-        return lines.slice(1).map(line => {
-            const values = line.split(',').map(v => v.trim());
-            const obj = {};
-            Object.keys(headerMap).forEach(key => {
-                let value = values[headerMap[key]] || '';
-                if (value.startsWith('"') && value.endsWith('"')) {
-                    value = value.slice(1, -1);
+        // =============================================
+        // ELEMENTOS DOM
+        // =============================================
+        const formationContainer = document.getElementById('formationContainer');
+        const statusText = document.getElementById('statusText');
+        const message = document.getElementById('message');
+        const countdown = document.getElementById('countdown');
+        const newGameBtn = document.getElementById('newGameBtn');
+        const giveUpBtn = document.getElementById('giveUpBtn');
+        const resultOverlay = document.getElementById('resultOverlay');
+        const resultMessage = document.getElementById('resultMessage');
+        const resultPattern = document.getElementById('resultPattern');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+
+        // =============================================
+        // FUNCIÓNS AUXILIARES
+        // =============================================
+
+        function barallar(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function arraysIguais(arr1, arr2) {
+            if (arr1.length !== arr2.length) return false;
+            for (let i = 0; i < arr1.length; i++) {
+                if (arr1[i].id !== arr2[i].id) return false;
+            }
+            return true;
+        }
+
+        function esStaff(valor) {
+            if (!valor) return false;
+            const v = String(valor).toUpperCase().trim();
+            return v === 'SI' || v === 'SÍ' || v === 'TRUE' || v === '1';
+        }
+
+        // =============================================
+        // CARGA DE XOGADORES DESDE SHEETS
+        // =============================================
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+
+            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+            
+            const headerMap = {};
+            rawHeaders.forEach((h, index) => {
+                if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) {
+                    headerMap['numero'] = index;
+                } else if (h.includes('nombre') || h.includes('nome') || h.includes('jugador')) {
+                    headerMap['nombre'] = index;
+                } else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) {
+                    headerMap['entrenador'] = index;
+                } else if (h.includes('info') || h.includes('extra') || h.includes('detras') || h.includes('frase')) {
+                    headerMap['info_extra'] = index;
                 }
-                obj[key] = value;
             });
-            return obj;
-        });
-    }
 
-    async function cargarXogadoresDesdeSheet(url, xenero) {
-        try {
-            console.log(`🔄 Cargando ${xenero} desde:`, url);
-            const response = await fetch(url);
-            const csv = await response.text();
-            const datos = parseCSV(csv);
-            
-            // Filtrar staff
-            const xogadores = datos.filter(j => !esStaff(j.entrenador));
-            
-            return xogadores.map(j => ({
-                id: `${xenero}-${j.numero}`,
-                nome: j.nombre || `Xogador ${j.numero}`,
-                dorsal: parseInt(j.numero) || 0,
-                foto: `${CONFIG.DRIVE[xenero]}${j.numero}.png`,
-                xenero: xenero,
-                info_extra: j.info_extra || ''
-            }));
-        } catch (error) {
-            console.error(`Error cargando ${xenero}:`, error);
-            return [];
-        }
-    }
+            if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
+            if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
+            if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
+            if (headerMap['info_extra'] === undefined) headerMap['info_extra'] = 3;
 
-    async function cargarTodasXogadoras() {
-        const [femenino, masculino] = await Promise.all([
-            cargarXogadoresDesdeSheet(CONFIG.SHEETS.femenino, 'femenino'),
-            cargarXogadoresDesdeSheet(CONFIG.SHEETS.masculino, 'masculino')
-        ]);
-
-        const todas = [...femenino, ...masculino];
-        // Filtrar os que teñan dorsal válido
-        const validos = todas.filter(x => x.dorsal > 0);
-        console.log(`✅ Cargados ${validos.length} xogadores (${femenino.length} fem, ${masculino.length} mas)`);
-        return validos;
-    }
-
-    // =============================================
-    // LÓXICA DO XOGO
-    // =============================================
-
-    function seleccionarXogadoresAleatorios(todos, cantidade) {
-        const barallados = barallar([...todos]);
-        return barallados.slice(0, cantidade);
-    }
-
-    function xerarAliñacionAleatoria(xogadores) {
-        return barallar([...xogadores]);
-    }
-
-    function inicializarXogo(xogadores) {
-        if (!xogadores || xogadores.length < CONFIG.NUM_XOGADORES) {
-            // Fallback: xerar xogadores de exemplo
-            console.warn('⚠️ Non hai suficientes xogadores, usando exemplos');
-            xogadores = [];
-            for (let i = 1; i <= 10; i++) {
-                xogadores.push({
-                    id: `ex-${i}`,
-                    nome: `Xogador ${i}`,
-                    dorsal: i,
-                    foto: '',
-                    xenero: i % 2 === 0 ? 'femenino' : 'masculino',
-                    info_extra: ''
+            return lines.slice(1).map(line => {
+                const values = line.split(',').map(v => v.trim());
+                const obj = {};
+                Object.keys(headerMap).forEach(key => {
+                    let value = values[headerMap[key]] || '';
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.slice(1, -1);
+                    }
+                    obj[key] = value;
                 });
+                return obj;
+            });
+        }
+
+        async function cargarXogadoresDesdeSheet(url, xenero) {
+            try {
+                const response = await fetch(url);
+                const csv = await response.text();
+                const datos = parseCSV(csv);
+                const xogadores = datos.filter(j => !esStaff(j.entrenador));
+                
+                return xogadores.map(j => ({
+                    id: `${xenero}-${j.numero}`,
+                    nome: j.nombre || `Xogador ${j.numero}`,
+                    dorsal: parseInt(j.numero) || 0,
+                    foto: `${CONFIG.DRIVE[xenero]}${j.numero}.png`,
+                    xenero: xenero,
+                    info_extra: j.info_extra || ''
+                }));
+            } catch (error) {
+                console.error(`Error cargando ${xenero}:`, error);
+                return [];
             }
         }
 
-        // Seleccionar 5 xogadores aleatorios
-        const seleccionados = seleccionarXogadoresAleatorios(xogadores, CONFIG.NUM_XOGADORES);
-        
-        // Crear aliñación correcta (orde aleatoria)
-        const aliñacionCorrecta = xerarAliñacionAleatoria(seleccionados);
-        
-        // Crear aliñación actual (desordeada, diferente á correcta)
-        let aliñacionActual;
-        let intentos = 0;
-        do {
-            aliñacionActual = xerarAliñacionAleatoria(seleccionados);
-            intentos++;
-        } while (arraysIguais(aliñacionActual, aliñacionCorrecta) && intentos < 20);
+        async function cargarTodasXogadoras() {
+            const [femenino, masculino] = await Promise.all([
+                cargarXogadoresDesdeSheet(CONFIG.SHEETS.femenino, 'femenino'),
+                cargarXogadoresDesdeSheet(CONFIG.SHEETS.masculino, 'masculino')
+            ]);
 
-        estado.xogadores = xogadores;
-        estado.aliñacionCorrecta = aliñacionCorrecta;
-        estado.aliñacionActual = aliñacionActual;
-        estado.seleccionado = null;
-        estado.movementosRestantes = CONFIG.MOVEMENTOS_TOTAIS;
-        estado.xogoActivo = true;
-        estado.vitoria = false;
-
-        resultOverlay.classList.add('hidden');
-        actualizarInterfaz();
-        renderizarTaboleiro();
-        message.textContent = '🔄 Fai clic nunha xogadora para seleccionala';
-        message.className = 'message';
-
-        console.log('🎯 Aliñación correcta:', estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
-    }
-
-    function renderizarTaboleiro() {
-        formationContainer.innerHTML = '';
-        
-        estado.aliñacionActual.forEach((xogador, index) => {
-            const card = document.createElement('div');
-            card.className = 'player-card';
-            card.dataset.index = index;
-            
-            // Número (dorsal)
-            const number = document.createElement('div');
-            number.className = 'number';
-            number.textContent = `#${xogador.dorsal}`;
-            card.appendChild(number);
-            
-            // Foto
-            const photo = document.createElement('div');
-            photo.className = 'photo';
-            if (xogador.foto) {
-                const img = document.createElement('img');
-                img.src = xogador.foto;
-                img.alt = xogador.nome;
-                img.loading = 'lazy';
-                img.onerror = function() {
-                    this.parentElement.innerHTML = `<div class="placeholder">🏀</div>`;
-                };
-                photo.appendChild(img);
-            } else {
-                photo.innerHTML = `<div class="placeholder">🏀</div>`;
-            }
-            card.appendChild(photo);
-            
-            // Nome
-            const name = document.createElement('div');
-            name.className = 'name';
-            name.textContent = xogador.nome;
-            card.appendChild(name);
-            
-            // Posición (oculta, só se ve ao final)
-            const posLabel = document.createElement('div');
-            posLabel.className = 'position-label';
-            posLabel.textContent = `Posición ${index + 1}`;
-            posLabel.dataset.posicion = index;
-            card.appendChild(posLabel);
-            
-            // Evento click
-            card.addEventListener('click', () => manejarClick(index));
-            
-            formationContainer.appendChild(card);
-        });
-        
-        // Marcar seleccionado
-        if (estado.seleccionado !== null) {
-            const cards = formationContainer.querySelectorAll('.player-card');
-            if (cards[estado.seleccionado]) {
-                cards[estado.seleccionado].classList.add('selected');
-            }
+            const todas = [...femenino, ...masculino];
+            const validos = todas.filter(x => x.dorsal > 0);
+            console.log(`✅ Cargados ${validos.length} xogadores (${femenino.length} fem, ${masculino.length} mas)`);
+            return validos;
         }
-    }
 
-    function manejarClick(index) {
-        if (!estado.xogoActivo || estado.vitoria) return;
-        
-        if (estado.seleccionado === null) {
-            estado.seleccionado = index;
-            renderizarTaboleiro();
-            message.textContent = `✅ Seleccionado: ${estado.aliñacionActual[index].nome}`;
-            return;
+        // =============================================
+        // LÓXICA DO XOGO
+        // =============================================
+
+        function seleccionarXogadoresAleatorios(todos, cantidade) {
+            const barallados = barallar([...todos]);
+            return barallados.slice(0, cantidade);
         }
-        
-        if (estado.seleccionado === index) {
+
+        function xerarAliñacionAleatoria(xogadores) {
+            return barallar([...xogadores]);
+        }
+
+        function inicializarXogo(xogadores) {
+            if (!xogadores || xogadores.length < CONFIG.NUM_XOGADORES) {
+                console.warn('⚠️ Non hai suficientes xogadores, usando exemplos');
+                xogadores = [];
+                for (let i = 1; i <= 10; i++) {
+                    xogadores.push({
+                        id: `ex-${i}`,
+                        nome: `Xogador ${i}`,
+                        dorsal: i,
+                        foto: '',
+                        xenero: i % 2 === 0 ? 'femenino' : 'masculino',
+                        info_extra: ''
+                    });
+                }
+            }
+
+            const seleccionados = seleccionarXogadoresAleatorios(xogadores, CONFIG.NUM_XOGADORES);
+            const aliñacionCorrecta = xerarAliñacionAleatoria(seleccionados);
+            
+            let aliñacionActual;
+            let intentos = 0;
+            do {
+                aliñacionActual = xerarAliñacionAleatoria(seleccionados);
+                intentos++;
+            } while (arraysIguais(aliñacionActual, aliñacionCorrecta) && intentos < 20);
+
+            estado.xogadores = xogadores;
+            estado.aliñacionCorrecta = aliñacionCorrecta;
+            estado.aliñacionActual = aliñacionActual;
             estado.seleccionado = null;
+            estado.movementosRestantes = CONFIG.MOVEMENTOS_TOTAIS;
+            estado.xogoActivo = true;
+            estado.vitoria = false;
+
+            resultOverlay.classList.add('hidden');
+            actualizarInterfaz();
             renderizarTaboleiro();
             message.textContent = '🔄 Fai clic nunha xogadora para seleccionala';
-            return;
-        }
-        
-        intercambiar(estado.seleccionado, index);
-    }
+            message.className = 'message';
 
-    function intercambiar(idx1, idx2) {
-        [estado.aliñacionActual[idx1], estado.aliñacionActual[idx2]] = 
-        [estado.aliñacionActual[idx2], estado.aliñacionActual[idx1]];
-        
-        estado.movementosRestantes--;
-        estado.seleccionado = null;
-        
-        actualizarInterfaz();
-        renderizarTaboleiro();
-        
-        message.textContent = `🔄 Intercambiadas posicións ${idx1+1} e ${idx2+1}`;
-        message.className = 'message';
-        
-        comprobarVitoria();
-    }
-
-    function comprobarVitoria() {
-        const correctos = calcularCorrectos();
-        
-        if (correctos === CONFIG.NUM_XOGADORES) {
-            estado.vitoria = true;
-            estado.xogoActivo = false;
-            mostrarResultado(true);
-            return;
+            console.log('🎯 Aliñación correcta:', estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
         }
-        
-        if (estado.movementosRestantes <= 0) {
-            estado.xogoActivo = false;
-            mostrarResultado(false);
-        }
-    }
 
-    function calcularCorrectos() {
-        let correctos = 0;
-        for (let i = 0; i < CONFIG.NUM_XOGADORES; i++) {
-            if (estado.aliñacionActual[i].id === estado.aliñacionCorrecta[i].id) {
-                correctos++;
+        function renderizarTaboleiro() {
+            formationContainer.innerHTML = '';
+            
+            estado.aliñacionActual.forEach((xogador, index) => {
+                const card = document.createElement('div');
+                card.className = 'player-card';
+                card.dataset.index = index;
+
+                // Fondo con escudo (igual que plantillas)
+                const background = document.createElement('div');
+                background.className = 'card-background';
+                card.appendChild(background);
+
+                // Número
+                const number = document.createElement('div');
+                number.className = 'player-number';
+                number.textContent = xogador.dorsal || '?';
+                card.appendChild(number);
+
+                // Foto
+                const photoContainer = document.createElement('div');
+                photoContainer.className = 'photo-container';
+                if (xogador.foto) {
+                    const img = document.createElement('img');
+                    img.src = xogador.foto;
+                    img.alt = xogador.nome;
+                    img.loading = 'lazy';
+                    img.onerror = function() {
+                        this.parentElement.innerHTML = `<div class="placeholder">🏀</div>`;
+                    };
+                    photoContainer.appendChild(img);
+                } else {
+                    photoContainer.innerHTML = `<div class="placeholder">🏀</div>`;
+                }
+                card.appendChild(photoContainer);
+
+                // Nombre
+                const nameContainer = document.createElement('div');
+                nameContainer.className = 'name-container';
+                const name = document.createElement('div');
+                name.className = 'player-name';
+                name.textContent = xogador.nome || 'Sen nome';
+                nameContainer.appendChild(name);
+                card.appendChild(nameContainer);
+
+                card.addEventListener('click', () => manejarClick(index));
+                formationContainer.appendChild(card);
+            });
+
+            // Marcar seleccionado
+            if (estado.seleccionado !== null) {
+                const cards = formationContainer.querySelectorAll('.player-card');
+                if (cards[estado.seleccionado]) {
+                    cards[estado.seleccionado].classList.add('selected');
+                }
             }
         }
-        return correctos;
-    }
 
-    function actualizarInterfaz() {
-        const correctos = calcularCorrectos();
-        statusText.textContent = `${correctos}/${CONFIG.NUM_XOGADORES} CORRECTOS`;
-        
-        countdown.textContent = estado.movementosRestantes;
-        countdown.className = 'countdown-number';
-        if (estado.movementosRestantes > 16) {
-            countdown.classList.add('countdown-normal');
-        } else if (estado.movementosRestantes > 8) {
-            countdown.classList.add('countdown-warning');
-        } else {
-            countdown.classList.add('countdown-emergencia');
+        function manejarClick(index) {
+            if (!estado.xogoActivo || estado.vitoria) return;
+            
+            if (estado.seleccionado === null) {
+                estado.seleccionado = index;
+                renderizarTaboleiro();
+                message.textContent = `✅ Seleccionado: ${estado.aliñacionActual[index].nome}`;
+                return;
+            }
+            
+            if (estado.seleccionado === index) {
+                estado.seleccionado = null;
+                renderizarTaboleiro();
+                message.textContent = '🔄 Fai clic nunha xogadora para seleccionala';
+                return;
+            }
+            
+            intercambiar(estado.seleccionado, index);
         }
-    }
 
-    // =============================================
-    // RESULTADOS
-    // =============================================
-
-    function mostrarResultado(vitoria) {
-        resultOverlay.classList.remove('hidden');
-        
-        if (vitoria) {
-            resultMessage.textContent = '🏆 ¡VITORIA! 🏀\nAliñaches o equipo perfecto!';
-            resultMessage.className = 'result-message victoria';
-        } else {
-            resultMessage.textContent = '⏰ TEMPO REMATADO\nA aliñación correcta era:';
-            resultMessage.className = 'result-message derrota';
+        function intercambiar(idx1, idx2) {
+            [estado.aliñacionActual[idx1], estado.aliñacionActual[idx2]] = 
+            [estado.aliñacionActual[idx2], estado.aliñacionActual[idx1]];
+            
+            estado.movementosRestantes--;
+            estado.seleccionado = null;
+            
+            actualizarInterfaz();
+            renderizarTaboleiro();
+            
+            message.textContent = `🔄 Intercambiadas posicións ${idx1+1} e ${idx2+1}`;
+            message.className = 'message';
+            
+            comprobarVitoria();
         }
-        
-        resultPattern.textContent = estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → ');
-    }
 
-    // =============================================
-    // EVENTOS
-    // =============================================
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key >= '1' && e.key <= '5') {
-            const idx = parseInt(e.key) - 1;
-            if (idx < estado.aliñacionActual.length) {
-                manejarClick(idx);
+        function comprobarVitoria() {
+            const correctos = calcularCorrectos();
+            
+            if (correctos === CONFIG.NUM_XOGADORES) {
+                estado.vitoria = true;
+                estado.xogoActivo = false;
+                mostrarResultado(true);
+                return;
+            }
+            
+            if (estado.movementosRestantes <= 0) {
+                estado.xogoActivo = false;
+                mostrarResultado(false);
             }
         }
-        if (e.key === 'r' || e.key === 'R') {
-            e.preventDefault();
-            reiniciarXogo();
+
+        function calcularCorrectos() {
+            let correctos = 0;
+            for (let i = 0; i < CONFIG.NUM_XOGADORES; i++) {
+                if (estado.aliñacionActual[i].id === estado.aliñacionCorrecta[i].id) {
+                    correctos++;
+                }
+            }
+            return correctos;
         }
-        if (e.key === 'Escape') {
-            e.preventDefault();
+
+        function actualizarInterfaz() {
+            const correctos = calcularCorrectos();
+            statusText.textContent = `${correctos}/${CONFIG.NUM_XOGADORES} CORRECTOS`;
+            
+            countdown.textContent = estado.movementosRestantes;
+            countdown.className = 'countdown-number';
+            if (estado.movementosRestantes <= 8) {
+                countdown.classList.add('emergencia');
+            } else if (estado.movementosRestantes <= 16) {
+                countdown.classList.add('warning');
+            }
+        }
+
+        // =============================================
+        // RESULTADOS
+        // =============================================
+
+        function mostrarResultado(vitoria) {
+            resultOverlay.classList.remove('hidden');
+            
+            if (vitoria) {
+                resultMessage.textContent = '🏆 ¡VITORIA! 🏀\nAliñaches o equipo perfecto!';
+                resultMessage.className = 'result-message victoria';
+            } else {
+                resultMessage.textContent = '⏰ TEMPO REMATADO\nA aliñación correcta era:';
+                resultMessage.className = 'result-message derrota';
+            }
+            
+            resultPattern.innerHTML = estado.aliñacionCorrecta.map(x => 
+                `<span>${x.nome} (#${x.dorsal})</span>`
+            ).join(' → ');
+        }
+
+        // =============================================
+        // EVENTOS
+        // =============================================
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '5') {
+                const idx = parseInt(e.key) - 1;
+                if (idx < estado.aliñacionActual.length) {
+                    manejarClick(idx);
+                }
+            }
+            if (e.key === 'r' || e.key === 'R') {
+                e.preventDefault();
+                reiniciarXogo();
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                if (estado.xogoActivo && !estado.vitoria) {
+                    if (confirm('Seguro que queres renderte?')) {
+                        estado.xogoActivo = false;
+                        mostrarResultado(false);
+                    }
+                }
+            }
+        });
+
+        newGameBtn.addEventListener('click', reiniciarXogo);
+        giveUpBtn.addEventListener('click', () => {
             if (estado.xogoActivo && !estado.vitoria) {
                 if (confirm('Seguro que queres renderte?')) {
                     estado.xogoActivo = false;
                     mostrarResultado(false);
                 }
             }
+        });
+        playAgainBtn.addEventListener('click', reiniciarXogo);
+
+        // =============================================
+        // INICIALIZACIÓN
+        // =============================================
+
+        async function reiniciarXogo() {
+            const xogadores = await cargarTodasXogadoras();
+            inicializarXogo(xogadores);
         }
-    });
 
-    newGameBtn.addEventListener('click', reiniciarXogo);
-    giveUpBtn.addEventListener('click', () => {
-        if (estado.xogoActivo && !estado.vitoria) {
-            if (confirm('Seguro que queres renderte?')) {
-                estado.xogoActivo = false;
-                mostrarResultado(false);
-            }
-        }
-    });
-    playAgainBtn.addEventListener('click', reiniciarXogo);
+        reiniciarXogo();
 
-    // =============================================
-    // INICIALIZACIÓN
-    // =============================================
-
-    async function reiniciarXogo() {
-        const xogadores = await cargarTodasXogadoras();
-        inicializarXogo(xogadores);
-    }
-
-    // Iniciar o xogo
-    reiniciarXogo();
-
-    // Debug helper
-    window.mostrarSolucion = function() {
-        console.log('🎯 Solución:', estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
-        console.log('📊 Actual:', estado.aliñacionActual.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
-        console.log(`✅ Correctos: ${calcularCorrectos()}/${CONFIG.NUM_XOGADORES}`);
-        console.log(`⏱️ Movementos: ${estado.movementosRestantes}`);
-    };
-</script>
+        // Debug helper
+        window.mostrarSolucion = function() {
+            console.log('🎯 Solución:', estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
+            console.log('📊 Actual:', estado.aliñacionActual.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
+            console.log(`✅ Correctos: ${calcularCorrectos()}/${CONFIG.NUM_XOGADORES}`);
+            console.log(`⏱️ Movementos: ${estado.movementosRestantes}`);
+        };
+    </script>
 </body>
 </html>
