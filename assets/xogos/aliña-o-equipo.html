@@ -490,7 +490,7 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 0.5rem;
         }
 
         .instructions .text {
@@ -517,10 +517,12 @@
             font-size: 0.75rem;
             color: #999;
             flex-shrink: 0;
+            padding-left: 0.5rem;
+            border-left: 1px solid rgba(30, 58, 95, 0.15);
         }
 
         .instructions .kampa-credit img {
-            height: 28px;
+            height: 24px;
             width: auto;
             cursor: pointer;
             border-radius: 50%;
@@ -608,15 +610,22 @@
             .countdown-number { font-size: 2.2rem; }
             .status-text { font-size: 1rem; }
             .result-message { font-size: 1.8rem; }
-            .instructions { flex-direction: column; text-align: center; }
-            .instructions .kampa-credit { justify-content: center; }
+            .instructions { flex-direction: column; align-items: stretch; text-align: center; }
+            .instructions .kampa-credit {
+                justify-content: center;
+                border-left: none;
+                padding-left: 0;
+                border-top: 1px solid rgba(30, 58, 95, 0.08);
+                padding-top: 0.5rem;
+            }
         }
 
         @media (max-width: 480px) {
             .formation-container { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
             .player-card { max-width: 140px; }
             .game-button { padding: 0.4rem 1.2rem; font-size: 0.8rem; }
-            .instructions .kampa-credit img { height: 22px; }
+            .instructions .kampa-credit img { height: 20px; }
+            .instructions .kampa-credit { font-size: 0.65rem; }
         }
     </style>
 </head>
@@ -654,7 +663,7 @@
                     <button class="game-button danger" id="giveUpBtn">🏳️ RENDIRSE</button>
                 </div>
 
-                <!-- INSTRUCCIONES CON LOGO DE KAMPA -->
+                <!-- INSTRUCCIONES CON LOGO DE KAMPA ALINEADO A LA DERECHA -->
                 <div class="instructions">
                     <div class="text">
                         <strong>🎯 COMO XOGAR:</strong><br>
@@ -670,6 +679,7 @@
                         <span>Creado por <a href="https://taplink.cc/kampa_snmt" target="_blank">@kampa_snmt</a></span>
                     </div>
                 </div>
+
             </div>
         </div>
     </main>
@@ -845,11 +855,6 @@
         // =========================================================
         // 4. LÓXICA ESPECÍFICA DO XOGO "ALIÑA O EQUIPO!"
         // =========================================================
-        // (Aquí iría todo o JavaScript que xa tiñas para o xogo)
-        // Para non repetir o código enteiro outra vez, e xa que o
-        // teño no historial, vou resumilo e indicar que se copie
-        // a lóxica que xa funcionaba.
-
         console.log('🏀 Aliña o equipo! - Xogo iniciado');
 
         // =========================================================
@@ -921,48 +926,19 @@
         }
 
         // =========================================================
-        // CARGA DE XOGADORES DESDE SHEETS
+        // CARGA DE XOGADORES DESDE SHEETS (usando parseCSV de app.js)
         // =========================================================
-        function parseCSVXogo(csv) {
-            const lines = csv.split('\n').filter(line => line.trim());
-            if (lines.length < 2) return [];
-
-            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
-            const headerMap = {};
-            rawHeaders.forEach((h, index) => {
-                if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) headerMap['numero'] = index;
-                else if (h.includes('nombre') || h.includes('nome') || h.includes('jugador')) headerMap['nombre'] = index;
-                else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) headerMap['entrenador'] = index;
-                else if (h.includes('info') || h.includes('extra') || h.includes('detras') || h.includes('frase')) headerMap['info_extra'] = index;
-            });
-
-            if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
-            if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
-            if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
-            if (headerMap['info_extra'] === undefined) headerMap['info_extra'] = 3;
-
-            return lines.slice(1).map(line => {
-                const values = line.split(',').map(v => v.trim());
-                const obj = {};
-                Object.keys(headerMap).forEach(key => {
-                    let value = values[headerMap[key]] || '';
-                    if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
-                    obj[key] = value;
-                });
-                return obj;
-            });
-        }
-
         async function cargarXogadoresDesdeSheet(url, xenero) {
             try {
                 console.log(`🔄 Cargando ${xenero}...`);
                 const response = await fetch(url);
                 const csv = await response.text();
-                const datos = parseCSVXogo(csv);
+                // ✅ Usamos el parseCSV de app.js (ya funciona en plantillas.html)
+                const datos = window.parseCSV(csv);
                 const xogadores = datos.filter(j => !esStaff(j.entrenador));
                 return xogadores.map(j => ({
                     id: `${xenero}-${j.numero}`,
-                    nome: j.nombre || `Xogador ${j.numero}`,
+                    nome: j.nombre || j.nome || `Xogador ${j.numero}`,
                     dorsal: parseInt(j.numero) || 0,
                     foto: `${CONFIG_XOGO.DRIVE[xenero]}${j.numero}.png`,
                     xenero: xenero,
@@ -986,7 +962,7 @@
         }
 
         // =========================================================
-        // LÓXICA DO XOGO
+        // LÓXICA DO XOGO (idéntica a la versión que funcionaba)
         // =========================================================
         function seleccionarXogadoresAleatorios(todos, cantidade) {
             const barallados = barallar([...todos]);
