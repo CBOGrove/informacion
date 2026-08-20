@@ -367,7 +367,7 @@
             return texto.trim();
         }
 
-        // ===== FUNCIÓN PARSE CSV MEJORADA =====
+        // ===== FUNCIÓN PARSE CSV =====
         function parseCSV(csv) {
             const lines = csv.split('\n').filter(line => line.trim());
             if (lines.length < 2) return [];
@@ -448,7 +448,6 @@
             return lineas.map(line => `<span class="linea">${line}</span>`).join('');
         }
 
-        // ===== CREAR TARJETA DE PATROCINADOR (SOLO PRIVADOS) =====
         function crearPatrocinador(patrocinador) {
             const container = document.createElement('div');
             container.className = 'patrocinador-card';
@@ -516,7 +515,7 @@
             const grid = document.getElementById('patrocinadoresGrid');
 
             try {
-                console.log('🔄 Cargando patrocinadores privados...');
+                console.log('🔄 Cargando patrocinadores...');
                 const response = await fetch(CONFIG_PATROCINADORES.sheetUrl);
                 const csv = await response.text();
                 
