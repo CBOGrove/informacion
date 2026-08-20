@@ -75,11 +75,12 @@ body::before {
     z-index: 100;
 }
 
+/* ===== LOGO SIN BORDE Y SIN MARCO ===== */
 .logo {
     display: flex;
     align-items: center;
     gap: 1rem;
-    color: var(--blanco);
+    color: var(--dorado);                /* ← Texto en dorado */
     text-decoration: none;
     font-size: 1.3rem;
     font-weight: 700;
@@ -87,11 +88,23 @@ body::before {
 }
 
 .logo img {
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid var(--dorado);
+    height: 55px;                        /* ← 10% más grande (50 → 55) */
+    width: auto;
+    border-radius: 0;                    /* ← Sin círculo */
+    border: none;                        /* ← SIN BORDE */
+    box-shadow: none;                    /* ← SIN MARCO */
+    /* ===== BRILLO DETRÁS DEL LOGO (solo luz, sin marco) ===== */
+    filter: drop-shadow(0 0 20px rgba(201, 160, 61, 0.3))
+            drop-shadow(0 0 50px rgba(201, 160, 61, 0.1));
+    transition: filter 0.3s ease;
 }
 
+.logo img:hover {
+    filter: drop-shadow(0 0 30px rgba(201, 160, 61, 0.5))
+            drop-shadow(0 0 70px rgba(201, 160, 61, 0.2));
+}
+
+/* ===== NAVEGACIÓN ===== */
 .main-nav {
     display: flex;
     gap: 0.5rem;
@@ -206,6 +219,10 @@ body::before {
     
     .logo {
         font-size: 1.1rem;
+    }
+
+    .logo img {
+        height: 45px;                    /* ← 10% más grande en móvil */
     }
     
     .main-footer .redes {
