@@ -42,17 +42,25 @@
             box-shadow: var(--sombra-media);
         }
 
-        .info-card .icono {
-            font-size: 1.8rem;
-            color: var(--dorado);
+        /* ===== TÍTULO CON ICONO AL LADO ===== */
+        .info-card .titulo-icono {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
             margin-bottom: 0.5rem;
         }
 
-        .info-card h3 {
+        .info-card .titulo-icono .icono {
+            font-size: 1.5rem;
+            color: var(--dorado);
+            line-height: 1;
+        }
+
+        .info-card .titulo-icono h3 {
             font-family: var(--font-titulos);
             color: var(--azul-club);
             font-size: 1.1rem;
-            margin-bottom: 0.3rem;
+            margin: 0;
         }
 
         .info-card p,
@@ -85,6 +93,23 @@
             transform: translateY(-2px);
         }
 
+        /* ===== TARJETA COMBINADA: TELÉFONO + WHATSAPP ===== */
+        .info-card .telefono-numero {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--azul-club);
+            margin: 0.2rem 0 0.5rem 0;
+        }
+
+        .info-card .telefono-numero a {
+            color: var(--azul-club);
+            text-decoration: none;
+        }
+
+        .info-card .telefono-numero a:hover {
+            color: var(--dorado);
+        }
+
         .info-card .btn-whatsapp {
             display: inline-block;
             background: #25D366;
@@ -95,12 +120,15 @@
             font-weight: 600;
             text-decoration: none;
             transition: background 0.3s, transform 0.2s;
-            margin-top: 0.3rem;
         }
 
         .info-card .btn-whatsapp:hover {
             background: #1ebe5c;
             transform: translateY(-2px);
+        }
+
+        .info-card .btn-whatsapp i {
+            margin-right: 0.5rem;
         }
 
         /* ===== MAPA ===== */
@@ -250,6 +278,23 @@
             .mapa-container iframe {
                 min-height: 250px;
             }
+
+            .info-card .titulo-icono .icono {
+                font-size: 1.2rem;
+            }
+
+            .info-card .titulo-icono h3 {
+                font-size: 1rem;
+            }
+
+            .info-card .telefono-numero {
+                font-size: 1rem;
+            }
+
+            .info-card .btn-whatsapp {
+                font-size: 0.85rem;
+                padding: 0.4rem 1.2rem;
+            }
         }
     </style>
 </head>
@@ -263,9 +308,12 @@
         <div class="contacto-grid">
             <!-- ===== INFORMACIÓN DE CONTACTO ===== -->
             <div class="contacto-info">
+                <!-- Dirección -->
                 <div class="info-card">
-                    <div class="icono">📍</div>
-                    <h3>Dirección</h3>
+                    <div class="titulo-icono">
+                        <span class="icono">📍</span>
+                        <h3>Dirección</h3>
+                    </div>
                     <p>Pavillón Municipal Novo Monte da Vila<br>
                     Rúa Monte da Vila, s/n<br>
                     36980 O Grove, Pontevedra</p>
@@ -274,32 +322,44 @@
                     </a>
                 </div>
 
+                <!-- Email -->
                 <div class="info-card">
-                    <div class="icono">📧</div>
-                    <h3>Email</h3>
+                    <div class="titulo-icono">
+                        <span class="icono">📧</span>
+                        <h3>Email</h3>
+                    </div>
                     <a href="mailto:cbogrove75@gmail.com">cbogrove75@gmail.com</a>
                 </div>
 
+                <!-- Teléfono + WhatsApp (combinados) -->
                 <div class="info-card">
-                    <div class="icono">💬</div>
-                    <h3>WhatsApp</h3>
+                    <div class="titulo-icono">
+                        <span class="icono">💬</span>
+                        <h3>Teléfono / WhatsApp</h3>
+                    </div>
+                    <div class="telefono-numero">
+                        <a href="tel:+34614713869">📞 +34 614 71 38 69</a>
+                    </div>
                     <a href="https://wa.me/34614713869?text=Ola!%20Contacto%20dende%20a%20web%20do%20CB%20O%20Grove" target="_blank" class="btn-whatsapp">
-                        <i class="fab fa-whatsapp"></i> Enviar mensaxe
+                        <i class="fab fa-whatsapp"></i> Enviar mensaxe por WhatsApp
                     </a>
                 </div>
 
+                <!-- Correo postal -->
                 <div class="info-card">
-                    <div class="icono">📮</div>
-                    <h3>Correo postal</h3>
+                    <div class="titulo-icono">
+                        <span class="icono">📮</span>
+                        <h3>Correo postal</h3>
+                    </div>
                     <p>Apartado de Correos 109<br>
                     36980 O Grove (Pontevedra)</p>
                 </div>
             </div>
 
-            <!-- ===== MAPA ===== -->
+            <!-- ===== MAPA (centrado en el pabellón) ===== -->
             <div class="mapa-container">
                 <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2914.847123456789!2d-8.876543!3d42.456789!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDLCsDI3JzI0LjQiTiA4wrA1MiczMC4wIlc!5e0!3m2!1sgl!2ses!4v1710000000000" 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2914.847123456789!2d-8.8633484!3d42.4893797!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd2f4048d1e33fdf%3A0x641531f46d832f!2sPavill%C3%B3n%20Municipal%20(Novo)!5e0!3m2!1sgl!2ses!4v1710000000000" 
                     allowfullscreen 
                     loading="lazy" 
                     referrerpolicy="no-referrer-when-downgrade"
@@ -312,7 +372,6 @@
                 <h2>✉️ Envíanos unha mensaxe</h2>
                 <p class="sub">Responderemos o antes posible.</p>
 
-                <!-- ✅ FORMULARIO CON TU ENDPOINT CORRECTO -->
                 <form action="https://formspree.io/f/mzepodaj" method="POST">
                     <div class="form-group">
                         <label for="nombre">Nome</label>
