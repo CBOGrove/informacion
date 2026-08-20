@@ -39,7 +39,7 @@
             padding: 25px 30px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.4);
             text-align: center;
-            border: 2px solid var(--dorado, #c9a03d);
+            border: 2px solid #c9a03d;
         }
 
         /* ===== CABECERA ===== */
@@ -58,10 +58,6 @@
             color: #ffcc00;
             text-shadow: 3px 3px 0 #5a3e00;
             letter-spacing: 2px;
-        }
-
-        .game-title span {
-            font-size: 28px;
         }
 
         .logo-container {
@@ -440,8 +436,12 @@
     const CONFIG = {
         MOVEMENTOS_TOTAIS: 24,
         NUM_XOGADORES: 5,
-        // Rutas de las carpetas de fotos
-        CARPETAS: {
+        // Mesmos sheets que plantillas.html
+        SHEETS: {
+            femenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
+            masculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205'
+        },
+        DRIVE: {
             femenino: '../../assets/img/plantillas/femenino/',
             masculino: '../../assets/img/plantillas/masculino/'
         }
@@ -449,7 +449,6 @@
 
     // Posicións posibles (en galego)
     const POSICIONS = ['Base', 'Escolta', 'Aleiro', 'Ala-pívot', 'Pívot'];
-    const POSICIONS_ICONOS = ['🎯', '🎯', '🎯', '🎯', '🎯']; // Todos igual para no dar pistas
 
     // =============================================
     // ESTADO DO XOGO
@@ -482,12 +481,10 @@
     // FUNCIÓNS AUXILIARES
     // =============================================
 
-    // Obtén un número aleatorio entre min e max (incluídos)
     function aleatorio(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // Baralla un array (Fisher-Yates)
     function barallar(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -496,7 +493,6 @@
         return array;
     }
 
-    // Comproba se dous arrays son iguais
     function arraysIguais(arr1, arr2) {
         if (arr1.length !== arr2.length) return false;
         for (let i = 0; i < arr1.length; i++) {
@@ -505,56 +501,89 @@
         return true;
     }
 
-    // =============================================
-    // CARGA DE XOGADORES
-    // =============================================
-
-    function obterNumeroDorsal(nomeFicheiro) {
-        // Extrae o número do nome do ficheiro (ex: "1.png" → 1)
-        const match = nomeFicheiro.match(/^(\d+)/);
-        return match ? parseInt(match[1]) : 999;
+    function esStaff(valor) {
+        if (!valor) return false;
+        const v = String(valor).toUpperCase().trim();
+        return v === 'SI' || v === 'SÍ' || v === 'TRUE' || v === '1';
     }
 
-    async function cargarXogadoresDaCarpeta(carpeta, xenero) {
-        try {
-            // Facemos unha petición para listar os ficheiros (usamos un index.json)
-            // Se non existe, usamos unha lista predefinida de dorsais
-            const response = await fetch(`${carpeta}index.json`);
-            if (response.ok) {
-                const data = await response.json();
-                return data.map((nombre, index) => ({
-                    id: `xog-${xenero}-${index}`,
-                    nome: nombre.replace(/\.[^/.]+$/, ''), // Quita extensión
-                    dorsal: obterNumeroDorsal(nombre),
-                    foto: `${carpeta}${nombre}`,
-                    xenero: xenero
-                }));
-            }
-        } catch (e) {
-            console.log(`⚠️ Non se puido cargar index.json de ${carpeta}, usando lista por defecto`);
-        }
+    // =============================================
+    // CARGA DE XOGADORES DESDE SHEETS
+    // =============================================
 
-        // Fallback: lista predefinida de dorsais (se non hai index.json)
-        const dorsais = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-        return dorsais.map(dorsal => ({
-            id: `xog-${xenero}-${dorsal}`,
-            nome: `Xogador${xenero === 'fem' ? 'a' : ''} ${dorsal}`,
-            dorsal: dorsal,
-            foto: `${carpeta}${dorsal}.png`,
-            xenero: xenero
-        }));
+    function parseCSV(csv) {
+        const lines = csv.split('\n').filter(line => line.trim());
+        if (lines.length < 2) return [];
+
+        const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+        
+        const headerMap = {};
+        rawHeaders.forEach((h, index) => {
+            if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) {
+                headerMap['numero'] = index;
+            } else if (h.includes('nombre') || h.includes('nome') || h.includes('jugador')) {
+                headerMap['nombre'] = index;
+            } else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) {
+                headerMap['entrenador'] = index;
+            } else if (h.includes('info') || h.includes('extra') || h.includes('detras') || h.includes('frase')) {
+                headerMap['info_extra'] = index;
+            }
+        });
+
+        if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
+        if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
+        if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
+        if (headerMap['info_extra'] === undefined) headerMap['info_extra'] = 3;
+
+        return lines.slice(1).map(line => {
+            const values = line.split(',').map(v => v.trim());
+            const obj = {};
+            Object.keys(headerMap).forEach(key => {
+                let value = values[headerMap[key]] || '';
+                if (value.startsWith('"') && value.endsWith('"')) {
+                    value = value.slice(1, -1);
+                }
+                obj[key] = value;
+            });
+            return obj;
+        });
+    }
+
+    async function cargarXogadoresDesdeSheet(url, xenero) {
+        try {
+            console.log(`🔄 Cargando ${xenero} desde:`, url);
+            const response = await fetch(url);
+            const csv = await response.text();
+            const datos = parseCSV(csv);
+            
+            // Filtrar staff
+            const xogadores = datos.filter(j => !esStaff(j.entrenador));
+            
+            return xogadores.map(j => ({
+                id: `${xenero}-${j.numero}`,
+                nome: j.nombre || `Xogador ${j.numero}`,
+                dorsal: parseInt(j.numero) || 0,
+                foto: `${CONFIG.DRIVE[xenero]}${j.numero}.png`,
+                xenero: xenero,
+                info_extra: j.info_extra || ''
+            }));
+        } catch (error) {
+            console.error(`Error cargando ${xenero}:`, error);
+            return [];
+        }
     }
 
     async function cargarTodasXogadoras() {
         const [femenino, masculino] = await Promise.all([
-            cargarXogadoresDaCarpeta(CONFIG.CARPETAS.femenino, 'fem'),
-            cargarXogadoresDaCarpeta(CONFIG.CARPETAS.masculino, 'mas')
+            cargarXogadoresDesdeSheet(CONFIG.SHEETS.femenino, 'femenino'),
+            cargarXogadoresDesdeSheet(CONFIG.SHEETS.masculino, 'masculino')
         ]);
 
         const todas = [...femenino, ...masculino];
-        // Filtrar os que teñan foto válida (non vacía)
-        const validos = todas.filter(x => x.foto && x.foto.length > 0);
-        return validos.length > 0 ? validos : todas;
+        // Filtrar os que teñan dorsal válido
+        const validos = todas.filter(x => x.dorsal > 0);
+        console.log(`✅ Cargados ${validos.length} xogadores (${femenino.length} fem, ${masculino.length} mas)`);
+        return validos;
     }
 
     // =============================================
@@ -571,16 +600,18 @@
     }
 
     function inicializarXogo(xogadores) {
-        if (!xogadores || xogadores.length === 0) {
+        if (!xogadores || xogadores.length < CONFIG.NUM_XOGADORES) {
             // Fallback: xerar xogadores de exemplo
+            console.warn('⚠️ Non hai suficientes xogadores, usando exemplos');
             xogadores = [];
             for (let i = 1; i <= 10; i++) {
                 xogadores.push({
-                    id: `xog-example-${i}`,
+                    id: `ex-${i}`,
                     nome: `Xogador ${i}`,
                     dorsal: i,
                     foto: '',
-                    xenero: i % 2 === 0 ? 'fem' : 'mas'
+                    xenero: i % 2 === 0 ? 'femenino' : 'masculino',
+                    info_extra: ''
                 });
             }
         }
@@ -593,9 +624,11 @@
         
         // Crear aliñación actual (desordeada, diferente á correcta)
         let aliñacionActual;
+        let intentos = 0;
         do {
             aliñacionActual = xerarAliñacionAleatoria(seleccionados);
-        } while (arraysIguais(aliñacionActual, aliñacionCorrecta) && seleccionados.length > 1);
+            intentos++;
+        } while (arraysIguais(aliñacionActual, aliñacionCorrecta) && intentos < 20);
 
         estado.xogadores = xogadores;
         estado.aliñacionCorrecta = aliñacionCorrecta;
@@ -611,7 +644,7 @@
         message.textContent = '🔄 Fai clic nunha xogadora para seleccionala';
         message.className = 'message';
 
-        console.log('🎯 Aliñación correcta:', estado.aliñacionCorrecta.map(x => `${x.nome} (${x.dorsal})`).join(' → '));
+        console.log('🎯 Aliñación correcta:', estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
     }
 
     function renderizarTaboleiro() {
@@ -635,6 +668,7 @@
                 const img = document.createElement('img');
                 img.src = xogador.foto;
                 img.alt = xogador.nome;
+                img.loading = 'lazy';
                 img.onerror = function() {
                     this.parentElement.innerHTML = `<div class="placeholder">🏀</div>`;
                 };
@@ -675,7 +709,6 @@
     function manejarClick(index) {
         if (!estado.xogoActivo || estado.vitoria) return;
         
-        // Se non hai seleccionado, seleccionar este
         if (estado.seleccionado === null) {
             estado.seleccionado = index;
             renderizarTaboleiro();
@@ -683,7 +716,6 @@
             return;
         }
         
-        // Se é o mesmo, deseleccionar
         if (estado.seleccionado === index) {
             estado.seleccionado = null;
             renderizarTaboleiro();
@@ -691,27 +723,22 @@
             return;
         }
         
-        // Intercambiar
         intercambiar(estado.seleccionado, index);
     }
 
     function intercambiar(idx1, idx2) {
-        // Intercambiar no array
         [estado.aliñacionActual[idx1], estado.aliñacionActual[idx2]] = 
         [estado.aliñacionActual[idx2], estado.aliñacionActual[idx1]];
         
-        // Reducir movementos
         estado.movementosRestantes--;
         estado.seleccionado = null;
         
-        // Actualizar
         actualizarInterfaz();
         renderizarTaboleiro();
         
         message.textContent = `🔄 Intercambiadas posicións ${idx1+1} e ${idx2+1}`;
         message.className = 'message';
         
-        // Comprobar vitoria
         comprobarVitoria();
     }
 
@@ -745,7 +772,6 @@
         const correctos = calcularCorrectos();
         statusText.textContent = `${correctos}/${CONFIG.NUM_XOGADORES} CORRECTOS`;
         
-        // Contador
         countdown.textContent = estado.movementosRestantes;
         countdown.className = 'countdown-number';
         if (estado.movementosRestantes > 16) {
@@ -762,34 +788,23 @@
     // =============================================
 
     function mostrarResultado(vitoria) {
-        const overlay = resultOverlay;
-        const msg = resultMessage;
-        const pattern = resultPattern;
-        
-        overlay.classList.remove('hidden');
+        resultOverlay.classList.remove('hidden');
         
         if (vitoria) {
-            msg.textContent = '🏆 ¡VITORIA! 🏀\nAliñaches o equipo perfecto!';
-            msg.className = 'result-message victoria';
+            resultMessage.textContent = '🏆 ¡VITORIA! 🏀\nAliñaches o equipo perfecto!';
+            resultMessage.className = 'result-message victoria';
         } else {
-            msg.textContent = '⏰ TEMPO REMATADO\nA aliñación correcta era:';
-            msg.className = 'result-message derrota';
+            resultMessage.textContent = '⏰ TEMPO REMATADO\nA aliñación correcta era:';
+            resultMessage.className = 'result-message derrota';
         }
         
-        // Amosar a aliñación correcta
-        const nomes = estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → ');
-        pattern.textContent = nomes;
-    }
-
-    function renderizarResultado() {
-        // Xa se fai en mostrarResultado
+        resultPattern.textContent = estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → ');
     }
 
     // =============================================
     // EVENTOS
     // =============================================
 
-    // Teclado
     document.addEventListener('keydown', (e) => {
         if (e.key >= '1' && e.key <= '5') {
             const idx = parseInt(e.key) - 1;
@@ -812,7 +827,6 @@
         }
     });
 
-    // Botóns
     newGameBtn.addEventListener('click', reiniciarXogo);
     giveUpBtn.addEventListener('click', () => {
         if (estado.xogoActivo && !estado.vitoria) {
