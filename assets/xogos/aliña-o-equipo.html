@@ -8,7 +8,7 @@
     <!-- ===== FONTS Y CSS GLOBAL ===== -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 
     <style>
         /* ===== ESTILOS ESPECÍFICOS DEL JUEGO ===== */
@@ -58,8 +58,6 @@
         .logo-wrapper img {
             height: 50px;
             width: auto;
-            border-radius: 50%;
-            border: 2px solid var(--dorado);
         }
 
         .logo-wrapper .logo-label {
@@ -125,13 +123,14 @@
             50% { opacity: 0.5; transform: scale(0.95); }
         }
 
-        /* ===== TABLERO DE JUGADORES (IDÉNTICO A PLANTILLAS) ===== */
+        /* ===== TABLERO DE JUGADORES ===== */
         .formation-container {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 1.5rem;
             justify-items: center;
             margin: 1.5rem 0;
+            min-height: 320px;
         }
 
         /* ===== CARTA IDÉNTICA A PLANTILLAS ===== */
@@ -160,7 +159,6 @@
             box-shadow: 0 0 25px rgba(201, 160, 61, 0.5);
         }
 
-        /* Fondo con escudo */
         .player-card .card-background {
             position: absolute;
             width: 120%;
@@ -169,7 +167,7 @@
             left: -10%;
             opacity: 0.15;
             transform: rotate(35deg);
-            background-image: url('../../assets/img/logos/club/logo-negro.png');
+            background-image: url('../img/logos/club/logo-negro.png');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -497,14 +495,14 @@
                 <!-- CABECERA DEL JUEGO -->
                 <div class="game-header">
                     <div class="logo-wrapper">
-                        <img src="../../assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
+                        <img src="../img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
                         <div class="logo-label">CB O GROVE</div>
                     </div>
 
                     <div class="game-title">🏀 Aliña o <span>equipo!</span></div>
 
                     <div class="logo-wrapper">
-                        <img src="../../assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" style="cursor:pointer;" onerror="this.style.display='none'">
+                        <img src="../img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" style="cursor:pointer;" onerror="this.style.display='none'">
                         <div class="logo-label">Creado por <a href="https://taplink.cc/kampa_snmt" target="_blank">@kampa_snmt</a></div>
                     </div>
                 </div>
@@ -517,7 +515,7 @@
 
                 <!-- TABLERO DE JUGADORES -->
                 <div class="formation-container" id="formationContainer">
-                    <!-- Generado por JavaScript -->
+                    <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto); padding:2rem 0;">Cargando xogadores...</p>
                 </div>
 
                 <!-- ESTADO -->
@@ -550,8 +548,8 @@
     </main>
 
     <!-- ===== SCRIPTS ===== -->
-    <script src="../../js/app.js"></script>
-    <script src="../../js/layout.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/layout.js"></script>
 
     <!-- OVERLAY DE RESULTADO -->
     <div class="result-overlay hidden" id="resultOverlay">
@@ -572,8 +570,8 @@
                 masculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205'
             },
             DRIVE: {
-                femenino: '../../assets/img/plantillas/femenino/',
-                masculino: '../../assets/img/plantillas/masculino/'
+                femenino: '../img/plantillas/femenino/',
+                masculino: '../img/plantillas/masculino/'
             }
         };
 
@@ -769,18 +767,15 @@
                 card.className = 'player-card';
                 card.dataset.index = index;
 
-                // Fondo con escudo (igual que plantillas)
                 const background = document.createElement('div');
                 background.className = 'card-background';
                 card.appendChild(background);
 
-                // Número
                 const number = document.createElement('div');
                 number.className = 'player-number';
                 number.textContent = xogador.dorsal || '?';
                 card.appendChild(number);
 
-                // Foto
                 const photoContainer = document.createElement('div');
                 photoContainer.className = 'photo-container';
                 if (xogador.foto) {
@@ -797,7 +792,6 @@
                 }
                 card.appendChild(photoContainer);
 
-                // Nombre
                 const nameContainer = document.createElement('div');
                 nameContainer.className = 'name-container';
                 const name = document.createElement('div');
@@ -810,7 +804,6 @@
                 formationContainer.appendChild(card);
             });
 
-            // Marcar seleccionado
             if (estado.seleccionado !== null) {
                 const cards = formationContainer.querySelectorAll('.player-card');
                 if (cards[estado.seleccionado]) {
