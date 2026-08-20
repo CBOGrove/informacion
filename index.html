@@ -213,7 +213,7 @@
 </head>
 <body>
 
-    <!-- ===== CONTENIDO ===== -->
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
     <main class="main-content">
         
         <!-- HERO -->
@@ -233,7 +233,7 @@
                 <div>
                     <div class="icono"><i class="fab fa-twitch"></i></div>
                     <div class="nombre">Twitch</div>
-                    <div class="estado">🔴 No en directo</div>
+                    <div class="estado" id="twitchEstadoIndex">🔴 No en directo</div>
                 </div>
             </a>
             <a href="https://www.youtube.com/@cbogrove" target="_blank" class="item youtube">
@@ -388,7 +388,19 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', cargarUltimaNoticia);
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarUltimaNoticia();
+            
+            // Sincronizar estado de Twitch con el header
+            setTimeout(() => {
+                const badgeHeader = document.getElementById('twitchBadge');
+                const estadoIndex = document.getElementById('twitchEstadoIndex');
+                if (badgeHeader && estadoIndex) {
+                    estadoIndex.textContent = badgeHeader.textContent;
+                }
+            }, 100);
+        });
     </script>
 </body>
 </html>
