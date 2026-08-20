@@ -4,8 +4,7 @@
 console.log('🚀 Layout.js cargado');
 
 // ===== CONFIGURACIÓN DE URL BASE =====
-// Cambia esto según la URL de tu repositorio
-const URL_BASE = '/informacion/';  // ✅ URL correcta
+const URL_BASE = '/informacion/';  // ✅ ÚNICA URL CORRECTA
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 DOM cargado, inyectando header y footer...');
@@ -14,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     inyectarFooter();
     marcarPaginaActiva();
     
-    // Usar la función de app.js si existe, sino la local
     if (typeof window.checkTwitchLive === 'function') {
         window.checkTwitchLive();
     } else {
@@ -80,14 +78,12 @@ function inyectarFooter() {
 
 function marcarPaginaActiva() {
     const path = window.location.pathname;
-    // Extraer el nombre de la página actual (ignorando la carpeta /informacion/)
     const paginaActual = path.replace(URL_BASE, '').split('/').pop() || 'index.html';
     console.log('📍 Página actual:', paginaActual);
 
     setTimeout(() => {
         document.querySelectorAll('.main-nav a').forEach(link => {
             const href = link.getAttribute('href');
-            // Extraer el nombre de la página del href
             const hrefPagina = href.replace(URL_BASE, '').split('/').pop() || 'index.html';
             
             if (hrefPagina === paginaActual) {
@@ -98,7 +94,6 @@ function marcarPaginaActiva() {
     }, 50);
 }
 
-// Función local de respaldo para Twitch (si app.js no está disponible)
 function checkTwitchLiveLocal() {
     const badge = document.getElementById('twitchBadge');
     if (badge) {
