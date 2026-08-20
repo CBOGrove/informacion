@@ -85,6 +85,24 @@
             transform: translateY(-2px);
         }
 
+        .info-card .btn-whatsapp {
+            display: inline-block;
+            background: #25D366;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 0.3rem;
+        }
+
+        .info-card .btn-whatsapp:hover {
+            background: #1ebe5c;
+            transform: translateY(-2px);
+        }
+
         /* ===== MAPA ===== */
         .mapa-container {
             background: rgba(255,255,255,0.85);
@@ -94,13 +112,13 @@
             box-shadow: var(--sombra-suave);
             border: 1px solid rgba(255,255,255,0.3);
             height: 100%;
-            min-height: 400px;
+            min-height: 450px;
         }
 
         .mapa-container iframe {
             width: 100%;
             height: 100%;
-            min-height: 400px;
+            min-height: 450px;
             border: none;
         }
 
@@ -249,7 +267,8 @@
                     <div class="icono">📍</div>
                     <h3>Dirección</h3>
                     <p>Pavillón Municipal Novo Monte da Vila<br>
-                    O Grove, Pontevedra</p>
+                    Rúa Monte da Vila, s/n<br>
+                    36980 O Grove, Pontevedra</p>
                     <a href="https://maps.app.goo.gl/pZRBBs9wt6XVCtwb8" target="_blank" class="enlace-maps">
                         <i class="fas fa-map-marker-alt"></i> Abrir en Google Maps
                     </a>
@@ -262,9 +281,11 @@
                 </div>
 
                 <div class="info-card">
-                    <div class="icono">📞</div>
-                    <h3>Teléfono</h3>
-                    <a href="tel:+34614713869">+34 614 71 38 69</a>
+                    <div class="icono">💬</div>
+                    <h3>WhatsApp</h3>
+                    <a href="https://wa.me/34614713869?text=Ola!%20Contacto%20dende%20a%20web%20do%20CB%20O%20Grove" target="_blank" class="btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> Enviar mensaxe
+                    </a>
                 </div>
 
                 <div class="info-card">
@@ -291,10 +312,11 @@
                 <h2>✉️ Envíanos unha mensaxe</h2>
                 <p class="sub">Responderemos o antes posible.</p>
 
-                <form action="#" method="POST">
+                <!-- ✅ FORMULARIO CON TU ENDPOINT CORRECTO -->
+                <form action="https://formspree.io/f/mzepodaj" method="POST">
                     <div class="form-group">
                         <label for="nombre">Nome</label>
-                        <input type="text" id="nombre" name="nombre" required placeholder="O teu nome">
+                        <input type="text" id="nombre" name="nome" required placeholder="O teu nome">
                     </div>
 
                     <div class="form-group">
