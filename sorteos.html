@@ -40,9 +40,41 @@
             box-shadow: var(--sombra-media);
         }
 
+        /* ===== TARJETA INACTIVA (gris apagado) ===== */
+        .sorteo-card.inactivo {
+            opacity: 0.6;
+            filter: grayscale(0.6);
+            border-left-color: #999;
+            pointer-events: none;
+        }
+
+        .sorteo-card.inactivo .btn-participar {
+            background: #999;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .sorteo-card.inactivo .btn-participar:hover {
+            background: #999;
+            transform: none;
+        }
+
+        /* ===== ICONO ===== */
         .sorteo-card .icono {
             font-size: 3.5rem;
             margin-bottom: 0.5rem;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sorteo-card .icono img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
         }
 
         .sorteo-card .titulo {
@@ -86,7 +118,25 @@
             opacity: 0.7;
         }
 
-        /* ===== BOTÓN BASES LEGAIS (esquina inferior derecha) ===== */
+        .sorteo-card .ganadores {
+            font-size: 0.85rem;
+            color: var(--azul-club);
+            margin-top: 0.5rem;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .sorteo-card .ganadores a {
+            color: var(--dorado);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .sorteo-card .ganadores a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== BOTÓN BASES LEGAIS ===== */
         .bases-legais-btn {
             position: fixed;
             bottom: 30px;
@@ -114,7 +164,7 @@
             box-shadow: 0 8px 30px rgba(201, 160, 61, 0.4);
         }
 
-        /* ===== TÍTULO DE PÁGINA ===== */
+        /* ===== TÍTULOS ===== */
         .page-title {
             text-align: center;
             color: var(--azul-club);
@@ -129,6 +179,33 @@
             margin-bottom: 2.5rem;
         }
 
+        /* ===== SPINNER ===== */
+        .spinner-container {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(201, 160, 61, 0.1);
+            border-top: 5px solid var(--dorado);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-sorteos {
+            text-align: center;
+            color: var(--gris-texto);
+            padding: 2rem;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .sorteos-grid {
@@ -140,6 +217,8 @@
             }
             .sorteo-card .icono {
                 font-size: 2.8rem;
+                width: 60px;
+                height: 60px;
             }
             .sorteo-card .titulo {
                 font-size: 1.2rem;
@@ -176,46 +255,15 @@
         <h1 class="page-title">🎰 SORTEOS</h1>
         <p class="page-subtitle">Participa nos nosos sorteos e gaña premios exclusivos</p>
 
-        <div class="sorteos-grid">
-            <!-- Sorteo 1 -->
-            <div class="sorteo-card">
-                <div class="icono">🎁</div>
-                <div class="titulo">Sorteo de Camiseta</div>
-                <div class="descricion">Participa e gaña unha camiseta oficial do CB O Grove firmada polo equipo.</div>
-                <a href="#" class="btn-participar">▶ Participar</a>
-                <div class="estado">📅 Remata o 30/06/2026</div>
-            </div>
-
-            <!-- Sorteo 2 -->
-            <div class="sorteo-card">
-                <div class="icono">🏀</div>
-                <div class="titulo">Sorteo Balón</div>
-                <div class="descricion">Un balón de baloncesto profesional da marca Spalding.</div>
-                <a href="#" class="btn-participar">▶ Participar</a>
-                <div class="estado">📅 Remata o 15/07/2026</div>
-            </div>
-
-            <!-- Sorteo 3 -->
-            <div class="sorteo-card">
-                <div class="icono">🎟️</div>
-                <div class="titulo">Entradas para partido</div>
-                <div class="descricion">Dúas entradas para o próximo partido do CB O Grove no pavillón.</div>
-                <a href="#" class="btn-participar">▶ Participar</a>
-                <div class="estado">📅 Remata o 05/08/2026</div>
-            </div>
-
-            <!-- Sorteo 4 -->
-            <div class="sorteo-card">
-                <div class="icono">👕</div>
-                <div class="titulo">Kit completo</div>
-                <div class="descricion">Kit completo do club: camiseta, pantalón e chándal oficial.</div>
-                <a href="#" class="btn-participar">▶ Participar</a>
-                <div class="estado">📅 Remata o 20/08/2026</div>
+        <div class="sorteos-grid" id="sorteosGrid">
+            <div class="spinner-container">
+                <div class="spinner"></div>
+                <p style="color: var(--gris-texto);">Cargando sorteos...</p>
             </div>
         </div>
     </main>
 
-    <!-- ===== BOTÓN BASES LEGAIS (esquina inferior derecha) ===== -->
+    <!-- ===== BOTÓN BASES LEGAIS ===== -->
     <a href="https://cbogrove.github.io/Bases_legais/" target="_blank" class="bases-legais-btn">
         <i class="fas fa-file-alt"></i>
         Bases legais
@@ -224,5 +272,273 @@
     <!-- ===== SCRIPTS ===== -->
     <script src="js/app.js"></script>
     <script src="js/layout.js"></script>
+    <script>
+        // ===== CONFIGURACIÓN =====
+        const CONFIG_SORTEOS = {
+            sheetUrl: 'https://docs.google.com/spreadsheets/d/1we-1DRNJjbrut1lzJZFwBwxSWCcGrRZ1D4Afb4QYIyY/export?format=csv'
+        };
+
+        // ===== FUNCIONES =====
+        function parseCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+
+            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+            
+            const headerMap = {};
+            rawHeaders.forEach((h, index) => {
+                if (h.includes('icono') || h.includes('icon')) headerMap['icono'] = index;
+                else if (h.includes('titulo') || h.includes('título') || h.includes('nombre')) headerMap['titulo'] = index;
+                else if (h.includes('explicacion') || h.includes('descripcion') || h.includes('descripción')) headerMap['explicacion'] = index;
+                else if (h.includes('enlace') || h.includes('url')) headerMap['enlace'] = index;
+                else if (h.includes('inicio')) headerMap['inicio'] = index;
+                else if (h.includes('fin')) headerMap['fin'] = index;
+                else if (h.includes('activo')) headerMap['activo'] = index;
+                else if (h.includes('ganador') || h.includes('gañador')) headerMap['ganador'] = index;
+            });
+
+            if (headerMap['icono'] === undefined) headerMap['icono'] = 0;
+            if (headerMap['titulo'] === undefined) headerMap['titulo'] = 1;
+            if (headerMap['explicacion'] === undefined) headerMap['explicacion'] = 2;
+            if (headerMap['enlace'] === undefined) headerMap['enlace'] = 3;
+            if (headerMap['inicio'] === undefined) headerMap['inicio'] = 4;
+            if (headerMap['fin'] === undefined) headerMap['fin'] = 5;
+            if (headerMap['activo'] === undefined) headerMap['activo'] = 6;
+            if (headerMap['ganador'] === undefined) headerMap['ganador'] = 7;
+
+            return lines.slice(1).map(line => {
+                const values = parseCSVLine(line);
+                const obj = {};
+                Object.keys(headerMap).forEach(key => {
+                    let value = values[headerMap[key]] || '';
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.slice(1, -1);
+                    }
+                    obj[key] = value.trim();
+                });
+                return obj;
+            });
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                    continue;
+                }
+                if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                    continue;
+                }
+                current += char;
+            }
+            if (current.trim() || result.length > 0) {
+                result.push(current.trim());
+            }
+            return result;
+        }
+
+        function formatearFecha(fecha) {
+            if (!fecha) return '';
+            try {
+                const opciones = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                return new Date(fecha).toLocaleDateString('gl-ES', opciones);
+            } catch (e) {
+                return fecha;
+            }
+        }
+
+        function esActivo(valor) {
+            if (!valor) return false;
+            return valor.toUpperCase().trim() === 'SI';
+        }
+
+        function esImagenURL(texto) {
+            if (!texto) return false;
+            return texto.startsWith('http://') || texto.startsWith('https://') || texto.startsWith('data:image');
+        }
+
+        /**
+         * Parsea el texto de ganadores con formato:
+         * - "Kampa" → texto plano
+         * - "[Instagram](https://...)" → enlace con texto "Instagram"
+         * - "Camiseta: Kampa | Balón: Jose" → múltiples ganadores
+         * - "Camiseta: [Instagram](https://...)" → mezcla
+         */
+        function parsearGanadores(texto) {
+            if (!texto || texto.trim() === '') return null;
+
+            // Si tiene | separa múltiples ganadores
+            if (texto.includes('|')) {
+                const partes = texto.split('|').map(p => p.trim());
+                return partes.map(p => parsearGanadorIndividual(p)).filter(g => g !== null);
+            }
+
+            return parsearGanadorIndividual(texto);
+        }
+
+        function parsearGanadorIndividual(texto) {
+            // Busca enlaces con formato [texto](url)
+            const enlaceRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+            let match;
+            let resultado = [];
+            let ultimoIndex = 0;
+
+            // Si tiene enlaces, procesarlos
+            while ((match = enlaceRegex.exec(texto)) !== null) {
+                // Texto antes del enlace
+                if (match.index > ultimoIndex) {
+                    const textoAntes = texto.substring(ultimoIndex, match.index).trim();
+                    if (textoAntes) {
+                        resultado.push({ texto: textoAntes, url: null });
+                    }
+                }
+                // El enlace
+                resultado.push({ texto: match[1], url: match[2] });
+                ultimoIndex = enlaceRegex.lastIndex;
+            }
+
+            // Texto después del último enlace
+            if (ultimoIndex < texto.length) {
+                const textoRestante = texto.substring(ultimoIndex).trim();
+                if (textoRestante) {
+                    resultado.push({ texto: textoRestante, url: null });
+                }
+            }
+
+            // Si no hay enlaces, devolver todo como texto plano
+            if (resultado.length === 0) {
+                return { texto: texto.trim(), url: null };
+            }
+
+            return resultado;
+        }
+
+        function renderizarGanadores(ganadoresData) {
+            if (!ganadoresData) return '';
+
+            // Si es un array (múltiples ganadores)
+            if (Array.isArray(ganadoresData)) {
+                return ganadoresData.map(g => renderizarGanador(g)).join('<br>');
+            }
+
+            // Si es un solo ganador
+            return renderizarGanador(ganadoresData);
+        }
+
+        function renderizarGanador(ganador) {
+            if (Array.isArray(ganador)) {
+                // Caso con múltiples partes (texto + enlaces)
+                return ganador.map(part => {
+                    if (part.url) {
+                        return `<a href="${part.url}" target="_blank" rel="noopener">${part.texto}</a>`;
+                    }
+                    return part.texto;
+                }).join(' ');
+            }
+
+            // Caso simple
+            if (ganador.url) {
+                return `<a href="${ganador.url}" target="_blank" rel="noopener">${ganador.texto}</a>`;
+            }
+            return ganador.texto;
+        }
+
+        function crearSorteo(sorteo) {
+            const container = document.createElement('div');
+            
+            // Determinar si está activo
+            const activo = esActivo(sorteo.activo);
+            container.className = `sorteo-card${!activo ? ' inactivo' : ''}`;
+
+            // Icono (puede ser emoji o URL de imagen)
+            let iconoHTML = '';
+            if (sorteo.icono) {
+                if (esImagenURL(sorteo.icono)) {
+                    iconoHTML = `<img src="${sorteo.icono}" alt="${sorteo.titulo}">`;
+                } else {
+                    iconoHTML = sorteo.icono;
+                }
+            }
+
+            // Estado (fecha fin o ganador)
+            let estadoHTML = '';
+            if (sorteo.ganador) {
+                const ganadoresParsed = parsearGanadores(sorteo.ganador);
+                const ganadoresHTML = renderizarGanadores(ganadoresParsed);
+                estadoHTML = `<div class="ganadores">🏆 Gañador: ${ganadoresHTML}</div>`;
+            } else if (sorteo.fin) {
+                estadoHTML = `<div class="estado">📅 Remata o ${formatearFecha(sorteo.fin)}</div>`;
+            }
+
+            // Botón (solo si está activo)
+            let botonHTML = '';
+            if (activo && sorteo.enlace) {
+                botonHTML = `<a href="${sorteo.enlace}" target="_blank" class="btn-participar">▶ Participar</a>`;
+            } else if (!activo) {
+                botonHTML = `<span class="btn-participar" style="background:#999;cursor:not-allowed;">🔒 Finalizado</span>`;
+            }
+
+            container.innerHTML = `
+                <div class="icono">${iconoHTML}</div>
+                <div class="titulo">${sorteo.titulo || 'Sen título'}</div>
+                <div class="descricion">${sorteo.explicacion || ''}</div>
+                ${botonHTML}
+                ${estadoHTML}
+            `;
+
+            return container;
+        }
+
+        async function cargarSorteos() {
+            const grid = document.getElementById('sorteosGrid');
+
+            try {
+                console.log('🔄 Cargando sorteos...');
+                const response = await fetch(CONFIG_SORTEOS.sheetUrl);
+                const csv = await response.text();
+                console.log('📄 CSV recibido');
+                
+                const sorteos = parseCSV(csv);
+                console.log('📊 Sorteos:', sorteos);
+
+                grid.innerHTML = '';
+
+                // Filtrar solo activos si quieres, o mostrar todos
+                const activos = sorteos.filter(s => esActivo(s.activo));
+                const inactivos = sorteos.filter(s => !esActivo(s.activo));
+
+                // Primero activos, luego inactivos
+                const ordenados = [...activos, ...inactivos];
+
+                if (ordenados.length === 0) {
+                    grid.innerHTML = `<p class="no-sorteos">Non hai sorteos dispoñibles neste momento.</p>`;
+                    return;
+                }
+
+                ordenados.forEach(s => {
+                    grid.appendChild(crearSorteo(s));
+                });
+
+                console.log(`✅ ${ordenados.length} sorteos cargados`);
+
+            } catch (error) {
+                console.error('Error:', error);
+                grid.innerHTML = `
+                    <div class="no-sorteos" style="color:#e74c3c;">
+                        ⚠️ Erro cargando os sorteos.
+                    </div>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarSorteos);
+    </script>
 </body>
 </html>
