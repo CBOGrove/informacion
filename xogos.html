@@ -79,7 +79,35 @@
             transform: translateY(-2px);
         }
 
-        /* ===== TÍTULO DE PÁGINA ===== */
+        /* ===== BOTÓN BASES LEGAIS ===== */
+        .bases-legais-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--azul-club);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.4);
+            transition: all 0.3s;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid var(--dorado);
+        }
+
+        .bases-legais-btn:hover {
+            background: var(--dorado);
+            color: var(--azul-club);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(201, 160, 61, 0.4);
+        }
+
+        /* ===== TÍTULOS ===== */
         .page-title {
             text-align: center;
             color: var(--azul-club);
@@ -112,6 +140,25 @@
             .page-title {
                 font-size: 1.8rem;
             }
+            
+            .bases-legais-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 0.6rem 1.2rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .bases-legais-btn {
+                bottom: 15px;
+                right: 15px;
+                padding: 0.5rem 1rem;
+                font-size: 0.7rem;
+            }
+            .bases-legais-btn i {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -123,31 +170,37 @@
         <p class="page-subtitle">Elixe o xogo que máis che guste e pasa un bo rato</p>
 
         <div class="xogos-grid">
-            <!-- Juego 1: Ahorcado / Ruleta -->
+            <!-- Juego 1: A ruleta da sorte -->
             <div class="xogo-card">
-                <div class="icono">🎯</div>
-                <div class="titulo">Ahorcado / Ruleta</div>
-                <div class="descricion">Adiviña a palabra antes de que se complete o aforcado. Cada letra incorrecta achega o final...</div>
-                <a href="assets/xogos/ahorcado.html" class="btn-xogar">▶ Xogar</a>
+                <div class="icono">🎡</div>
+                <div class="titulo">A ruleta da sorte</div>
+                <div class="descricion">Xira a ruleta e adiviña a palabra. Cada acierto achega o premio final. Demostra o teu coñecemento do baloncesto!</div>
+                <a href="assets/xogos/ruleta.html" class="btn-xogar">▶ Xogar</a>
             </div>
 
-            <!-- Juego 2: Aliña o equipo / Parellas -->
+            <!-- Juego 2: As parellas -->
             <div class="xogo-card">
                 <div class="icono">🧩</div>
-                <div class="titulo">Aliña o equipo (Parellas)</div>
-                <div class="descricion">Atopa todas as parellas de imaxes. Adestra a túa memoria visual e logra a mellor puntuación.</div>
-                <a href="assets/xogos/aliña-o-equipo.html" class="btn-xogar">▶ Xogar</a>
+                <div class="titulo">As parellas</div>
+                <div class="descricion">Atopa todas as parellas de xogadores e xogadoras. Adestra a túa memoria visual e coñece mellor ao equipo.</div>
+                <a href="assets/xogos/parellas.html" class="btn-xogar">▶ Xogar</a>
             </div>
 
-            <!-- Juego 3: Ordenar botellas -->
+            <!-- Juego 3: Aliña o equipo! -->
             <div class="xogo-card">
-                <div class="icono">🍾</div>
-                <div class="titulo">Ordena as botellas</div>
-                <div class="descricion">Coloca as botellas no lugar correcto. Un reto de lóxica e rapidez para poñer a proba a túa mente.</div>
-                <a href="assets/xogos/botellas.html" class="btn-xogar">▶ Xogar</a>
+                <div class="icono">🏀</div>
+                <div class="titulo">Aliña o equipo!</div>
+                <div class="descricion">Ordena os xogadores e xogadoras na posición correcta. Cada partida é diferente e o tempo corre contra ti!</div>
+                <a href="assets/xogos/aliña-o-equipo.html" class="btn-xogar">▶ Xogar</a>
             </div>
         </div>
     </main>
+
+    <!-- ===== BOTÓN BASES LEGAIS ===== -->
+    <a href="https://cbogrove.github.io/Bases_legais/" target="_blank" class="bases-legais-btn">
+        <i class="fas fa-file-alt"></i>
+        Bases legais
+    </a>
 
     <!-- ===== SCRIPTS ===== -->
     <script src="js/app.js"></script>
