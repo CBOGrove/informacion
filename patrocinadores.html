@@ -283,69 +283,6 @@
             padding: 2rem;
         }
 
-        /* ===== FOOTER SPONSORS ===== */
-        .footer-sponsors {
-            background: rgba(0,0,0,0.03);
-            padding: 2rem 0 1rem;
-            border-top: 1px solid rgba(201, 160, 61, 0.15);
-            margin-top: 3rem;
-        }
-
-        .footer-sponsors .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        .footer-sponsors .titulo-sponsors {
-            text-align: center;
-            color: var(--azul-club);
-            font-family: var(--font-titulos);
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            opacity: 0.7;
-        }
-
-        .footer-sponsors .logos-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 2.5rem;
-            padding: 0.5rem;
-        }
-
-        .footer-sponsors .logo-item {
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0.6;
-            transition: opacity 0.3s, transform 0.3s;
-            filter: grayscale(100%);
-        }
-
-        .footer-sponsors .logo-item:hover {
-            opacity: 1;
-            transform: scale(1.05);
-            filter: grayscale(0%);
-        }
-
-        .footer-sponsors .logo-item img {
-            max-height: 100%;
-            max-width: 120px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-        }
-
-        .footer-sponsors .logo-item.placeholder {
-            color: #999;
-            font-size: 0.8rem;
-            font-weight: 500;
-            opacity: 0.4;
-        }
-
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .patrocinadores-grid {
@@ -371,18 +308,6 @@
             
             .page-title {
                 font-size: 1.8rem;
-            }
-            
-            .footer-sponsors .logos-grid {
-                gap: 1.5rem;
-            }
-            
-            .footer-sponsors .logo-item {
-                height: 45px;
-            }
-            
-            .footer-sponsors .logo-item img {
-                max-width: 90px;
             }
         }
 
@@ -424,16 +349,6 @@
         </div>
     </main>
 
-    <!-- ===== FOOTER SPONSORS ===== -->
-    <div class="footer-sponsors" id="footerSponsors">
-        <div class="container">
-            <div class="titulo-sponsors">🤝 OS NOSOS PATROCINADORES</div>
-            <div class="logos-grid" id="footerLogosGrid">
-                <!-- Se llenará con JavaScript -->
-            </div>
-        </div>
-    </div>
-
     <!-- ===== SCRIPTS ===== -->
     <script src="js/app.js"></script>
     <script src="js/layout.js"></script>
@@ -446,11 +361,8 @@
         // ===== FUNCIÓN PARA LIMPIAR TEXTO =====
         function limpiarTexto(texto) {
             if (!texto) return '';
-            // Eliminar comillas al inicio y final
             texto = texto.replace(/^["']+|["']+$/g, '');
-            // Eliminar saltos de línea
             texto = texto.replace(/\n/g, ' ').replace(/\r/g, ' ');
-            // Eliminar espacios múltiples
             texto = texto.replace(/\s+/g, ' ');
             return texto.trim();
         }
@@ -469,6 +381,7 @@
                 else if (h.includes('descripcion')) headerMap['descripcion'] = index;
                 else if (h.includes('telefono') || h.includes('teléfono') || h.includes('phone') || h.includes('telf')) headerMap['telefono'] = index;
                 else if (h.includes('maps') || h.includes('ubicacion') || h.includes('ubicación') || h.includes('direccion') || h.includes('dirección')) headerMap['maps'] = index;
+                else if (h.includes('tipo')) headerMap['tipo'] = index;
             });
 
             if (headerMap['nombre'] === undefined) headerMap['nombre'] = 0;
@@ -476,15 +389,13 @@
             if (headerMap['descripcion'] === undefined) headerMap['descripcion'] = 2;
             if (headerMap['telefono'] === undefined) headerMap['telefono'] = 3;
             if (headerMap['maps'] === undefined) headerMap['maps'] = 4;
+            if (headerMap['tipo'] === undefined) headerMap['tipo'] = 5;
 
             return lines.slice(1).map(line => {
-                // Parsear línea respetando comillas
                 const values = parseCSVLine(line);
                 const obj = {};
-                
                 Object.keys(headerMap).forEach(key => {
                     let value = values[headerMap[key]] || '';
-                    // Limpiar completamente el texto
                     value = limpiarTexto(value);
                     obj[key] = value;
                 });
@@ -492,7 +403,6 @@
             });
         }
 
-        // ===== FUNCIÓN PARA PARSEAR UNA LÍNEA CSV =====
         function parseCSVLine(line) {
             const result = [];
             let current = '';
@@ -500,29 +410,23 @@
             
             for (let i = 0; i < line.length; i++) {
                 const char = line[i];
-                
                 if (char === '"') {
                     inQuotes = !inQuotes;
                     continue;
                 }
-                
                 if (char === ',' && !inQuotes) {
                     result.push(current.trim());
                     current = '';
                     continue;
                 }
-                
                 current += char;
             }
-            
             if (current.trim() || result.length > 0) {
                 result.push(current.trim());
             }
-            
             return result;
         }
 
-        // ===== CONVERTIR URL DE IMAGEN =====
         function convertirURLImagen(url) {
             if (!url) return '';
             if (url.includes('github.com') && url.includes('/blob/')) {
@@ -538,15 +442,13 @@
             return url;
         }
 
-        // ===== FORMATEAR TEXTO CON SALTOS =====
         function formatearTextoConSaltos(texto) {
             if (!texto) return '';
-            // SOLO usa '|' como separador de líneas
             const lineas = texto.split('|').map(line => line.trim());
             return lineas.map(line => `<span class="linea">${line}</span>`).join('');
         }
 
-        // ===== CREAR TARJETA DE PATROCINADOR =====
+        // ===== CREAR TARJETA DE PATROCINADOR (SOLO PRIVADOS) =====
         function crearPatrocinador(patrocinador) {
             const container = document.createElement('div');
             container.className = 'patrocinador-card';
@@ -557,7 +459,6 @@
             const telefono = patrocinador.telefono || '';
             const mapsUrl = patrocinador.maps || '';
 
-            // La descripción ya viene limpia de comillas y saltos
             const descripcionHTML = formatearTextoConSaltos(descripcion);
 
             let html = `
@@ -592,7 +493,6 @@
             return container;
         }
 
-        // ===== CREAR TARJETA "ANÚNCIESE AQUÍ" =====
         function crearTarjetaAnunciate() {
             const container = document.createElement('div');
             container.className = 'patrocinador-card anunciate';
@@ -612,60 +512,33 @@
             return container;
         }
 
-        // ===== ACTUALIZAR FOOTER =====
-        function actualizarFooterSponsors(patrocinadores) {
-            const grid = document.getElementById('footerLogosGrid');
-            if (!grid) return;
-
-            const sponsors = patrocinadores.slice(0, 6);
-
-            grid.innerHTML = sponsors.map(p => {
-                const logoUrl = p.logo ? convertirURLImagen(p.logo) : '';
-                if (logoUrl) {
-                    return `
-                        <div class="logo-item" title="${p.nombre || 'Patrocinador'}">
-                            <img src="${logoUrl}" alt="${p.nombre || 'Patrocinador'}" loading="lazy" onerror="this.style.display='none'">
-                        </div>
-                    `;
-                }
-                return '';
-            }).join('');
-
-            if (grid.innerHTML.trim() === '') {
-                grid.innerHTML = `
-                    <div class="logo-item placeholder">🚀 Patrocinadores</div>
-                    <div class="logo-item placeholder">🏢 Empresas</div>
-                    <div class="logo-item placeholder">⭐ Colaboradores</div>
-                `;
-            }
-        }
-
-        // ===== CARGAR PATROCINADORES =====
         async function cargarPatrocinadores() {
             const grid = document.getElementById('patrocinadoresGrid');
 
             try {
-                console.log('🔄 Cargando patrocinadores...');
+                console.log('🔄 Cargando patrocinadores privados...');
                 const response = await fetch(CONFIG_PATROCINADORES.sheetUrl);
                 const csv = await response.text();
                 
                 const patrocinadores = parseCSV(csv);
-                console.log('📊 Patrocinadores:', patrocinadores);
+                console.log('📊 Datos:', patrocinadores);
 
-                const validos = patrocinadores.filter(p => p.nombre);
+                // FILTRAR: SOLO patrocinadores privados (tipo != "SI")
+                const privados = patrocinadores.filter(p => 
+                    p.nombre && (!p.tipo || p.tipo.toUpperCase() !== 'SI')
+                );
 
                 grid.innerHTML = '';
 
-                if (validos.length > 0) {
-                    validos.forEach(p => {
+                if (privados.length > 0) {
+                    privados.forEach(p => {
                         grid.appendChild(crearPatrocinador(p));
                     });
                 }
 
                 grid.appendChild(crearTarjetaAnunciate());
-                actualizarFooterSponsors(validos);
 
-                console.log(`✅ ${validos.length} patrocinadores cargados`);
+                console.log(`✅ ${privados.length} patrocinadores privados cargados`);
 
             } catch (error) {
                 console.error('Error:', error);
