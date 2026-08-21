@@ -30,7 +30,9 @@
                 console.log('🔄 Cargando noticias...');
                 const response = await fetch(CONFIG.sheets.noticias);
                 const csv = await response.text();
-                const noticias = parseCSV(csv);
+                const noticias = parseCSVNoticias(csv);
+
+                console.log('📊 Noticias parseadas:', noticias);
 
                 if (noticias.length === 0) {
                     destacadaContainer.innerHTML = '<p class="no-noticias">Non hai novas dispoñibles.</p>';
