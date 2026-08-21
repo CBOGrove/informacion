@@ -1,4 +1,5 @@
 // ===== UTILIDADES COMUNES =====
+// Versión 2.2 - Sin rutas, solo funciones
 
 /**
  * Parsea un CSV respetando comillas
@@ -95,7 +96,7 @@ function formatearFechaCorta(fecha) {
 }
 
 /**
- * Convierte URL de GitHub/Dive a raw
+ * Convierte URL de GitHub/Drive a raw
  */
 function convertirURLImagen(url) {
     if (!url) return '';
