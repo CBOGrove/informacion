@@ -267,3 +267,64 @@ window.barallar = barallar;
 window.arraysIguais = arraysIguais;
 window.cargarCSV = cargarCSV;
 window.mapearHeaders = mapearHeaders;
+
+// ===== AÑADIR AL FINAL DEL ARCHIVO =====
+
+/**
+ * Parsea CSV de XORNADAS con columnas específicas
+ */
+function parseCSVXornadas(csv) {
+    const lines = csv.split('\n').filter(line => line.trim());
+    if (lines.length < 2) return [];
+
+    const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+    
+    const getIndex = (posibles) => {
+        for (const p of posibles) {
+            const idx = rawHeaders.findIndex(h => h.includes(p));
+            if (idx !== -1) return idx;
+        }
+        return null;
+    };
+
+    const idxXornada = getIndex(['xornada', 'jornada']) ?? 0;
+    const idxData = getIndex(['data', 'fecha', 'date']) ?? 1;
+    const idxCampo = getIndex(['campo', 'lugar', 'ubicacion']) ?? 2;
+    const idxLocal = getIndex(['equipo local', 'local']) ?? 3;
+    const idxLogoLocal = getIndex(['url logo local', 'logo local']) ?? 4;
+    const idxVisitante = getIndex(['equipo visitante', 'visitante']) ?? 5;
+    const idxLogoVisitante = getIndex(['url logo visitante', 'logo visitante']) ?? 6;
+    const idxResultado = getIndex(['resultado', 'marcador']) ?? 7;
+    const idxTwitch = getIndex(['url directo twitch', 'twitch']) ?? 8;
+    const idxYoutube = getIndex(['url directo youtube', 'youtube directo']) ?? 9;
+    const idxVod = getIndex(['url vod youtube', 'vod']) ?? 10;
+    const idxInfo = getIndex(['info detras', 'info detrás', 'resumen']) ?? 11;
+
+    const result = [];
+    for (let i = 1; i < lines.length; i++) {
+        const values = parseCSVLine(lines[i]);
+        // Limpiar y procesar cada valor
+        const xornada = (values[idxXornada] || '').trim();
+        // Saltar filas sin número de jornada
+        if (!xornada) continue;
+        
+        result.push({
+            xornada: xornada,
+            data: (values[idxData] || '').trim(),
+            campo: (values[idxCampo] || '').trim(),
+            equipoLocal: (values[idxLocal] || '').trim(),
+            logoLocal: (values[idxLogoLocal] || '').trim(),
+            equipoVisitante: (values[idxVisitante] || '').trim(),
+            logoVisitante: (values[idxLogoVisitante] || '').trim(),
+            resultado: (values[idxResultado] || '').trim(),
+            twitch: (values[idxTwitch] || '').trim(),
+            youtube: (values[idxYoutube] || '').trim(),
+            vod: (values[idxVod] || '').trim(),
+            infoDetras: (values[idxInfo] || '').trim()
+        });
+    }
+    return result;
+}
+
+// ===== EXPORTAR (añadir al final) =====
+window.parseCSVXornadas = parseCSVXornadas;
