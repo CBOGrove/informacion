@@ -1,7 +1,7 @@
 // ===== LAYOUT: HEADER Y FOOTER COMPARTIDOS =====
-// Versión 2.0 - Rutas absolutas y sin URL_BASE
+// Versión 2.2 - Rutas para https://cbogrove.github.io/informacion/
 
-console.log('🚀 Layout.js v2.0 cargado');
+console.log('🚀 Layout.js v2.2 cargado');
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 DOM cargado, inyectando header y footer...');
@@ -19,19 +19,19 @@ document.addEventListener('DOMContentLoaded', function() {
 function inyectarHeader() {
     const headerHTML = `
         <header class="main-header">
-            <a href="/" class="logo">
-                <img src="/assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
+            <a href="index.html" class="logo">
+                <img src="assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
                 CB O GROVE
             </a>
             <nav class="main-nav">
-                <a href="/">Inicio</a>
-                <a href="/plantillas.html">Plantillas</a>
-                <a href="/jornadas.html">Jornadas</a>
-                <a href="/noticias.html">Noticias</a>
-                <a href="/patrocinadores.html">Patrocinadores</a>
-                <a href="/sorteos.html">Sorteos</a>
-                <a href="/xogos.html">Xogos</a>
-                <a href="/contacto.html">Contacto</a>
+                <a href="index.html">Inicio</a>
+                <a href="plantillas.html">Plantillas</a>
+                <a href="jornadas.html">Jornadas</a>
+                <a href="noticias.html">Noticias</a>
+                <a href="patrocinadores.html">Patrocinadores</a>
+                <a href="sorteos.html">Sorteos</a>
+                <a href="xogos.html">Xogos</a>
+                <a href="contacto.html">Contacto</a>
             </nav>
             <span class="twitch-badge" id="twitchBadge">📺 No en directo</span>
         </header>
@@ -70,14 +70,13 @@ function inyectarFooter() {
 
 function marcarPaginaActiva() {
     const currentPath = window.location.pathname;
+    const currentPage = currentPath.split('/').pop() || 'index.html';
     
     document.querySelectorAll('.main-nav a').forEach(link => {
-        const linkPath = new URL(link.href, window.location.origin).pathname;
+        const href = link.getAttribute('href');
+        const hrefPage = href.split('/').pop() || 'index.html';
         
-        // Comparar rutas ignorando index.html
-        if (linkPath === currentPath ||
-            (currentPath === '/' && linkPath === '/index.html') ||
-            (currentPath === '/index.html' && linkPath === '/')) {
+        if (hrefPage === currentPage) {
             link.classList.add('active');
         }
     });
