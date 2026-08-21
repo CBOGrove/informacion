@@ -5,369 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorteos · Club Baloncesto O Grove</title>
     
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-
-    <style>
-        /* ===== CONTENEDOR DE SORTEOS ===== */
-        .sorteos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .sorteo-card {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(4px);
-            border-radius: 20px;
-            padding: 2rem 1.5rem;
-            border-left: 5px solid var(--dorado);
-            box-shadow: var(--sombra-suave);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid rgba(255,255,255,0.3);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .sorteo-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--sombra-media);
-        }
-
-        .sorteo-card.inactivo {
-            opacity: 0.6;
-            filter: grayscale(0.4);
-            border-left-color: #999;
-        }
-
-        .sorteo-card.inactivo .ganadores a {
-            pointer-events: auto;
-            color: var(--dorado);
-            text-decoration: underline;
-        }
-
-        .sorteo-card.inactivo .ganadores a:hover {
-            color: var(--azul-club);
-        }
-
-        .sorteo-card.inactivo .btn-participar {
-            background: #999;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .sorteo-card.inactivo .btn-participar:hover {
-            background: #999;
-            transform: none;
-        }
-
-        .sorteo-card .icono {
-            font-size: 3.5rem;
-            margin-bottom: 0.5rem;
-            width: 80px;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .sorteo-card .icono img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 12px;
-        }
-
-        .sorteo-card .titulo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--azul-club);
-            font-family: var(--font-titulos);
-            margin-bottom: 0.3rem;
-        }
-
-        .sorteo-card .descricion {
-            color: var(--gris-texto);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 1.2rem;
-            flex: 1;
-        }
-
-        .sorteo-card .btn-participar {
-            background: var(--azul-club);
-            color: white;
-            padding: 0.6rem 2rem;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: background 0.3s, transform 0.2s;
-            display: inline-block;
-        }
-
-        .sorteo-card .btn-participar:hover {
-            background: var(--dorado);
-            color: var(--azul-club);
-            transform: translateY(-2px);
-        }
-
-        .sorteo-card .estado {
-            font-size: 0.8rem;
-            color: var(--gris-texto);
-            margin-top: 0.5rem;
-            opacity: 0.7;
-        }
-
-        .sorteo-card .ganadores {
-            font-size: 0.85rem;
-            color: var(--azul-club);
-            margin-top: 0.5rem;
-            font-weight: 500;
-            line-height: 1.6;
-        }
-
-        .sorteo-card .ganadores a {
-            color: var(--dorado);
-            text-decoration: none;
-            font-weight: 600;
-            pointer-events: auto;
-        }
-
-        .sorteo-card .ganadores a:hover {
-            text-decoration: underline;
-            color: var(--azul-club);
-        }
-
-        /* ===== BOTÓN BASES LEGAIS ===== */
-        .bases-legais-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--azul-club);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.4);
-            transition: all 0.3s;
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: 2px solid var(--dorado);
-        }
-
-        .bases-legais-btn:hover {
-            background: var(--dorado);
-            color: var(--azul-club);
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 30px rgba(201, 160, 61, 0.4);
-        }
-
-        .page-title {
-            text-align: center;
-            color: var(--azul-club);
-            font-family: var(--font-titulos);
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
-        }
-        .page-subtitle {
-            text-align: center;
-            color: var(--gris-texto);
-            margin-bottom: 2.5rem;
-        }
-
-        .spinner-container {
-            text-align: center;
-            padding: 3rem 0;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(201, 160, 61, 0.1);
-            border-top: 5px solid var(--dorado);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .no-sorteos {
-            text-align: center;
-            color: var(--gris-texto);
-            padding: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .sorteos-grid {
-                grid-template-columns: 1fr;
-                gap: 1.2rem;
-            }
-            .sorteo-card {
-                padding: 1.5rem 1rem;
-            }
-            .sorteo-card .icono {
-                font-size: 2.8rem;
-                width: 60px;
-                height: 60px;
-            }
-            .sorteo-card .titulo {
-                font-size: 1.2rem;
-            }
-            .page-title {
-                font-size: 1.8rem;
-            }
-            .bases-legais-btn {
-                bottom: 20px;
-                right: 20px;
-                padding: 0.6rem 1.2rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .bases-legais-btn {
-                bottom: 15px;
-                right: 15px;
-                padding: 0.5rem 1rem;
-                font-size: 0.7rem;
-            }
-            .bases-legais-btn i {
-                font-size: 0.8rem;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <main class="main-content">
-        <h1 class="page-title">🎰 SORTEOS</h1>
-        <p class="page-subtitle">Participa nos nosos sorteos e gaña premios exclusivos</p>
-
-        <div class="sorteos-grid" id="sorteosGrid">
-            <div class="spinner-container">
-                <div class="spinner"></div>
-                <p style="color: var(--gris-texto);">Cargando sorteos...</p>
-            </div>
-        </div>
-    </main>
-
-    <a href="https://cbogrove.github.io/Bases_legais/" target="_blank" class="bases-legais-btn">
-        <i class="fas fa-file-alt"></i>
-        Bases legais
-    </a>
-
-    <script src="js/app.js"></script>
-    <script src="js/layout.js"></script>
-    <script>
-        const CONFIG_SORTEOS = {
-            sheetUrl: 'https://docs.google.com/spreadsheets/d/1we-1DRNJjbrut1lzJZFwBwxSWCcGrRZ1D4Afb4QYIyY/export?format=csv'
-        };
-
-        function parseCSV(csv) {
-            const lines = csv.split('\n').filter(line => line.trim());
-            if (lines.length < 2) return [];
-
-            // La primera línea son los headers
-            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-            
-            // Buscar índices por nombre (más fiable)
-            const getIndex = (nombre) => {
-                const idx = headers.findIndex(h => h.includes(nombre));
-                return idx !== -1 ? idx : null;
-            };
-
-            const idxIcono = getIndex('icono') ?? 0;
-            const idxTitulo = getIndex('titulo') ?? 1;
-            const idxExplicacion = getIndex('explicacion') ?? 2;
-            const idxEnlace = getIndex('enlace') ?? 3;
-            const idxInicio = getIndex('inicio') ?? 4;
-            const idxFin = getIndex('fin') ?? 5;
-            const idxActivo = getIndex('activo') ?? 6;
-            const idxGanador = getIndex('ganador') ?? 7;
-
-            // Debug para ver qué índices se están usando
-            console.log('🔍 Índices encontrados:', {
-                icono: idxIcono,
-                titulo: idxTitulo,
-                explicacion: idxExplicacion,
-                enlace: idxEnlace,
-                inicio: idxInicio,
-                fin: idxFin,
-                activo: idxActivo,
-                ganador: idxGanador
-            });
-
-            const result = [];
-            for (let i = 1; i < lines.length; i++) {
-                const values = parseCSVLine(lines[i]);
-                result.push({
-                    icono: limpiarTexto(values[idxIcono] || ''),
-                    titulo: limpiarTexto(values[idxTitulo] || ''),
-                    explicacion: limpiarTexto(values[idxExplicacion] || ''),
-                    enlace: limpiarTexto(values[idxEnlace] || ''),
-                    inicio: limpiarTexto(values[idxInicio] || ''),
-                    fin: limpiarTexto(values[idxFin] || ''),
-                    activo: limpiarTexto(values[idxActivo] || ''),
-                    ganador: limpiarTexto(values[idxGanador] || '')
-                });
-            }
-            return result;
-        }
-
-        function limpiarTexto(texto) {
-            if (!texto) return '';
-            texto = texto.replace(/^["']+|["']+$/g, '');
-            texto = texto.replace(/\n/g, ' ').replace(/\r/g, ' ');
-            texto = texto.replace(/\s+/g, ' ');
-            return texto.trim();
-        }
-
-        function parseCSVLine(line) {
-            const result = [];
-            let current = '';
-            let inQuotes = false;
-            
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                if (char === '"') {
-                    inQuotes = !inQuotes;
-                    continue;
-                }
-                if (char === ',' && !inQuotes) {
-                    result.push(current);
-                    current = '';
-                    continue;
-                }
-                current += char;
-            }
-            result.push(current);
-            return result;
-        }
-
-        function formatearFecha(fecha) {
-            if (!fecha) return '';
-            try {
-                const opciones = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                return new Date(fecha).toLocaleDateString('gl-ES', opciones);
-            } catch (e) {
-                return fecha;
-            }
-        }
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- JS: Config + Utils + Components + Layout + App -->
+    <script src="/js/config.js" defer></script>
+    <script src="/js/utils.js" defer></script>
+    <script src="/js/components.js" defer></script>
+    <script src="/js/layout.js" defer></script>
+    <script src="/js/app.js" defer></script>
+    
+    <!-- Script específico de sorteos -->
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarSorteos();
+        });
 
         function esActivo(valor) {
             if (!valor) return false;
@@ -489,15 +145,60 @@
             return container;
         }
 
+        function mapearHeadersSorteos(headers) {
+            const map = {
+                icono: ['icono'],
+                titulo: ['titulo'],
+                explicacion: ['explicacion'],
+                enlace: ['enlace'],
+                inicio: ['inicio'],
+                fin: ['fin'],
+                activo: ['activo'],
+                ganador: ['ganador']
+            };
+            return mapearHeaders(headers, map);
+        }
+
+        function parseCSVSorteos(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+
+            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+            const headerMap = mapearHeadersSorteos(rawHeaders);
+
+            // Asignar índices por defecto
+            if (headerMap.icono === undefined) headerMap.icono = 0;
+            if (headerMap.titulo === undefined) headerMap.titulo = 1;
+            if (headerMap.explicacion === undefined) headerMap.explicacion = 2;
+            if (headerMap.enlace === undefined) headerMap.enlace = 3;
+            if (headerMap.inicio === undefined) headerMap.inicio = 4;
+            if (headerMap.fin === undefined) headerMap.fin = 5;
+            if (headerMap.activo === undefined) headerMap.activo = 6;
+            if (headerMap.ganador === undefined) headerMap.ganador = 7;
+
+            return lines.slice(1).map(line => {
+                const values = parseCSVLine(line);
+                const obj = {};
+                Object.keys(headerMap).forEach(key => {
+                    let value = values[headerMap[key]] || '';
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.slice(1, -1);
+                    }
+                    obj[key] = limpiarTexto(value);
+                });
+                return obj;
+            });
+        }
+
         async function cargarSorteos() {
             const grid = document.getElementById('sorteosGrid');
+            if (!grid) return;
 
             try {
                 console.log('🔄 Cargando sorteos...');
-                const response = await fetch(CONFIG_SORTEOS.sheetUrl);
+                const response = await fetch(CONFIG.sheets.sorteos);
                 const csv = await response.text();
-                
-                const sorteos = parseCSV(csv);
+                const sorteos = parseCSVSorteos(csv);
                 console.log('📊 Sorteos parseados:', sorteos);
 
                 grid.innerHTML = '';
@@ -518,7 +219,7 @@
                 console.log(`✅ ${ordenados.length} sorteos cargados`);
 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error cargando sorteos:', error);
                 grid.innerHTML = `
                     <div class="no-sorteos" style="color:#e74c3c;">
                         ⚠️ Erro cargando os sorteos.
@@ -526,8 +227,27 @@
                 `;
             }
         }
-
-        document.addEventListener('DOMContentLoaded', cargarSorteos);
     </script>
+</head>
+<body>
+
+    <main class="main-content">
+        <h1 class="page-title">🎰 SORTEOS</h1>
+        <p class="page-subtitle">Participa nos nosos sorteos e gaña premios exclusivos</p>
+
+        <div class="sorteos-grid" id="sorteosGrid">
+            <div class="spinner-container">
+                <div class="spinner"></div>
+                <p style="color: var(--gris-texto);">Cargando sorteos...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- BOTÓN BASES LEGAIS -->
+    <a href="https://cbogrove.github.io/Bases_legais/" target="_blank" class="bases-legais-btn">
+        <i class="fas fa-file-alt"></i>
+        Bases legais
+    </a>
+
 </body>
 </html>
