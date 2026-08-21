@@ -1,8 +1,8 @@
 // ===== UTILIDADES COMUNES =====
-// Versión 2.2 - Sin rutas, solo funciones
+// Versión 2.3 - Con parsers específicos para noticias y patrocinadores
 
 /**
- * Parsea un CSV respetando comillas
+ * Parsea un CSV genérico respetando comillas
  */
 function parseCSV(csv) {
     const lines = [];
@@ -39,6 +39,82 @@ function parseCSV(csv) {
         });
         return obj;
     });
+}
+
+/**
+ * Parsea CSV de NOTICIAS con columnas específicas
+ */
+function parseCSVNoticias(csv) {
+    const lines = csv.split('\n').filter(line => line.trim());
+    if (lines.length < 2) return [];
+
+    const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+    
+    const getIndex = (posibles) => {
+        for (const p of posibles) {
+            const idx = rawHeaders.findIndex(h => h.includes(p));
+            if (idx !== -1) return idx;
+        }
+        return null;
+    };
+
+    const idxFecha = getIndex(['fecha', 'data']) ?? 0;
+    const idxTitular = getIndex(['titular', 'titulo', 'cabecera']) ?? 1;
+    const idxIntro = getIndex(['texto introduccion', 'introduccion', 'resumen', 'texto_corto']) ?? 2;
+    const idxLargo = getIndex(['texto longo', 'texto_largo', 'articulo', 'descripción']) ?? 3;
+    const idxUrl = getIndex(['url', 'imagen', 'enlace', 'foto']) ?? 4;
+
+    const result = [];
+    for (let i = 1; i < lines.length; i++) {
+        const values = parseCSVLine(lines[i]);
+        result.push({
+            fecha: (values[idxFecha] || '').trim(),
+            cabecera: (values[idxTitular] || '').trim(),
+            texto_corto: (values[idxIntro] || '').trim(),
+            texto_largo: (values[idxLargo] || '').trim(),
+            enlace_imagen: (values[idxUrl] || '').trim()
+        });
+    }
+    return result;
+}
+
+/**
+ * Parsea CSV de PATROCINADORES con columnas específicas
+ */
+function parseCSVPatrocinadores(csv) {
+    const lines = csv.split('\n').filter(line => line.trim());
+    if (lines.length < 2) return [];
+
+    const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+    
+    const getIndex = (posibles) => {
+        for (const p of posibles) {
+            const idx = rawHeaders.findIndex(h => h.includes(p));
+            if (idx !== -1) return idx;
+        }
+        return null;
+    };
+
+    const idxNome = getIndex(['nome', 'nombre', 'name']) ?? 0;
+    const idxLogo = getIndex(['url logo', 'logo', 'imagen']) ?? 1;
+    const idxDesc = getIndex(['descripción', 'descripcion', 'texto']) ?? 2;
+    const idxTel = getIndex(['teléfono', 'telefono', 'phone']) ?? 3;
+    const idxMaps = getIndex(['maps', 'ubicacion', 'direccion']) ?? 4;
+    const idxTipo = getIndex(['tipo']) ?? 5;
+
+    const result = [];
+    for (let i = 1; i < lines.length; i++) {
+        const values = parseCSVLine(lines[i]);
+        result.push({
+            nombre: (values[idxNome] || '').trim(),
+            logo: (values[idxLogo] || '').trim(),
+            descripcion: (values[idxDesc] || '').trim(),
+            telefono: (values[idxTel] || '').trim(),
+            maps: (values[idxMaps] || '').trim(),
+            tipo: (values[idxTipo] || '').trim()
+        });
+    }
+    return result;
 }
 
 function parseCSVLine(line) {
@@ -179,6 +255,8 @@ function mapearHeaders(headers, map) {
 
 // ===== EXPORTAR =====
 window.parseCSV = parseCSV;
+window.parseCSVNoticias = parseCSVNoticias;
+window.parseCSVPatrocinadores = parseCSVPatrocinadores;
 window.parseCSVLine = parseCSVLine;
 window.limpiarTexto = limpiarTexto;
 window.formatearFecha = formatearFecha;
