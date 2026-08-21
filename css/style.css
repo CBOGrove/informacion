@@ -51,7 +51,7 @@ body::before {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-image: url('/assets/img/logos/club/logo-negro.png');
+    background-image: url('../assets/img/logos/club/logo-negro.png');
     background-size: auto 70%;
     background-repeat: no-repeat;
     background-position: center center;
@@ -332,7 +332,7 @@ body::before {
     left: -10%;
     opacity: 0.15;
     transform: rotate(35deg);
-    background-image: url('/assets/img/logos/club/logo-negro.png');
+    background-image: url('../assets/img/logos/club/logo-negro.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -436,7 +436,7 @@ body::before {
     left: -10%;
     opacity: 0.15;
     transform: rotate(35deg);
-    background-image: url('/assets/img/logos/club/logo-negro.png');
+    background-image: url('../assets/img/logos/club/logo-negro.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
