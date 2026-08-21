@@ -5,21 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorteos · Club Baloncesto O Grove</title>
     
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
-    <!-- CSS Global -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     
-    <!-- JS: Config + Utils + Components + Layout + App -->
-    <script src="/js/config.js" defer></script>
-    <script src="/js/utils.js" defer></script>
-    <script src="/js/components.js" defer></script>
-    <script src="/js/layout.js" defer></script>
-    <script src="/js/app.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/utils.js" defer></script>
+    <script src="js/components.js" defer></script>
+    <script src="js/layout.js" defer></script>
+    <script src="js/app.js" defer></script>
     
-    <!-- Script específico de sorteos -->
     <script defer>
         document.addEventListener('DOMContentLoaded', function() {
             cargarSorteos();
@@ -166,7 +161,6 @@
             const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
             const headerMap = mapearHeadersSorteos(rawHeaders);
 
-            // Asignar índices por defecto
             if (headerMap.icono === undefined) headerMap.icono = 0;
             if (headerMap.titulo === undefined) headerMap.titulo = 1;
             if (headerMap.explicacion === undefined) headerMap.explicacion = 2;
@@ -243,7 +237,6 @@
         </div>
     </main>
 
-    <!-- BOTÓN BASES LEGAIS -->
     <a href="https://cbogrove.github.io/Bases_legais/" target="_blank" class="bases-legais-btn">
         <i class="fas fa-file-alt"></i>
         Bases legais
