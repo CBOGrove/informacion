@@ -156,3 +156,156 @@ window.toggleNoticia = toggleNoticia;
 window.crearTarjetaJugador = crearTarjetaJugador;
 window.crearTarjetaNoticia = crearTarjetaNoticia;
 window.toggleNoticia = toggleNoticia;
+
+// ===== AÑADIR AL FINAL DEL ARCHIVO =====
+
+/**
+ * Crea una tarjeta de jornada (con flip)
+ */
+function crearTarjetaXornada(jornada) {
+    const container = document.createElement('div');
+    container.className = 'xornada-flip-container';
+
+    const inner = document.createElement('div');
+    inner.className = 'xornada-flip-inner';
+
+    // ===== PROCESAR DATOS =====
+    const xornadaNum = jornada.xornada || '?';
+    const dataFormateada = jornada.data ? formatearFecha(jornada.data) : '';
+    const campo = jornada.campo || 'Sen campo';
+    const local = jornada.equipoLocal || 'Local';
+    const visitante = jornada.equipoVisitante || 'Visitante';
+    const resultado = jornada.resultado || '⏳ Por disputar';
+    const hayResultado = jornada.resultado && jornada.resultado.trim() !== '';
+    
+    // Logos
+    const logoLocal = jornada.logoLocal ? convertirURLImagen(jornada.logoLocal) : '';
+    const logoVisitante = jornada.logoVisitante ? convertirURLImagen(jornada.logoVisitante) : '';
+    
+    // Enlaces
+    const twitchUrl = jornada.twitch && jornada.twitch.toUpperCase() !== 'NO' ? jornada.twitch : null;
+    const youtubeUrl = jornada.youtube && jornada.youtube.toUpperCase() !== 'NO' ? jornada.youtube : null;
+    const vodUrl = jornada.vod && jornada.vod.toUpperCase() !== 'NO' ? jornada.vod : null;
+    const tieneEnlaces = twitchUrl || youtubeUrl || vodUrl;
+    
+    // Info detrás (procesar | como saltos de línea)
+    const infoLines = jornada.infoDetras ? jornada.infoDetras.split('|').map(line => line.trim()) : [];
+
+    // ===== FRENTE =====
+    const front = document.createElement('div');
+    front.className = 'xornada-flip-front';
+    
+    let frontHTML = `
+        <div class="xornada-card">
+            <div class="xornada-header">
+                <span class="xornada-numero">📅 Xornada ${xornadaNum}</span>
+                ${dataFormateada ? `<span class="xornada-data">${dataFormateada}</span>` : ''}
+            </div>
+            <div class="xornada-partido">
+                <div class="xornada-equipo xornada-local">
+                    <div class="xornada-logo-container">
+                        ${logoLocal ? `<img src="${logoLocal}" alt="${local}" loading="lazy" onerror="this.style.display='none'">` : '<span class="xornada-logo-placeholder">🏀</span>'}
+                    </div>
+                    <span class="xornada-equipo-nombre">${local}</span>
+                </div>
+                <div class="xornada-resultado ${hayResultado ? '' : 'por-disputar'}">
+                    ${resultado}
+                </div>
+                <div class="xornada-equipo xornada-visitante">
+                    <div class="xornada-logo-container">
+                        ${logoVisitante ? `<img src="${logoVisitante}" alt="${visitante}" loading="lazy" onerror="this.style.display='none'">` : '<span class="xornada-logo-placeholder">🏀</span>'}
+                    </div>
+                    <span class="xornada-equipo-nombre">${visitante}</span>
+                </div>
+            </div>
+            <div class="xornada-campo">
+                <span>📍 ${campo}</span>
+            </div>
+    `;
+
+    // Enlaces
+    if (tieneEnlaces) {
+        frontHTML += `<div class="xornada-enlaces">`;
+        if (twitchUrl) {
+            frontHTML += `<a href="${twitchUrl}" target="_blank" class="xornada-enlace twitch">🔴 Sigue o partido en directo en Twitch</a>`;
+        }
+        if (youtubeUrl) {
+            frontHTML += `<a href="${youtubeUrl}" target="_blank" class="xornada-enlace youtube">🔴 Sigue o partido en directo en YouTube</a>`;
+        }
+        if (vodUrl) {
+            frontHTML += `<a href="${vodUrl}" target="_blank" class="xornada-enlace vod">▶️ Ver partido completo (VOD)</a>`;
+        }
+        frontHTML += `</div>`;
+    }
+
+    // Indicador de flip si hay info detrás
+    if (infoLines.length > 0) {
+        frontHTML += `
+            <div class="xornada-flip-indicator">
+                <span>👆 Fai clic para ver o resumo</span>
+            </div>
+        `;
+    }
+
+    frontHTML += `</div>`; // cierre xornada-card
+    front.innerHTML = frontHTML;
+
+    // ===== DETRÁS (FLIP) =====
+    const back = document.createElement('div');
+    back.className = 'xornada-flip-back';
+
+    if (infoLines.length > 0) {
+        let backHTML = `
+            <div class="xornada-back-content">
+                <div class="xornada-back-header">
+                    <span>📝 RESUMEN · Xornada ${xornadaNum}</span>
+                </div>
+                <div class="xornada-back-info">
+        `;
+        
+        infoLines.forEach(line => {
+            backHTML += `<p>${line}</p>`;
+        });
+        
+        backHTML += `
+                </div>
+                <div class="xornada-back-indicator">
+                    <span>🔄 Fai clic para volver</span>
+                </div>
+            </div>
+        `;
+        back.innerHTML = backHTML;
+    } else {
+        // Si no hay info, el back muestra un mensaje
+        back.innerHTML = `
+            <div class="xornada-back-content">
+                <div class="xornada-back-header">
+                    <span>📝 RESUMEN · Xornada ${xornadaNum}</span>
+                </div>
+                <div class="xornada-back-info">
+                    <p style="opacity:0.6; font-style:italic;">Sen resumo dispoñible para esta xornada.</p>
+                </div>
+                <div class="xornada-back-indicator">
+                    <span>🔄 Fai clic para volver</span>
+                </div>
+            </div>
+        `;
+    }
+
+    // ===== MONTAR FLIP =====
+    inner.appendChild(front);
+    inner.appendChild(back);
+    container.appendChild(inner);
+
+    // ===== EVENTO CLICK =====
+    container.addEventListener('click', function(e) {
+        // Evitar que el click en enlaces active el flip
+        if (e.target.closest('a')) return;
+        this.classList.toggle('flipped');
+    });
+
+    return container;
+}
+
+// ===== EXPORTAR (añadir al final) =====
+window.crearTarjetaXornada = crearTarjetaXornada;
