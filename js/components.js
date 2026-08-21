@@ -1,4 +1,5 @@
 // ===== COMPONENTES REUTILIZABLES =====
+// Versión 2.2 - Rutas relativas
 
 /**
  * Crea una tarjeta de jugador (para plantillas y juegos)
@@ -6,7 +7,6 @@
 function crearTarjetaJugador(jugador, opciones = {}) {
     const {
         equipo = 'femenino',
-        mostrarInfo = false,
         clickable = true,
         invertido = false,
     } = opciones;
@@ -24,7 +24,9 @@ function crearTarjetaJugador(jugador, opciones = {}) {
     inner.className = 'flip-inner';
 
     const numDisplay = String(jugador.numero || '?').replace(/[ED]/g, '');
-    const fotoUrl = jugador.foto || `${CONFIG.drive[equipo]}${jugador.numero}.png`;
+    // Usar CONFIG.drive para la ruta
+    const driveBase = equipo === 'femenino' ? CONFIG.drive.femenino : CONFIG.drive.masculino;
+    const fotoUrl = jugador.foto || `${driveBase}${jugador.numero}.png`;
 
     // ===== FRENTE =====
     const front = document.createElement('div');
@@ -52,9 +54,10 @@ function crearTarjetaJugador(jugador, opciones = {}) {
     const textColor = invertido ? '#FFD700' : '#000000';
     const nameBg = invertido ? '#FFD700' : '#000000';
     const nameColor = invertido ? '#000000' : '#FFD700';
+    const borderColor = invertido ? '#FFD700' : '#000000';
 
     back.style.background = bgColor;
-    back.style.border = `3px solid ${invertido ? '#FFD700' : '#000000'}`;
+    back.style.border = `3px solid ${borderColor}`;
 
     const infoLines = jugador.info_extra ? jugador.info_extra.split('|').map(l => l.trim()) : ['Sin información'];
 
