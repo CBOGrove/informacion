@@ -22,9 +22,9 @@
     <style>
         /* ============================================
            ESTILOS ESPECÍFICOS DE "AS PARELLAS"
+           (Adaptado al estilo de "Aliña o equipo")
            ============================================ */
         
-        /* ===== CONTENEDOR PRINCIPAL ===== */
         .parellas-wrapper {
             max-width: 1200px;
             margin: 0 auto;
@@ -32,19 +32,19 @@
         }
         
         .parellas-container {
-            background: linear-gradient(145deg, rgba(255, 215, 0, 0.15), rgba(255, 180, 50, 0.10));
-            border-radius: 30px;
-            padding: 1.5rem;
-            box-shadow: var(--sombra-media);
-            border: 1px solid rgba(201, 160, 61, 0.2);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(4px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--sombra-media);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             text-align: center;
         }
         
-        /* ===== SELECTOR DE CONFIGURACIÓN ===== */
+        /* ===== SETUP PANEL ===== */
         .setup-panel {
             background: rgba(30, 58, 95, 0.05);
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 1.5rem 2rem;
             margin-bottom: 1.5rem;
             border: 1px solid rgba(201, 160, 61, 0.15);
@@ -55,7 +55,7 @@
             font-size: 2rem;
             color: var(--azul-club);
             margin-bottom: 1.2rem;
-            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
         }
         
         .setup-title .emoji {
@@ -75,11 +75,11 @@
             flex-direction: column;
             align-items: center;
             gap: 0.5rem;
-            min-width: 140px;
+            min-width: 120px;
         }
         
         .setup-group-label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: var(--gris-texto);
@@ -97,10 +97,10 @@
             padding: 0.4rem 1rem;
             border: 2px solid var(--azul-club);
             border-radius: 30px;
-            background: rgba(255,255,255,0.6);
+            background: rgba(255, 255, 255, 0.6);
             color: var(--azul-club);
             font-family: var(--font-titulos);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -110,13 +110,11 @@
             background: var(--azul-club);
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(30, 58, 95, 0.2);
         }
         
         .setup-btn.active {
             background: var(--azul-club);
             color: white;
-            box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
         }
         
         .setup-btn.active:hover {
@@ -124,29 +122,13 @@
             color: var(--azul-club);
         }
         
-        .setup-btn.dificil-btn {
-            border-color: #c62828;
-            color: #c62828;
-        }
-        
-        .setup-btn.dificil-btn:hover {
-            background: #c62828;
-            color: white;
-        }
-        
-        .setup-btn.dificil-btn.active {
-            background: #c62828;
-            color: white;
-            border-color: #c62828;
-        }
-        
         .start-btn {
             background: var(--azul-club);
             color: white;
-            font-size: 1.4rem;
-            padding: 0.8rem 3rem;
+            font-size: 1.3rem;
+            padding: 0.8rem 2.5rem;
             border: none;
-            border-radius: 60px;
+            border-radius: 50px;
             font-family: var(--font-titulos);
             font-weight: 600;
             cursor: pointer;
@@ -159,7 +141,6 @@
             background: var(--dorado);
             color: var(--azul-club);
             transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(201, 160, 61, 0.4);
         }
         
         /* ===== TABLERO ===== */
@@ -167,7 +148,7 @@
             display: flex;
             justify-content: center;
             margin: 1.2rem 0;
-            min-height: 400px;
+            min-height: 350px;
         }
         
         .cards-grid {
@@ -177,28 +158,27 @@
             width: 100%;
         }
         
-        /* ===== CARTA ===== */
+        /* ===== CARTA (estilo igual que Aliña o equipo) ===== */
         .card {
-            aspect-ratio: 3 / 4;
+            aspect-ratio: 2 / 3;
             background: transparent;
             border-radius: 12px;
             cursor: pointer;
             position: relative;
             transition: transform 0.2s ease;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
             transform-style: preserve-3d;
             max-width: 140px;
-            min-width: 80px;
+            min-width: 70px;
             margin: 0 auto;
         }
         
         .card:hover:not(.flipped):not(.disabled) {
             transform: scale(1.04);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.35);
         }
         
-        /* Caras de la carta */
-        .card-front, .card-back {
+        .card-front,
+        .card-back {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -210,39 +190,37 @@
             transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             overflow: hidden;
             padding: 6px;
+            border: 3px solid #000000;
         }
         
-        /* REVERSO (logo) */
+        /* REVERSO - estilo igual que Aliña o equipo */
         .card-back {
-            background: linear-gradient(145deg, #1e3a5f, #0d1f33);
+            background: #FFD700;
             transform: rotateY(0deg);
-            border: 3px solid var(--dorado);
-            box-shadow: inset 0 0 30px rgba(201, 160, 61, 0.15);
+            border-color: #000000;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1);
         }
         
         .card-back img {
-            width: 85%;
-            height: 85%;
+            width: 75%;
+            height: 75%;
             object-fit: contain;
-            filter: drop-shadow(0 0 15px rgba(201, 160, 61, 0.2));
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
         }
         
         .card-back .fallback-logo {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: bold;
-            color: var(--dorado);
+            color: #000000;
             text-align: center;
             font-family: var(--font-titulos);
         }
         
-        /* ANVERSO (contenido) */
+        /* ANVERSO - estilo jugador */
         .card-front {
             background: #f5f5f5;
             transform: rotateY(180deg);
-            border: 3px solid var(--azul-club);
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--azul-club);
+            border-color: #000000;
             flex-direction: column;
             padding: 8px;
         }
@@ -268,7 +246,7 @@
         }
         
         .card-front .card-info {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--azul-club);
             text-align: center;
@@ -289,12 +267,8 @@
             color: white;
             padding: 0 8px;
             border-radius: 12px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             margin-left: 4px;
-        }
-        
-        .card-front .card-info .nome {
-            font-size: 0.8rem;
         }
         
         /* Carta volteada */
@@ -340,7 +314,7 @@
             font-size: 1.2rem;
             font-weight: 600;
             color: var(--azul-club);
-            min-height: 60px;
+            min-height: 55px;
             font-family: var(--font-titulos);
         }
         
@@ -351,13 +325,18 @@
             padding: 0.5rem 2rem;
             border-radius: 50px;
             animation: pulse 0.8s ease;
-            font-size: 1.3rem;
         }
         
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
         
         /* ===== BOTONES ===== */
@@ -372,7 +351,7 @@
         .info-buttons button {
             padding: 0.5rem 1.5rem;
             font-family: var(--font-titulos);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
             background: var(--azul-club);
             color: white;
@@ -398,7 +377,7 @@
         }
         
         .info-buttons .shortcut {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             opacity: 0.6;
             display: block;
         }
@@ -423,15 +402,18 @@
         }
         
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
         
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .parellas-container {
                 padding: 1rem;
-                border-radius: 20px;
             }
             
             .setup-panel {
@@ -447,12 +429,12 @@
             }
             
             .setup-group {
-                min-width: 100px;
+                min-width: 90px;
             }
             
             .setup-btn {
-                font-size: 0.75rem;
-                padding: 0.3rem 0.8rem;
+                font-size: 0.7rem;
+                padding: 0.3rem 0.7rem;
             }
             
             .start-btn {
@@ -465,8 +447,8 @@
             }
             
             .card {
-                min-width: 65px;
-                max-width: 110px;
+                min-width: 60px;
+                max-width: 100px;
             }
             
             .card-front .card-info {
@@ -479,7 +461,7 @@
             
             .status-area {
                 font-size: 1rem;
-                min-height: 50px;
+                min-height: 45px;
             }
             
             .info-buttons button {
@@ -494,17 +476,17 @@
             }
             
             .setup-group-label {
-                font-size: 0.65rem;
+                font-size: 0.6rem;
             }
             
             .setup-btn {
-                font-size: 0.65rem;
+                font-size: 0.6rem;
                 padding: 0.25rem 0.6rem;
             }
             
             .card {
-                min-width: 55px;
-                max-width: 85px;
+                min-width: 50px;
+                max-width: 80px;
             }
             
             .cards-grid {
@@ -530,7 +512,7 @@
             }
             
             .status-area .victory-message {
-                font-size: 1rem;
+                font-size: 0.9rem;
                 padding: 0.3rem 1rem;
             }
         }
@@ -538,18 +520,16 @@
 </head>
 <body>
 
-    <!-- ===== HEADER INYECTADO POR LAYOUT.JS ===== -->
-
     <main class="main-content">
         <div class="parellas-wrapper">
             <div class="parellas-container">
-                
+
                 <!-- ===== PANEL DE CONFIGURACIÓN ===== -->
                 <div id="setupPanel" class="setup-panel">
                     <div class="setup-title">
                         <span class="emoji">🏀</span> AS PARELLAS
                     </div>
-                    
+
                     <!-- DIFICULTADE -->
                     <div class="setup-row">
                         <div class="setup-group">
@@ -560,7 +540,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- PARELLAS + EQUIPO -->
                     <div class="setup-row">
                         <div class="setup-group">
@@ -572,7 +552,7 @@
                                 <button data-pairs="10" class="setup-btn">10</button>
                             </div>
                         </div>
-                        
+
                         <div class="setup-group">
                             <span class="setup-group-label">👥 Equipo</span>
                             <div class="setup-group-buttons" id="teamSelector">
@@ -581,13 +561,13 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <button id="startGameBtn" class="start-btn">🎮 INICIAR PARTIDA</button>
-                    <div style="margin-top: 8px; font-size: 0.8rem; color: var(--gris-texto); opacity: 0.6;">
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: var(--gris-texto); opacity: 0.6;">
                         💡 Fácil: foto ↔ foto | Medio: foto ↔ nome + dorsal
                     </div>
                 </div>
-                
+
                 <!-- ===== ÁREA DE XOGO ===== -->
                 <div id="gameArea" style="display: none;">
                     <div class="board">
@@ -598,46 +578,44 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="status-area" id="statusMessage">
                         🔄 Atopa as parellas iguais
                     </div>
-                    
+
                     <div class="info-buttons">
                         <button id="newGameBtn">🔄 Nova partida <span class="shortcut">(N)</span></button>
                         <button id="helpBtn" class="help-btn">❓ Axuda <span class="shortcut">(H)</span></button>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </main>
-
-    <!-- ===== FOOTER INYECTADO POR LAYOUT.JS ===== -->
 
     <script>
         // =============================================
         // AS PARELLAS - LÓXICA COMPLETA
         // =============================================
-        
+
         (function() {
             'use strict';
-            
+
             // ===== CONFIGURACIÓN =====
             const CONFIG_LOCAL = {
                 sheets: {
                     plantillas: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv'
                 },
                 drive: {
-                    femenino: '/assets/img/plantillas/femenino/',
-                    masculino: '/assets/img/plantillas/masculino/'
+                    femenino: 'assets/img/plantillas/femenino/',
+                    masculino: 'assets/img/plantillas/masculino/'
                 }
             };
-            
+
             // ===== ESTADO DO XOGO =====
             let estado = {
                 equipo: 'femenino',
-                dificultade: 'easy', // 'easy' | 'medium'
+                dificultade: 'easy',
                 numParellas: 6,
                 xogadores: [],
                 cartas: [],
@@ -649,7 +627,7 @@
                 parellasAtopadas: 0,
                 totalParellas: 0
             };
-            
+
             // ===== DOM ELEMENTS =====
             const setupPanel = document.getElementById('setupPanel');
             const gameArea = document.getElementById('gameArea');
@@ -658,55 +636,18 @@
             const startBtn = document.getElementById('startGameBtn');
             const newGameBtn = document.getElementById('newGameBtn');
             const helpBtn = document.getElementById('helpBtn');
-            
+
             const difficultyBtns = document.querySelectorAll('#difficultySelector .setup-btn');
             const pairBtns = document.querySelectorAll('#pairSelector .setup-btn');
             const teamBtns = document.querySelectorAll('#teamSelector .setup-btn');
-            
+
             // ===== FUNCIÓNS AUXILIARES =====
             function esStaff(valor) {
                 if (!valor) return false;
                 const v = String(valor).toUpperCase().trim();
                 return v === 'SI' || v === 'SÍ' || v === 'TRUE' || v === '1';
             }
-            
-            function parseCSVPlantillas(csv) {
-                const lines = csv.split('\n').filter(line => line.trim());
-                if (lines.length < 2) return [];
 
-                const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-                
-                const getIndex = (posibles) => {
-                    for (const p of posibles) {
-                        const idx = headers.findIndex(h => h.includes(p));
-                        if (idx !== -1) return idx;
-                    }
-                    return null;
-                };
-
-                const idxNumero = getIndex(['numero', 'dorsal']) ?? 0;
-                const idxNombre = getIndex(['nombre', 'nome']) ?? 1;
-                const idxEntrenador = getIndex(['entrenador', 'staff']) ?? 2;
-
-                const result = [];
-                for (let i = 1; i < lines.length; i++) {
-                    const values = parseCSVLine(lines[i]);
-                    const numero = (values[idxNumero] || '').trim();
-                    const nombre = (values[idxNombre] || '').trim();
-                    const entrenador = (values[idxEntrenador] || '').trim();
-                    
-                    if (numero && nombre && !esStaff(entrenador)) {
-                        result.push({
-                            numero: numero,
-                            nombre: nombre,
-                            dorsal: parseInt(numero) || 0,
-                            entrenador: entrenador
-                        });
-                    }
-                }
-                return result;
-            }
-            
             function parseCSVLine(line) {
                 const values = [];
                 let current = '';
@@ -727,7 +668,43 @@
                 values.push(current.trim());
                 return values;
             }
-            
+
+            function parseCSVPlantillas(csv) {
+                const lines = csv.split('\n').filter(line => line.trim());
+                if (lines.length < 2) return [];
+
+                const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+
+                const getIndex = (posibles) => {
+                    for (const p of posibles) {
+                        const idx = headers.findIndex(h => h.includes(p));
+                        if (idx !== -1) return idx;
+                    }
+                    return null;
+                };
+
+                const idxNumero = getIndex(['numero', 'dorsal']) ?? 0;
+                const idxNombre = getIndex(['nombre', 'nome']) ?? 1;
+                const idxEntrenador = getIndex(['entrenador', 'staff']) ?? 2;
+
+                const result = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const values = parseCSVLine(lines[i]);
+                    const numero = (values[idxNumero] || '').trim();
+                    const nombre = (values[idxNombre] || '').trim();
+                    const entrenador = (values[idxEntrenador] || '').trim();
+
+                    if (numero && nombre && !esStaff(entrenador)) {
+                        result.push({
+                            numero: numero,
+                            nombre: nombre,
+                            dorsal: parseInt(numero) || 0
+                        });
+                    }
+                }
+                return result;
+            }
+
             function barallar(array) {
                 const arr = [...array];
                 for (let i = arr.length - 1; i > 0; i--) {
@@ -736,47 +713,46 @@
                 }
                 return arr;
             }
-            
+
             function getGridLayout(cardCount) {
                 if (cardCount <= 8) return { columns: 4, rows: 2 };
                 if (cardCount <= 12) return { columns: 4, rows: 3 };
                 if (cardCount <= 16) return { columns: 4, rows: 4 };
                 return { columns: 5, rows: 4 };
             }
-            
+
             // ===== CARGA DE XOGADORES =====
             async function cargarXogadores(equipo) {
                 try {
-                    const url = CONFIG_LOCAL.sheets.plantillas + '&gid=' + (equipo === 'femenino' ? '0' : '1375196205');
-                    console.log(`🔄 Cargando xogadores de ${equipo}...`);
+                    const gid = equipo === 'femenino' ? '0' : '1375196205';
+                    const url = CONFIG_LOCAL.sheets.plantillas + '&gid=' + gid;
+                    console.log('🔄 Cargando xogadores de ' + equipo + '...');
                     const response = await fetch(url);
                     const csv = await response.text();
                     const datos = parseCSVPlantillas(csv);
-                    console.log(`✅ ${datos.length} xogadores cargados de ${equipo}`);
+                    console.log('✅ ' + datos.length + ' xogadores cargados de ' + equipo);
                     return datos;
                 } catch (error) {
                     console.error('Error cargando xogadores:', error);
                     return [];
                 }
             }
-            
+
             // ===== XERAR PARELLAS =====
             function xerarParellas(xogadores, numParellas, dificultade, equipo) {
-                // Seleccionar xogadores aleatorios
                 const seleccionados = barallar(xogadores).slice(0, numParellas);
                 const driveBase = CONFIG_LOCAL.drive[equipo];
-                
+
                 let cartas = [];
-                
+
                 seleccionados.forEach((xogador, idx) => {
-                    const fotoUrl = `${driveBase}${xogador.numero}.png`;
+                    const fotoUrl = driveBase + xogador.numero + '.png';
                     const nomeCompleto = xogador.nombre;
                     const dorsal = xogador.dorsal;
-                    
+
                     if (dificultade === 'easy') {
-                        // Fácil: foto ↔ foto (misma)
                         cartas.push({
-                            id: `c1-${idx}`,
+                            id: 'c1-' + idx,
                             pairId: idx,
                             type: 'foto',
                             value: fotoUrl,
@@ -786,7 +762,7 @@
                             eliminated: false
                         });
                         cartas.push({
-                            id: `c2-${idx}`,
+                            id: 'c2-' + idx,
                             pairId: idx,
                             type: 'foto',
                             value: fotoUrl,
@@ -796,9 +772,8 @@
                             eliminated: false
                         });
                     } else {
-                        // Medio: foto ↔ info (nome + dorsal)
                         cartas.push({
-                            id: `c1-${idx}`,
+                            id: 'c1-' + idx,
                             pairId: idx,
                             type: 'foto',
                             value: fotoUrl,
@@ -808,10 +783,10 @@
                             eliminated: false
                         });
                         cartas.push({
-                            id: `c2-${idx}`,
+                            id: 'c2-' + idx,
                             pairId: idx,
                             type: 'info',
-                            value: `${nomeCompleto}`,
+                            value: nomeCompleto + ' #' + dorsal,
                             nome: nomeCompleto,
                             dorsal: dorsal,
                             flipped: false,
@@ -819,45 +794,44 @@
                         });
                     }
                 });
-                
-                // Barallar cartas
+
                 return barallar(cartas);
             }
-            
+
             // ===== RENDERIZAR TABOLEIRO =====
             function renderizarTaboleiro(cartas) {
                 cardsGrid.innerHTML = '';
                 estado.cartasElements = [];
-                
+
                 const totalCartas = cartas.length;
                 const layout = getGridLayout(totalCartas);
                 cardsGrid.style.display = 'grid';
-                cardsGrid.style.gridTemplateColumns = `repeat(${layout.columns}, minmax(70px, 130px))`;
-                
+                cardsGrid.style.gridTemplateColumns = 'repeat(' + layout.columns + ', minmax(70px, 130px))';
+                cardsGrid.style.gap = '12px';
+
                 cartas.forEach((carta, idx) => {
                     const cardDiv = document.createElement('div');
                     cardDiv.className = 'card';
                     if (carta.flipped) cardDiv.classList.add('flipped');
                     if (carta.eliminated) cardDiv.classList.add('disabled');
                     cardDiv.dataset.index = idx;
-                    
+
                     // REVERSO (logo)
                     const backDiv = document.createElement('div');
                     backDiv.className = 'card-back';
                     const img = document.createElement('img');
-                    img.src = '/assets/img/logos/club/logo-negro.png';
+                    img.src = 'assets/img/logos/club/logo-negro.png';
                     img.alt = 'Logo CB O Grove';
                     img.onerror = function() {
                         this.parentElement.innerHTML = '<div class="fallback-logo">🏀<br>CBOG</div>';
                     };
                     backDiv.appendChild(img);
-                    
+
                     // ANVERSO (contenido)
                     const frontDiv = document.createElement('div');
                     frontDiv.className = 'card-front';
-                    
+
                     if (carta.type === 'foto') {
-                        // Foto
                         const fotoImg = document.createElement('img');
                         fotoImg.className = 'card-foto';
                         fotoImg.src = carta.value;
@@ -871,45 +845,40 @@
                             this.parentElement.appendChild(placeholder);
                         };
                         frontDiv.appendChild(fotoImg);
-                        
-                        // Nombre abajo (opcional, solo en fácil)
+
                         if (estado.dificultade === 'easy') {
                             const infoDiv = document.createElement('div');
                             infoDiv.className = 'card-info';
-                            infoDiv.innerHTML = `<span class="nome">${carta.nome}</span>`;
+                            infoDiv.textContent = carta.nome;
                             frontDiv.appendChild(infoDiv);
                         }
                     } else {
-                        // Info (nome + dorsal)
                         const infoDiv = document.createElement('div');
                         infoDiv.className = 'card-info';
-                        infoDiv.innerHTML = `
-                            <span class="nome">${carta.nome}</span>
-                            <span class="dorsal">#${carta.dorsal}</span>
-                        `;
+                        infoDiv.innerHTML = carta.nome + ' <span class="dorsal">#' + carta.dorsal + '</span>';
                         frontDiv.appendChild(infoDiv);
                     }
-                    
+
                     cardDiv.appendChild(backDiv);
                     cardDiv.appendChild(frontDiv);
-                    
-                    cardDiv.addEventListener('click', (e) => {
+
+                    cardDiv.addEventListener('click', function(e) {
                         e.stopPropagation();
-                        const index = parseInt(cardDiv.dataset.index);
+                        var index = parseInt(this.dataset.index);
                         handleCardClick(index);
                     });
-                    
+
                     cardsGrid.appendChild(cardDiv);
                     estado.cartasElements.push(cardDiv);
                     carta.element = cardDiv;
                 });
             }
-            
+
             function updateCardVisual(index) {
-                const carta = estado.cartas[index];
-                const element = carta.element;
+                var carta = estado.cartas[index];
+                var element = carta.element;
                 if (!element) return;
-                
+
                 if (carta.flipped) {
                     element.classList.add('flipped');
                 } else {
@@ -921,24 +890,25 @@
                     element.classList.remove('disabled');
                 }
             }
-            
-            // ===== ANIMACIÓN DE ELIMINACIÓN =====
+
+            // ===== ANIMACIÓN ELIMINACIÓN =====
             function animateFlyToEdge(cardElement, callback) {
                 if (!cardElement) {
                     if (callback) callback();
                     return;
                 }
-                const rect = cardElement.getBoundingClientRect();
-                const viewportWidth = window.innerWidth;
-                const viewportHeight = window.innerHeight;
-                
-                const distLeft = rect.left;
-                const distRight = viewportWidth - rect.right;
-                const distTop = rect.top;
-                const distBottom = viewportHeight - rect.bottom;
-                
-                let targetX = 0, targetY = 0;
-                const minDist = Math.min(distLeft, distRight, distTop, distBottom);
+                var rect = cardElement.getBoundingClientRect();
+                var viewportWidth = window.innerWidth;
+                var viewportHeight = window.innerHeight;
+
+                var distLeft = rect.left;
+                var distRight = viewportWidth - rect.right;
+                var distTop = rect.top;
+                var distBottom = viewportHeight - rect.bottom;
+
+                var targetX = 0,
+                    targetY = 0;
+                var minDist = Math.min(distLeft, distRight, distTop, distBottom);
                 if (minDist === distLeft) {
                     targetX = -viewportWidth;
                     targetY = 0;
@@ -952,30 +922,30 @@
                     targetX = 0;
                     targetY = viewportHeight;
                 }
-                
+
                 cardElement.style.setProperty('--fly-x', '0px');
                 cardElement.style.setProperty('--fly-y', '0px');
-                cardElement.style.setProperty('--fly-x-end', `${targetX}px`);
-                cardElement.style.setProperty('--fly-y-end', `${targetY}px`);
+                cardElement.style.setProperty('--fly-x-end', targetX + 'px');
+                cardElement.style.setProperty('--fly-y-end', targetY + 'px');
                 cardElement.classList.add('eliminating');
-                
-                setTimeout(() => {
+
+                setTimeout(function() {
                     if (callback) callback();
                 }, 500);
             }
-            
+
             function eliminateCard(index, afterCallback) {
-                const carta = estado.cartas[index];
+                var carta = estado.cartas[index];
                 if (carta.eliminated) {
                     if (afterCallback) afterCallback();
                     return;
                 }
                 carta.eliminated = true;
                 carta.flipped = false;
-                const element = carta.element;
+                var element = carta.element;
                 if (!element) return;
-                
-                animateFlyToEdge(element, () => {
+
+                animateFlyToEdge(element, function() {
                     if (element && element.parentNode) {
                         element.style.visibility = 'hidden';
                         element.style.pointerEvents = 'none';
@@ -984,25 +954,24 @@
                     if (afterCallback) afterCallback();
                 });
             }
-            
+
             // ===== LÓXICA DO XOGO =====
             function handleCardClick(index) {
                 if (!estado.xogoActivo) return;
                 if (estado.bloqueado) return;
-                
-                const carta = estado.cartas[index];
+
+                var carta = estado.cartas[index];
                 if (carta.eliminated) return;
                 if (carta.flipped) return;
                 if (estado.primeiroSeleccionado && estado.segundoSeleccionado) return;
-                
-                // Voltear carta
+
                 carta.flipped = true;
                 updateCardVisual(index);
-                
+
                 if (estado.primeiroSeleccionado === null) {
-                    estado.primeiroSeleccionado = { index, pairId: carta.pairId };
+                    estado.primeiroSeleccionado = { index: index, pairId: carta.pairId };
                 } else if (estado.segundoSeleccionado === null && estado.primeiroSeleccionado.index !== index) {
-                    estado.segundoSeleccionado = { index, pairId: carta.pairId };
+                    estado.segundoSeleccionado = { index: index, pairId: carta.pairId };
                     estado.bloqueado = true;
                     checkMatch();
                 } else if (estado.primeiroSeleccionado.index === index) {
@@ -1011,28 +980,28 @@
                     estado.primeiroSeleccionado = null;
                 }
             }
-            
+
             function checkMatch() {
                 if (!estado.primeiroSeleccionado || !estado.segundoSeleccionado) return;
-                
-                const isMatch = (estado.primeiroSeleccionado.pairId === estado.segundoSeleccionado.pairId);
-                
+
+                var isMatch = (estado.primeiroSeleccionado.pairId === estado.segundoSeleccionado.pairId);
+
                 if (isMatch) {
                     statusMessage.innerHTML = '🎯 ¡CANASTA! Parella atopada 🎯';
                     estado.parellasAtopadas++;
-                    
-                    eliminateCard(estado.primeiroSeleccionado.index, () => {
-                        eliminateCard(estado.segundoSeleccionado.index, () => {
+
+                    eliminateCard(estado.primeiroSeleccionado.index, function() {
+                        eliminateCard(estado.segundoSeleccionado.index, function() {
                             resetBoardState();
                             checkVictory();
                         });
                     });
                 } else {
                     statusMessage.innerHTML = '❌ Fallo, lembra os seus colores... ❌';
-                    setTimeout(() => {
+                    setTimeout(function() {
                         if (!estado.xogoActivo) return;
-                        const c1 = estado.cartas[estado.primeiroSeleccionado.index];
-                        const c2 = estado.cartas[estado.segundoSeleccionado.index];
+                        var c1 = estado.cartas[estado.primeiroSeleccionado.index];
+                        var c2 = estado.cartas[estado.segundoSeleccionado.index];
                         if (c1 && !c1.eliminated) {
                             c1.flipped = false;
                             updateCardVisual(estado.primeiroSeleccionado.index);
@@ -1045,7 +1014,7 @@
                     }, 1000);
                 }
             }
-            
+
             function resetBoardState() {
                 estado.primeiroSeleccionado = null;
                 estado.segundoSeleccionado = null;
@@ -1054,50 +1023,50 @@
                     statusMessage.innerHTML = '🔍 Sigue buscando parellas...';
                 }
             }
-            
+
             function checkVictory() {
                 if (estado.parellasAtopadas === estado.totalParellas) {
                     estado.xogoActivo = false;
                     statusMessage.innerHTML = '<span class="victory-message">🏆 ¡VITORIA! Completaches todas as parellas 🏆</span>';
                 }
             }
-            
+
             // ===== AXUDA =====
             function showRandomHelp() {
                 if (!estado.xogoActivo) return;
                 if (estado.bloqueado) return;
-                
-                const availableIndices = [];
-                estado.cartas.forEach((carta, idx) => {
+
+                var availableIndices = [];
+                estado.cartas.forEach(function(carta, idx) {
                     if (!carta.eliminated && !carta.flipped) {
                         availableIndices.push(idx);
                     }
                 });
-                
+
                 if (availableIndices.length < 2) {
                     statusMessage.innerHTML = '⚠️ Non hai suficientes cartas ocultas para a axuda';
                     return;
                 }
-                
-                let idx1 = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-                let idx2 = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+
+                var idx1 = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+                var idx2 = availableIndices[Math.floor(Math.random() * availableIndices.length)];
                 while (idx2 === idx1 && availableIndices.length > 1) {
                     idx2 = availableIndices[Math.floor(Math.random() * availableIndices.length)];
                 }
-                
-                const c1 = estado.cartas[idx1];
-                const c2 = estado.cartas[idx2];
+
+                var c1 = estado.cartas[idx1];
+                var c2 = estado.cartas[idx2];
                 if (!c1 || !c2) return;
-                
+
                 c1.flipped = true;
                 c2.flipped = true;
                 updateCardVisual(idx1);
                 updateCardVisual(idx2);
-                
+
                 statusMessage.innerHTML = '💡 Axuda: mostrando 2 cartas ao azar durante 1 segundo';
                 estado.bloqueado = true;
-                
-                setTimeout(() => {
+
+                setTimeout(function() {
                     if (estado.xogoActivo && !c1.eliminated) {
                         c1.flipped = false;
                         updateCardVisual(idx1);
@@ -1108,60 +1077,54 @@
                     }
                     estado.bloqueado = false;
                     statusMessage.innerHTML = '🔍 Continúa xogando...';
-                    if (estado.primeiroSeleccionado && estado.cartas[estado.primeiroSeleccionado.index] && 
-                        !estado.cartas[estado.primeiroSeleccionado.index].eliminated && 
+                    if (estado.primeiroSeleccionado && estado.cartas[estado.primeiroSeleccionado.index] &&
+                        !estado.cartas[estado.primeiroSeleccionado.index].eliminated &&
                         !estado.cartas[estado.primeiroSeleccionado.index].flipped) {
                         estado.primeiroSeleccionado = null;
                     }
-                    if (estado.segundoSeleccionado && estado.cartas[estado.segundoSeleccionado.index] && 
-                        !estado.cartas[estado.segundoSeleccionado.index].eliminated && 
+                    if (estado.segundoSeleccionado && estado.cartas[estado.segundoSeleccionado.index] &&
+                        !estado.cartas[estado.segundoSeleccionado.index].eliminated &&
                         !estado.cartas[estado.segundoSeleccionado.index].flipped) {
                         estado.segundoSeleccionado = null;
                     }
                     estado.bloqueado = false;
                 }, 1000);
             }
-            
+
             // ===== INICIAR PARTIDA =====
             async function iniciarPartida() {
-                // Obtener valores seleccionados
-                const equipo = estado.equipo;
-                const dificultade = estado.dificultade;
-                const numParellas = estado.numParellas;
-                
-                // Cargar xogadores
-                const xogadores = await cargarXogadores(equipo);
+                var equipo = estado.equipo;
+                var dificultade = estado.dificultade;
+                var numParellas = estado.numParellas;
+
+                var xogadores = await cargarXogadores(equipo);
                 if (xogadores.length < numParellas) {
-                    statusMessage.innerHTML = `⚠️ Non hai suficientes xogadores (${xogadores.length} dispoñibles, ${numParellas} necesarios)`;
+                    statusMessage.innerHTML = '⚠️ Non hai suficientes xogadores (' + xogadores.length + ' dispoñibles, ' + numParellas + ' necesarios)';
                     return;
                 }
-                
+
                 estado.xogadores = xogadores;
                 estado.totalParellas = numParellas;
                 estado.parellasAtopadas = 0;
-                
-                // Xerar cartas
-                const cartas = xerarParellas(xogadores, numParellas, dificultade, equipo);
+
+                var cartas = xerarParellas(xogadores, numParellas, dificultade, equipo);
                 estado.cartas = cartas;
-                
-                // Renderizar
+
                 renderizarTaboleiro(cartas);
-                
-                // Resetear estado
+
                 estado.primeiroSeleccionado = null;
                 estado.segundoSeleccionado = null;
                 estado.bloqueado = false;
                 estado.xogoActivo = true;
-                
-                // Ocultar setup, mostrar xogo
+
                 setupPanel.style.display = 'none';
                 gameArea.style.display = 'block';
-                
+
                 statusMessage.innerHTML = '🎲 ¡Partida iniciada! Atopa as parellas. Usa H para axuda';
-                
-                console.log(`✅ Partida iniciada: ${equipo}, ${dificultade}, ${numParellas} parellas`);
+
+                console.log('✅ Partida iniciada: ' + equipo + ', ' + dificultade + ', ' + numParellas + ' parellas');
             }
-            
+
             // ===== RESET =====
             function resetXogo() {
                 setupPanel.style.display = 'block';
@@ -1175,48 +1138,42 @@
                 cardsGrid.innerHTML = '';
                 statusMessage.innerHTML = '🔄 Nova partida lista';
             }
-            
+
             // ===== EVENTOS =====
-            // Dificultade
-            difficultyBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    difficultyBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    estado.dificultade = btn.dataset.diff;
+            difficultyBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    difficultyBtns.forEach(function(b) { b.classList.remove('active'); });
+                    this.classList.add('active');
+                    estado.dificultade = this.dataset.diff;
                 });
             });
-            
-            // Parellas
-            pairBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    pairBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    estado.numParellas = parseInt(btn.dataset.pairs, 10);
+
+            pairBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    pairBtns.forEach(function(b) { b.classList.remove('active'); });
+                    this.classList.add('active');
+                    estado.numParellas = parseInt(this.dataset.pairs, 10);
                 });
             });
-            
-            // Equipo
-            teamBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    teamBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    estado.equipo = btn.dataset.team;
+
+            teamBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    teamBtns.forEach(function(b) { b.classList.remove('active'); });
+                    this.classList.add('active');
+                    estado.equipo = this.dataset.team;
                 });
             });
-            
-            // Botóns principais
+
             startBtn.addEventListener('click', iniciarPartida);
-            
             newGameBtn.addEventListener('click', resetXogo);
-            
-            helpBtn.addEventListener('click', () => {
+
+            helpBtn.addEventListener('click', function() {
                 if (setupPanel.style.display !== 'none') return;
                 if (!estado.xogoActivo) return;
                 showRandomHelp();
             });
-            
-            // Atallos de teclado
-            document.addEventListener('keydown', (e) => {
+
+            document.addEventListener('keydown', function(e) {
                 if (e.key === 'n' || e.key === 'N') {
                     e.preventDefault();
                     if (setupPanel.style.display === 'none') {
@@ -1228,21 +1185,19 @@
                     if (setupPanel.style.display !== 'none') return;
                     if (estado.xogoActivo) showRandomHelp();
                 }
-                // Escape para volver al setup
                 if (e.key === 'Escape') {
                     if (setupPanel.style.display === 'none') {
                         resetXogo();
                     }
                 }
             });
-            
-            // Prevenir drag en cartas
-            document.addEventListener('dragstart', (e) => {
+
+            document.addEventListener('dragstart', function(e) {
                 if (e.target.closest('.card')) e.preventDefault();
             });
-            
+
             console.log('🏀 As parellas - Xogo cargado');
-            
+
         })();
     </script>
 
