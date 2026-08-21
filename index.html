@@ -27,7 +27,7 @@
             try {
                 const response = await fetch(CONFIG.sheets.noticias);
                 const csv = await response.text();
-                const noticias = parseCSV(csv);
+                const noticias = parseCSVNoticias(csv);
 
                 const validas = noticias.filter(n => n.fecha && n.cabecera);
 
