@@ -1,7 +1,7 @@
 // ===== APP - Punto de entrada principal =====
-// Carga config, utils y components
+// Versión 2.2
 
-console.log('🏀 CB O Grove - App cargada');
+console.log('🏀 CB O Grove - App v2.2 cargada');
 
 // Cargar configuración
 if (typeof CONFIG === 'undefined') {
