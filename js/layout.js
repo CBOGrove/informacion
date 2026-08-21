@@ -1,14 +1,10 @@
 // ===== LAYOUT: HEADER Y FOOTER COMPARTIDOS =====
-// Versión 1.4 - URL Base corregida
+// Versión 2.0 - Rutas absolutas y sin URL_BASE
 
-console.log('🚀 Layout.js cargado');
-
-// ===== CONFIGURACIÓN DE URL BASE =====
-const URL_BASE = '/informacion/';
+console.log('🚀 Layout.js v2.0 cargado');
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 DOM cargado, inyectando header y footer...');
-    console.log('📍 URL Base:', URL_BASE);
     inyectarHeader();
     inyectarFooter();
     marcarPaginaActiva();
@@ -21,33 +17,30 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function inyectarHeader() {
-    console.log('🔄 Inyectando header...');
     const headerHTML = `
         <header class="main-header">
-            <a href="${URL_BASE}" class="logo">
-                <img src="assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
+            <a href="/" class="logo">
+                <img src="/assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none'">
                 CB O GROVE
             </a>
             <nav class="main-nav">
-                <a href="${URL_BASE}">Inicio</a>
-                <a href="${URL_BASE}plantillas.html">Plantillas</a>
-                <a href="${URL_BASE}jornadas.html">Jornadas</a>
-                <a href="${URL_BASE}noticias.html">Noticias</a>
-                <a href="${URL_BASE}patrocinadores.html">Patrocinadores</a>
-                <a href="${URL_BASE}sorteos.html">Sorteos</a>
-                <a href="${URL_BASE}xogos.html">Xogos</a>
-                <a href="${URL_BASE}contacto.html">Contacto</a>
+                <a href="/">Inicio</a>
+                <a href="/plantillas.html">Plantillas</a>
+                <a href="/jornadas.html">Jornadas</a>
+                <a href="/noticias.html">Noticias</a>
+                <a href="/patrocinadores.html">Patrocinadores</a>
+                <a href="/sorteos.html">Sorteos</a>
+                <a href="/xogos.html">Xogos</a>
+                <a href="/contacto.html">Contacto</a>
             </nav>
             <span class="twitch-badge" id="twitchBadge">📺 No en directo</span>
         </header>
     `;
 
     document.body.insertAdjacentHTML('afterbegin', headerHTML);
-    console.log('✅ Header inyectado');
 }
 
 function inyectarFooter() {
-    console.log('🔄 Inyectando footer...');
     const añoActual = new Date().getFullYear();
     const footerHTML = `
         <footer class="main-footer">
@@ -73,25 +66,21 @@ function inyectarFooter() {
     `;
 
     document.body.insertAdjacentHTML('beforeend', footerHTML);
-    console.log('✅ Footer inyectado');
 }
 
 function marcarPaginaActiva() {
-    const path = window.location.pathname;
-    const paginaActual = path.replace(URL_BASE, '').split('/').pop() || 'index.html';
-    console.log('📍 Página actual:', paginaActual);
-
-    setTimeout(() => {
-        document.querySelectorAll('.main-nav a').forEach(link => {
-            const href = link.getAttribute('href');
-            const hrefPagina = href.replace(URL_BASE, '').split('/').pop() || 'index.html';
-            
-            if (hrefPagina === paginaActual) {
-                link.classList.add('active');
-                console.log('✅ Marcado como activo:', href);
-            }
-        });
-    }, 50);
+    const currentPath = window.location.pathname;
+    
+    document.querySelectorAll('.main-nav a').forEach(link => {
+        const linkPath = new URL(link.href, window.location.origin).pathname;
+        
+        // Comparar rutas ignorando index.html
+        if (linkPath === currentPath ||
+            (currentPath === '/' && linkPath === '/index.html') ||
+            (currentPath === '/index.html' && linkPath === '/')) {
+            link.classList.add('active');
+        }
+    });
 }
 
 function checkTwitchLiveLocal() {
@@ -99,6 +88,5 @@ function checkTwitchLiveLocal() {
     if (badge) {
         badge.innerHTML = '📺 No en directo';
         badge.style.background = '#555';
-        console.log('✅ Badge Twitch actualizado (fallback)');
     }
 }
