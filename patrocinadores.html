@@ -5,21 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patrocinadores · Club Baloncesto O Grove</title>
     
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
-    <!-- CSS Global -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     
-    <!-- JS: Config + Utils + Components + Layout + App -->
-    <script src="/js/config.js" defer></script>
-    <script src="/js/utils.js" defer></script>
-    <script src="/js/components.js" defer></script>
-    <script src="/js/layout.js" defer></script>
-    <script src="/js/app.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/utils.js" defer></script>
+    <script src="js/components.js" defer></script>
+    <script src="js/layout.js" defer></script>
+    <script src="js/app.js" defer></script>
     
-    <!-- Script específico de patrocinadores -->
     <script defer>
         document.addEventListener('DOMContentLoaded', function() {
             cargarPatrocinadores();
@@ -86,7 +81,7 @@
                     Apoia ao Club Baloncesto O Grove<br>
                     e dá visibilidade á túa empresa
                 </div>
-                <a href="/contacto.html" class="btn-contacto">
+                <a href="contacto.html" class="btn-contacto">
                     <i class="fas fa-envelope"></i> Contactar
                 </a>
             `;
@@ -104,7 +99,6 @@
                 const csv = await response.text();
                 const patrocinadores = parseCSV(csv);
 
-                // Filtrar SOLO patrocinadores privados (tipo != "SI")
                 const privados = patrocinadores.filter(p => 
                     p.nombre && (!p.tipo || p.tipo.toUpperCase() !== 'SI')
                 );
@@ -128,7 +122,6 @@
                         ⚠️ Erro cargando os patrocinadores.
                     </div>
                 `;
-                // Mostrar al menos la tarjeta "Anúnciese aquí" como fallback
                 setTimeout(() => {
                     grid.innerHTML = '';
                     grid.appendChild(crearTarjetaAnunciate());
