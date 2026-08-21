@@ -5,21 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noticias · Club Baloncesto O Grove</title>
     
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
-    <!-- CSS Global -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     
-    <!-- JS: Config + Utils + Components + Layout + App -->
-    <script src="/js/config.js" defer></script>
-    <script src="/js/utils.js" defer></script>
-    <script src="/js/components.js" defer></script>
-    <script src="/js/layout.js" defer></script>
-    <script src="/js/app.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/utils.js" defer></script>
+    <script src="js/components.js" defer></script>
+    <script src="js/layout.js" defer></script>
+    <script src="js/app.js" defer></script>
     
-    <!-- Script específico de noticias -->
     <script defer>
         document.addEventListener('DOMContentLoaded', function() {
             cargarNoticias();
@@ -53,12 +48,10 @@
 
                 validas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
-                // Noticia destacada = la más reciente
                 const destacada = validas[0];
                 destacadaContainer.innerHTML = '';
                 destacadaContainer.appendChild(crearTarjetaNoticia(destacada, true));
 
-                // Resto de noticias
                 gridContainer.innerHTML = '';
                 validas.slice(1).forEach(noticia => {
                     gridContainer.appendChild(crearTarjetaNoticia(noticia, false));
@@ -80,12 +73,10 @@
         <h1 class="page-title">📰 NOVAS DO CLUB</h1>
         <p class="page-subtitle">Mantéñente ao día de todo o que acontece no CB O Grove</p>
 
-        <!-- NOTICIA DESTACADA -->
         <div id="noticiaDestacada" class="noticia-destacada">
             <p class="loading-text">Cargando última nova...</p>
         </div>
 
-        <!-- RESTO DE NOTICIAS -->
         <div class="noticias-grid" id="noticiasGrid">
             <p class="loading-text">Cargando novas...</p>
         </div>
