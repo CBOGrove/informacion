@@ -5,21 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plantillas · Club Baloncesto O Grove</title>
     
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
-    <!-- CSS Global -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     
-    <!-- JS: Config + Utils + Components + Layout + App -->
-    <script src="/js/config.js" defer></script>
-    <script src="/js/utils.js" defer></script>
-    <script src="/js/components.js" defer></script>
-    <script src="/js/layout.js" defer></script>
-    <script src="/js/app.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/utils.js" defer></script>
+    <script src="js/components.js" defer></script>
+    <script src="js/layout.js" defer></script>
+    <script src="js/app.js" defer></script>
     
-    <!-- Script específico de plantillas -->
     <script defer>
         document.addEventListener('DOMContentLoaded', function() {
             cargarPlantillas();
@@ -48,26 +43,24 @@
             if (numDisplay.startsWith('E')) numDisplay = 'E';
             if (numDisplay.startsWith('D')) numDisplay = 'D';
 
-            // Procesar info_extra
             let backLines = [];
             if (jugador.info_extra && jugador.info_extra.trim()) {
                 backLines = String(jugador.info_extra).split('|').map(line => line.trim());
             }
 
-            // ===== CONTENEDOR FLIP =====
             const flipContainer = document.createElement('div');
             flipContainer.className = 'flip-container';
 
             const flipInner = document.createElement('div');
             flipInner.className = 'flip-inner';
 
-            // ===== FRENTE =====
+            // FRENTE
             const front = document.createElement('div');
             front.className = 'flip-front';
 
             const card = document.createElement('div');
             card.className = `player-card${esStaffMiembro ? ' invertido' : ''}`;
-            const logoFondo = '/assets/img/logos/club/logo-negro.png';
+            const logoFondo = 'assets/img/logos/club/logo-negro.png';
 
             card.innerHTML = `
                 <div class="card-background" style="background-image: url('${logoFondo}?t=${timestamp}');"></div>
@@ -85,7 +78,7 @@
 
             front.appendChild(card);
 
-            // ===== DETRÁS =====
+            // DETRÁS
             const back = document.createElement('div');
             back.className = 'flip-back';
 
@@ -94,8 +87,6 @@
             const textColor = esStaffMiembro ? '#FFD700' : '#000000';
             const nameBgColor = esStaffMiembro ? '#FFD700' : '#000000';
             const nameTextColor = esStaffMiembro ? '#000000' : '#FFD700';
-            const numberBgColor = esStaffMiembro ? '#FFD700' : '#000000';
-            const numberTextColor = esStaffMiembro ? '#000000' : '#FFD700';
 
             back.style.background = bgColor;
             back.style.border = `3px solid ${borderColor}`;
@@ -114,8 +105,8 @@
             const backNumber = document.createElement('div');
             backNumber.className = `back-number${esStaffMiembro ? ' invertido-back' : ''}`;
             backNumber.textContent = numDisplay;
-            backNumber.style.background = numberBgColor;
-            backNumber.style.color = numberTextColor;
+            backNumber.style.background = esStaffMiembro ? '#FFD700' : '#000000';
+            backNumber.style.color = esStaffMiembro ? '#000000' : '#FFD700';
             backNumber.style.border = `2px solid ${borderColor}`;
             backContent.appendChild(backNumber);
 
@@ -189,7 +180,6 @@
             const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
             const headerMap = mapearHeadersPlantilla(rawHeaders);
 
-            // Asignar índices por defecto
             if (headerMap.numero === undefined) headerMap.numero = 0;
             if (headerMap.nombre === undefined) headerMap.nombre = 1;
             if (headerMap.entrenador === undefined) headerMap.entrenador = 2;
@@ -293,7 +283,6 @@
         async function cargarPlantillas() {
             console.log('🚀 Iniciando carga de plantillas...');
             
-            // Usar las sheets de CONFIG
             const femeninoUrl = CONFIG.sheets.plantillas + '&gid=0';
             const masculinoUrl = CONFIG.sheets.plantillas + '&gid=1375196205';
             
@@ -302,7 +291,6 @@
             console.log('✅ Plantillas cargadas correctamente');
         }
 
-        // Exponer funciones globalmente
         window.mostrarEquipo = mostrarEquipo;
     </script>
 </head>
