@@ -666,4 +666,1158 @@ body::before {
 }
 
 .noticia-destacada .toggle-btn {
-   
+    display: inline-block;
+    margin-top: 0.8rem;
+    color: var(--dorado);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-textos);
+    padding: 0;
+}
+
+.noticia-destacada .toggle-btn:hover {
+    color: var(--azul-club);
+}
+
+.noticia-destacada .detalle {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out, padding 0.3s ease-in-out;
+    padding: 0;
+    margin-top: 0;
+}
+
+.noticia-destacada.abierta .detalle {
+    max-height: 2000px;
+    padding: 1rem 0 0 0;
+    margin-top: 0.5rem;
+    border-top: 1px solid rgba(201, 160, 61, 0.3);
+}
+
+.noticia-destacada .detalle .texto-largo {
+    color: #444;
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+/* Imagen en noticias */
+.noticia-card .detalle .imagen,
+.noticia-destacada .detalle .imagen {
+    margin-top: 1rem;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f5f5f5;
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #eee;
+}
+
+.noticia-card .detalle .imagen {
+    max-height: 400px;
+    min-height: 100px;
+}
+
+.noticia-destacada .detalle .imagen {
+    max-height: 500px;
+    min-height: 150px;
+}
+
+.noticia-card .detalle .imagen img,
+.noticia-destacada .detalle .imagen img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.noticia-destacada .detalle .imagen img {
+    max-height: 500px;
+}
+
+.noticia-card .detalle .imagen img.loaded,
+.noticia-destacada .detalle .imagen img.loaded {
+    opacity: 1;
+}
+
+/* ============================================
+   PATROCINADORES
+   ============================================ */
+.patrocinadores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.patrocinador-card {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(4px);
+    border-radius: 16px;
+    padding: 1.8rem 1.5rem 1.5rem;
+    border-left: 5px solid var(--dorado);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255,255,255,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-height: 320px;
+    position: relative;
+    overflow: hidden;
+}
+
+.patrocinador-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(201, 160, 61, 0.25);
+    border-color: var(--dorado);
+    background: rgba(255,255,255,0.98);
+}
+
+.patrocinador-card .logo-container {
+    width: 200px;
+    height: 133px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.7);
+    border-radius: 12px;
+    margin-bottom: 1.2rem;
+    padding: 0.5rem;
+    border: 2px solid rgba(201, 160, 61, 0.1);
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.patrocinador-card:hover .logo-container {
+    border-color: var(--dorado);
+    box-shadow: 0 0 20px rgba(201, 160, 61, 0.15);
+}
+
+.patrocinador-card .logo-container img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.3s;
+}
+
+.patrocinador-card:hover .logo-container img {
+    transform: scale(1.05);
+}
+
+.patrocinador-card .nombre {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--azul-club);
+    font-family: var(--font-titulos);
+    margin-bottom: 0.5rem;
+    transition: color 0.3s;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.patrocinador-card:hover .nombre {
+    color: var(--dorado);
+}
+
+.patrocinador-card .descripcion {
+    color: #555;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+    flex: 1;
+    width: 100%;
+    min-height: 50px;
+}
+
+.patrocinador-card .descripcion .linea {
+    display: block;
+    padding: 0.05rem 0;
+}
+
+.patrocinador-card .info-extra {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(201, 160, 61, 0.15);
+}
+
+.patrocinador-card .telefono {
+    font-size: 0.9rem;
+    color: var(--azul-club);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    width: 100%;
+}
+
+.patrocinador-card .telefono i {
+    color: var(--dorado);
+}
+
+.patrocinador-card .maps-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--azul-club);
+    color: white;
+    padding: 0.4rem 1.5rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.patrocinador-card .maps-link:hover {
+    background: var(--dorado);
+    color: var(--azul-club);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(201, 160, 61, 0.4);
+}
+
+/* Tarjeta "Anúnciese aquí" */
+.patrocinador-card.anunciate {
+    border-left-color: #e74c3c;
+    border-style: dashed;
+    border-width: 2px;
+    background: rgba(255, 255, 255, 0.6);
+    min-height: 250px;
+    justify-content: center;
+}
+
+.patrocinador-card.anunciate .icono-anuncio {
+    font-size: 3rem;
+    color: #e74c3c;
+    margin-bottom: 0.5rem;
+}
+
+.patrocinador-card.anunciate .titulo-anuncio {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2c3e50;
+    font-family: var(--font-titulos);
+    margin-bottom: 0.5rem;
+}
+
+.patrocinador-card.anunciate .texto-anuncio {
+    color: #555;
+    line-height: 1.5;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.patrocinador-card.anunciate .btn-contacto {
+    display: inline-block;
+    background: #e74c3c;
+    color: white;
+    padding: 0.5rem 2rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.patrocinador-card.anunciate .btn-contacto:hover {
+    background: #c0392b;
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4);
+}
+
+/* ============================================
+   SORTEOS Y XOGOS
+   ============================================ */
+.sorteos-grid,
+.xogos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.sorteo-card,
+.xogo-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    border-left: 5px solid var(--dorado);
+    box-shadow: var(--sombra-suave);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(255,255,255,0.3);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sorteo-card:hover,
+.xogo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-media);
+}
+
+.sorteo-card.inactivo {
+    opacity: 0.6;
+    filter: grayscale(0.4);
+    border-left-color: #999;
+}
+
+.sorteo-card .icono,
+.xogo-card .icono {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.sorteo-card .icono img,
+.xogo-card .icono img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.sorteo-card .titulo,
+.xogo-card .titulo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--azul-club);
+    font-family: var(--font-titulos);
+    margin-bottom: 0.3rem;
+}
+
+.sorteo-card .descricion,
+.xogo-card .descricion {
+    color: var(--gris-texto);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+    flex: 1;
+}
+
+.sorteo-card .btn-participar,
+.xogo-card .btn-xogar {
+    background: var(--azul-club);
+    color: white;
+    padding: 0.6rem 2rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.3s, transform 0.2s;
+    display: inline-block;
+}
+
+.sorteo-card .btn-participar:hover,
+.xogo-card .btn-xogar:hover {
+    background: var(--dorado);
+    color: var(--azul-club);
+    transform: translateY(-2px);
+}
+
+.sorteo-card .estado {
+    font-size: 0.8rem;
+    color: var(--gris-texto);
+    margin-top: 0.5rem;
+    opacity: 0.7;
+}
+
+.sorteo-card .ganadores {
+    font-size: 0.85rem;
+    color: var(--azul-club);
+    margin-top: 0.5rem;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.sorteo-card .ganadores a {
+    color: var(--dorado);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.sorteo-card .ganadores a:hover {
+    text-decoration: underline;
+    color: var(--azul-club);
+}
+
+.sorteo-card.inactivo .btn-participar {
+    background: #999;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ============================================
+   BOTÓN BASES LEGAIS (flotante)
+   ============================================ */
+.bases-legais-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--azul-club);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 20px rgba(30, 58, 95, 0.4);
+    transition: all 0.3s;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid var(--dorado);
+}
+
+.bases-legais-btn:hover {
+    background: var(--dorado);
+    color: var(--azul-club);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(201, 160, 61, 0.4);
+}
+
+/* ============================================
+   CONTACTO
+   ============================================ */
+.contacto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.contacto-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.info-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border-left: 5px solid var(--dorado);
+    box-shadow: var(--sombra-suave);
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.info-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sombra-media);
+}
+
+.info-card .titulo-icono {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.info-card .titulo-icono .icono {
+    font-size: 1.5rem;
+    color: var(--dorado);
+    line-height: 1;
+}
+
+.info-card .titulo-icono h3 {
+    font-family: var(--font-titulos);
+    color: var(--azul-club);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.info-card p,
+.info-card a {
+    color: var(--gris-texto);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    text-decoration: none;
+}
+
+.info-card a:hover {
+    color: var(--dorado);
+}
+
+.info-card .enlace-maps {
+    display: inline-block;
+    margin-top: 0.5rem;
+    background: var(--azul-club);
+    color: white;
+    padding: 0.4rem 1.2rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.info-card .enlace-maps:hover {
+    background: var(--dorado);
+    color: var(--azul-club);
+    transform: translateY(-2px);
+}
+
+.info-card .telefono-numero {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--azul-club);
+    margin: 0.2rem 0 0.5rem 0;
+}
+
+.info-card .telefono-numero a {
+    color: var(--azul-club);
+    text-decoration: none;
+}
+
+.info-card .telefono-numero a:hover {
+    color: var(--dorado);
+}
+
+.info-card .btn-whatsapp {
+    display: inline-block;
+    background: #25D366;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.info-card .btn-whatsapp:hover {
+    background: #1ebe5c;
+    transform: translateY(-2px);
+}
+
+.info-card .btn-whatsapp i {
+    margin-right: 0.5rem;
+}
+
+.mapa-container {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--sombra-suave);
+    border: 1px solid rgba(255,255,255,0.3);
+    height: 100%;
+    min-height: 450px;
+}
+
+.mapa-container iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 450px;
+    border: none;
+}
+
+.formulario-container {
+    grid-column: 1 / -1;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+    border-radius: 16px;
+    padding: 2rem;
+    border-left: 5px solid var(--dorado);
+    box-shadow: var(--sombra-suave);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.formulario-container h2 {
+    font-family: var(--font-titulos);
+    color: var(--azul-club);
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.formulario-container .sub {
+    color: var(--gris-texto);
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--azul-club);
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: var(--font-textos);
+    transition: border-color 0.3s;
+    background: rgba(255,255,255,0.7);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--dorado);
+    outline: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.btn-enviar {
+    background: var(--azul-club);
+    color: white;
+    padding: 0.8rem 2.5rem;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    font-family: var(--font-titulos);
+}
+
+.btn-enviar:hover {
+    background: var(--dorado);
+    color: var(--azul-club);
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   TÍTULOS DE PÁGINA
+   ============================================ */
+.page-title {
+    text-align: center;
+    color: var(--azul-club);
+    font-family: var(--font-titulos);
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+}
+
+.page-subtitle {
+    text-align: center;
+    color: var(--gris-texto);
+    margin-bottom: 2.5rem;
+}
+
+/* ============================================
+   PLANTILLAS - SELECTOR DE EQUIPO
+   ============================================ */
+.team-selector {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.team-btn {
+    padding: 0.8rem 2.5rem;
+    border: 3px solid var(--azul-club);
+    border-radius: 50px;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(4px);
+    color: var(--azul-club);
+    font-family: var(--font-titulos);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.team-btn:hover {
+    background: var(--azul-club);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
+}
+
+.team-btn.active {
+    background: var(--azul-club);
+    color: white;
+    box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
+}
+
+.team-container { display: none; }
+.team-container.active { display: block; }
+
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2rem;
+    justify-items: center;
+    justify-content: center;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.staff-row {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px dashed var(--dorado);
+    flex-wrap: wrap;
+    background: rgba(255,255,255,0.3);
+    backdrop-filter: blur(4px);
+    border-radius: 15px;
+    padding: 1.5rem 2rem;
+}
+
+.staff-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.staff-group-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--azul-club);
+    font-weight: 700;
+    opacity: 0.8;
+    border-bottom: 2px solid var(--dorado);
+    padding-bottom: 0.3rem;
+}
+
+.staff-group-cards {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* ============================================
+   RESPONSIVE - TODAS LAS MEDIA QUERIES AQUÍ
+   ============================================ */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 1200px) {
+    .players-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .flip-container {
+        width: 200px;
+        height: 300px;
+    }
+    .player-card {
+        width: 200px;
+        height: 300px;
+    }
+}
+
+@media (max-width: 992px) {
+    .players-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .flip-container {
+        width: 200px;
+        height: 300px;
+    }
+    .player-card {
+        width: 200px;
+        height: 300px;
+    }
+    .contacto-grid {
+        grid-template-columns: 1fr;
+    }
+    .mapa-container {
+        min-height: 300px;
+    }
+    .mapa-container iframe {
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-header {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .main-nav {
+        justify-content: center;
+        gap: 0.3rem;
+    }
+    
+    .main-nav a {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.8rem;
+    }
+    
+    .logo {
+        font-size: 1.1rem;
+    }
+    .logo img {
+        height: 45px;
+    }
+    
+    .main-footer .redes {
+        font-size: 1.5rem;
+        gap: 1rem;
+    }
+    
+    .main-content {
+        padding: 1rem;
+    }
+    
+    .players-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    .flip-container {
+        width: 180px;
+        height: 270px;
+    }
+    .player-card {
+        width: 180px;
+        height: 270px;
+    }
+    .photo-container {
+        top: 18px;
+        left: 18px;
+        right: 18px;
+        bottom: 62px;
+    }
+    .back-photo-container {
+        top: 18px;
+        left: 18px;
+        right: 18px;
+        bottom: 62px;
+    }
+    .back-text-area {
+        top: 28px;
+        left: 28px;
+        right: 28px;
+        bottom: 72px;
+    }
+    .player-number {
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+        top: 10px;
+        left: 10px;
+    }
+    .back-number {
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+        top: 10px;
+        left: 10px;
+    }
+    .name-container {
+        height: 42px;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+    }
+    .back-name-container {
+        height: 42px;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+    }
+    .player-name {
+        font-size: 16px;
+        letter-spacing: 0.5px;
+    }
+    .back-name {
+        font-size: 16px;
+    }
+    .team-btn {
+        padding: 0.5rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    .staff-row {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+        padding: 1rem;
+    }
+    .staff-group-cards {
+        gap: 1rem;
+    }
+    .staff-group-label {
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+    }
+    .back-text-area p {
+        font-size: 0.85rem;
+    }
+    .back-text-area .back-line-first {
+        font-size: 0.95rem;
+    }
+    
+    .page-title {
+        font-size: 1.8rem;
+    }
+    
+    .sorteos-grid,
+    .xogos-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+    .sorteo-card,
+    .xogo-card {
+        padding: 1.5rem 1rem;
+    }
+    .sorteo-card .icono,
+    .xogo-card .icono {
+        font-size: 2.8rem;
+    }
+    .sorteo-card .titulo,
+    .xogo-card .titulo {
+        font-size: 1.2rem;
+    }
+    
+    .bases-legais-btn {
+        bottom: 20px;
+        right: 20px;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.8rem;
+    }
+    
+    .patrocinadores-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        padding: 0 0.5rem;
+    }
+    .patrocinador-card {
+        padding: 1.2rem 1rem;
+        min-height: 250px;
+    }
+    .patrocinador-card .logo-container {
+        width: 170px;
+        height: 113px;
+    }
+    .patrocinador-card .nombre {
+        font-size: 1rem;
+        min-height: 2rem;
+    }
+    
+    .noticia-destacada .cabecera {
+        font-size: 1.5rem;
+    }
+    .noticia-destacada .texto-corto {
+        font-size: 1rem;
+    }
+    .noticia-card {
+        padding: 1rem 1.2rem;
+    }
+    .noticia-card .cabecera {
+        font-size: 1.1rem;
+    }
+    .noticia-destacada {
+        padding: 1.2rem;
+    }
+    .noticia-destacada .detalle .texto-largo {
+        font-size: 0.95rem;
+    }
+    .noticia-card .detalle .imagen {
+        max-height: 300px;
+        min-height: 80px;
+    }
+    .noticia-destacada .detalle .imagen {
+        max-height: 350px;
+        min-height: 100px;
+    }
+    .noticia-card .detalle .imagen img {
+        max-height: 300px;
+    }
+    .noticia-destacada .detalle .imagen img {
+        max-height: 350px;
+    }
+    
+    .formulario-container {
+        padding: 1.2rem;
+    }
+    .info-card {
+        padding: 1.2rem;
+    }
+    .mapa-container {
+        min-height: 250px;
+    }
+    .mapa-container iframe {
+        min-height: 250px;
+    }
+    .info-card .titulo-icono .icono {
+        font-size: 1.2rem;
+    }
+    .info-card .titulo-icono h3 {
+        font-size: 1rem;
+    }
+    .info-card .telefono-numero {
+        font-size: 1rem;
+    }
+    .info-card .btn-whatsapp {
+        font-size: 0.85rem;
+        padding: 0.4rem 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .players-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+    .flip-container {
+        width: 150px;
+        height: 225px;
+    }
+    .player-card {
+        width: 150px;
+        height: 225px;
+    }
+    .photo-container {
+        top: 14px;
+        left: 14px;
+        right: 14px;
+        bottom: 50px;
+    }
+    .back-photo-container {
+        top: 14px;
+        left: 14px;
+        right: 14px;
+        bottom: 50px;
+    }
+    .back-text-area {
+        top: 22px;
+        left: 22px;
+        right: 22px;
+        bottom: 58px;
+        padding: 0.2rem;
+    }
+    .player-number {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+        top: 8px;
+        left: 8px;
+    }
+    .back-number {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+        top: 8px;
+        left: 8px;
+    }
+    .name-container {
+        height: 36px;
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+        padding: 2px 4px;
+    }
+    .back-name-container {
+        height: 36px;
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+        padding: 2px 4px;
+    }
+    .player-name {
+        font-size: 13px;
+        letter-spacing: 0.3px;
+    }
+    .back-name {
+        font-size: 13px;
+    }
+    .staff-row {
+        gap: 1rem;
+        padding: 0.8rem;
+    }
+    .staff-group-cards {
+        gap: 0.8rem;
+    }
+    .staff-group-label {
+        font-size: 0.7rem;
+        letter-spacing: 1.5px;
+    }
+    .back-text-area p {
+        font-size: 0.7rem;
+    }
+    .back-text-area .back-line-first {
+        font-size: 0.8rem;
+    }
+    
+    .patrocinadores-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .patrocinador-card .logo-container {
+        width: 220px;
+        height: 147px;
+    }
+    .patrocinador-card {
+        padding: 1.5rem 1rem;
+        min-height: 220px;
+    }
+    .patrocinador-card .maps-link {
+        font-size: 0.75rem;
+        padding: 0.4rem 1.2rem;
+    }
+    
+    .noticia-card .detalle .imagen {
+        max-height: 200px;
+        min-height: 60px;
+    }
+    .noticia-destacada .detalle .imagen {
+        max-height: 250px;
+        min-height: 80px;
+    }
+    .noticia-card .detalle .imagen img {
+        max-height: 200px;
+    }
+    .noticia-destacada .detalle .imagen img {
+        max-height: 250px;
+    }
+    
+    .bases-legais-btn {
+        bottom: 15px;
+        right: 15px;
+        padding: 0.5rem 1rem;
+        font-size: 0.7rem;
+    }
+    .bases-legais-btn i {
+        font-size: 0.8rem;
+    }
+}
