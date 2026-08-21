@@ -5,548 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noticias · Club Baloncesto O Grove</title>
     
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-
-    <style>
-        /* ===== LISTADO DE NOTICIAS ===== */
-        .noticias-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        /* ===== TARJETA DE NOTICIA ===== */
-        .noticia-card {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(4px);
-            border-radius: 15px;
-            padding: 1.5rem 2rem;
-            border-left: 5px solid var(--dorado);
-            box-shadow: var(--sombra-suave);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid rgba(255,255,255,0.3);
-            cursor: pointer;
-        }
-
-        .noticia-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--sombra-media);
-        }
-
-        .noticia-card .fecha {
-            font-size: 0.85rem;
-            color: var(--gris-texto);
-            margin-bottom: 0.3rem;
-            font-weight: 500;
-        }
-
-        .noticia-card .cabecera {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--azul-club);
-            font-family: var(--font-titulos);
-            margin-bottom: 0.3rem;
-        }
-
-        .noticia-card .texto-corto {
-            color: #444;
-            line-height: 1.6;
-            overflow: visible;
-            max-height: none;
-        }
-
-        /* ===== BOTÓN LER MÁIS ===== */
-        .noticia-card .toggle-btn {
-            display: inline-block;
-            margin-top: 0.8rem;
-            color: var(--dorado);
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-family: var(--font-textos);
-            padding: 0;
-        }
-
-        .noticia-card .toggle-btn:hover {
-            color: var(--azul-club);
-        }
-
-        /* ===== CONTENIDO DESPLEGABLE ===== */
-        .noticia-card .detalle {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out, padding 0.3s ease-in-out;
-            padding: 0;
-            margin-top: 0;
-        }
-
-        .noticia-card.abierta .detalle {
-            max-height: 2000px;
-            padding: 1rem 0 0 0;
-            margin-top: 0.5rem;
-            border-top: 1px solid rgba(201, 160, 61, 0.3);
-        }
-
-        .noticia-card .detalle .texto-largo {
-            color: #444;
-            line-height: 1.7;
-            font-size: 1rem;
-        }
-
-        /* ===== ESTILOS DE IMAGEN MEJORADOS - OPCIÓN 4 ===== */
-        .noticia-card .detalle .imagen,
-        .noticia-destacada .detalle .imagen {
-            margin-top: 1rem;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #f5f5f5;
-            position: relative;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #eee;
-        }
-
-        .noticia-card .detalle .imagen {
-            max-height: 400px;
-            min-height: 100px;
-        }
-
-        .noticia-destacada .detalle .imagen {
-            max-height: 500px;
-            min-height: 150px;
-        }
-
-        .noticia-card .detalle .imagen img,
-        .noticia-destacada .detalle .imagen img {
-            width: auto;
-            height: auto;
-            max-width: 100%;
-            max-height: 400px;
-            object-fit: contain;
-            display: block;
-            margin: 0 auto;
-            border-radius: 8px;
-        }
-
-        .noticia-destacada .detalle .imagen img {
-            max-height: 500px;
-        }
-
-        /* Imagen en carga - skeleton loader */
-        .noticia-card .detalle .imagen img.loading,
-        .noticia-destacada .detalle .imagen img.loading {
-            opacity: 0;
-        }
-
-        .noticia-card .detalle .imagen img.loaded,
-        .noticia-destacada .detalle .imagen img.loaded {
-            opacity: 1;
-            transition: opacity 0.3s ease;
-        }
-
-        /* Fallback para imágenes que no cargan */
-        .noticia-card .detalle .imagen img[style*="display: none"],
-        .noticia-destacada .detalle .imagen img[style*="display: none"] {
-            display: none !important;
-        }
-
-        /* ===== NOTICIA DESTACADA ===== */
-        .noticia-destacada {
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(4px);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2.5rem;
-            border: 2px solid var(--dorado);
-            box-shadow: var(--sombra-media);
-            cursor: pointer;
-        }
-
-        .noticia-destacada .fecha {
-            font-size: 0.9rem;
-            color: var(--gris-texto);
-            margin-bottom: 0.3rem;
-        }
-
-        .noticia-destacada .cabecera {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--azul-club);
-            font-family: var(--font-titulos);
-            margin-bottom: 0.5rem;
-        }
-
-        .noticia-destacada .texto-corto {
-            font-size: 1.1rem;
-            color: #444;
-            line-height: 1.7;
-            overflow: visible;
-            max-height: none;
-        }
-
-        .noticia-destacada .toggle-btn {
-            display: inline-block;
-            margin-top: 0.8rem;
-            color: var(--dorado);
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-family: var(--font-textos);
-            padding: 0;
-        }
-
-        .noticia-destacada .toggle-btn:hover {
-            color: var(--azul-club);
-        }
-
-        .noticia-destacada .detalle {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out, padding 0.3s ease-in-out;
-            padding: 0;
-            margin-top: 0;
-        }
-
-        .noticia-destacada.abierta .detalle {
-            max-height: 2000px;
-            padding: 1rem 0 0 0;
-            margin-top: 0.5rem;
-            border-top: 1px solid rgba(201, 160, 61, 0.3);
-        }
-
-        .noticia-destacada .detalle .texto-largo {
-            color: #444;
-            line-height: 1.7;
-            font-size: 1.05rem;
-        }
-
-        /* ===== TÍTULO DE PÁGINA ===== */
-        .page-title {
-            text-align: center;
-            color: var(--azul-club);
-            font-family: var(--font-titulos);
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
-        }
-        .page-subtitle {
-            text-align: center;
-            color: var(--gris-texto);
-            margin-bottom: 2rem;
-        }
-
-        .loading-text {
-            text-align: center;
-            color: var(--gris-texto);
-            padding: 2rem;
-        }
-
-        .no-noticias {
-            text-align: center;
-            color: var(--gris-texto);
-            padding: 2rem;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .noticia-destacada .cabecera {
-                font-size: 1.5rem;
-            }
-            .noticia-destacada .texto-corto {
-                font-size: 1rem;
-            }
-            .noticia-card {
-                padding: 1rem 1.2rem;
-            }
-            .noticia-card .cabecera {
-                font-size: 1.1rem;
-            }
-            .noticia-destacada {
-                padding: 1.2rem;
-            }
-            .noticia-destacada .detalle .texto-largo {
-                font-size: 0.95rem;
-            }
-            
-            /* Responsive imágenes */
-            .noticia-card .detalle .imagen {
-                max-height: 300px;
-                min-height: 80px;
-            }
-            .noticia-destacada .detalle .imagen {
-                max-height: 350px;
-                min-height: 100px;
-            }
-            .noticia-card .detalle .imagen img {
-                max-height: 300px;
-            }
-            .noticia-destacada .detalle .imagen img {
-                max-height: 350px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .noticia-card .detalle .imagen {
-                max-height: 200px;
-                min-height: 60px;
-            }
-            .noticia-destacada .detalle .imagen {
-                max-height: 250px;
-                min-height: 80px;
-            }
-            .noticia-card .detalle .imagen img {
-                max-height: 200px;
-            }
-            .noticia-destacada .detalle .imagen img {
-                max-height: 250px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- ===== CONTENIDO PRINCIPAL ===== -->
-    <main class="main-content">
-        <h1 class="page-title">📰 NOVAS DO CLUB</h1>
-        <p class="page-subtitle">Mantéñente ao día de todo o que acontece no CB O Grove</p>
-
-        <!-- NOTICIA DESTACADA -->
-        <div id="noticiaDestacada" class="noticia-destacada">
-            <p class="loading-text">Cargando última nova...</p>
-        </div>
-
-        <!-- RESTO DE NOTICIAS -->
-        <div class="noticias-grid" id="noticiasGrid">
-            <p class="loading-text">Cargando novas...</p>
-        </div>
-    </main>
-
-    <!-- ===== SCRIPTS ===== -->
-    <script src="js/app.js"></script>
-    <script src="js/layout.js"></script>
-    <script>
-        // ===== CONFIGURACIÓN =====
-        const CONFIG_NOTICIAS = {
-            sheetUrl: 'https://docs.google.com/spreadsheets/d/1WyAXYg7YZXG3jhr2y1LjgoRMbq7nWtHReJmBTk-FkcQ/export?format=csv'
-        };
-
-        // ===== FUNCIÓN MEJORADA PARA PARSEAR CSV =====
-        function parseCSV(csv) {
-            // Dividir por líneas respetando las comillas
-            const lines = [];
-            let currentLine = '';
-            let insideQuotes = false;
-            
-            for (let i = 0; i < csv.length; i++) {
-                const char = csv[i];
-                if (char === '"') {
-                    insideQuotes = !insideQuotes;
-                    currentLine += char;
-                } else if (char === '\n' && !insideQuotes) {
-                    if (currentLine.trim()) {
-                        lines.push(currentLine);
-                    }
-                    currentLine = '';
-                } else {
-                    currentLine += char;
-                }
-            }
-            if (currentLine.trim()) {
-                lines.push(currentLine);
-            }
-
-            if (lines.length < 2) return [];
-
-            // Parsear la primera línea para los encabezados
-            const headers = parseCSVLine(lines[0]);
-            const headerMap = {};
-            headers.forEach((h, index) => {
-                const lower = h.toLowerCase().trim();
-                if (lower.includes('fecha')) headerMap['fecha'] = index;
-                else if (lower.includes('cabecera') || lower.includes('titulo') || lower.includes('título')) headerMap['cabecera'] = index;
-                else if (lower.includes('texto_corto') || lower.includes('resumen') || lower.includes('texto corto') || lower.includes('intro')) headerMap['texto_corto'] = index;
-                else if (lower.includes('texto_largo') || lower.includes('articulo') || lower.includes('texto largo') || lower.includes('descripción') || lower.includes('descripcion')) headerMap['texto_largo'] = index;
-                else if (lower.includes('imagen') || lower.includes('enlace') || lower.includes('foto') || lower.includes('url')) headerMap['enlace_imagen'] = index;
-            });
-
-            // Asignar índices por defecto si no se encontraron
-            if (headerMap['fecha'] === undefined) headerMap['fecha'] = 0;
-            if (headerMap['cabecera'] === undefined) headerMap['cabecera'] = 1;
-            if (headerMap['texto_corto'] === undefined) headerMap['texto_corto'] = 2;
-            if (headerMap['texto_largo'] === undefined) headerMap['texto_largo'] = 3;
-            if (headerMap['enlace_imagen'] === undefined) headerMap['enlace_imagen'] = 4;
-
-            // Parsear el resto de líneas
-            return lines.slice(1).map(line => {
-                const values = parseCSVLine(line);
-                const obj = {};
-                Object.keys(headerMap).forEach(key => {
-                    let value = values[headerMap[key]] || '';
-                    // Limpiar comillas que Google Sheets añade automáticamente
-                    if (value.startsWith('"') && value.endsWith('"')) {
-                        value = value.slice(1, -1);
-                    }
-                    // Reemplazar dobles comillas dentro del texto
-                    value = value.replace(/""/g, '"');
-                    obj[key] = value;
-                });
-                return obj;
-            });
-        }
-
-        function parseCSVLine(line) {
-            const values = [];
-            let current = '';
-            let insideQuotes = false;
-            
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                if (char === '"') {
-                    insideQuotes = !insideQuotes;
-                } else if (char === ',' && !insideQuotes) {
-                    values.push(current.trim());
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-            values.push(current.trim());
-            return values;
-        }
-
-        function formatearFecha(fecha) {
-            if (!fecha) return '';
-            try {
-                const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
-                return new Date(fecha).toLocaleDateString('gl-ES', opciones);
-            } catch (e) {
-                return fecha;
-            }
-        }
-
-        function convertirURLImagen(url) {
-            if (!url) return '';
-            // Si es una URL de GitHub (blob o raw), convertir a raw
-            if (url.includes('github.com') && url.includes('/blob/')) {
-                return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
-            }
-            // Si ya es una URL de raw, dejar igual
-            if (url.includes('raw.githubusercontent.com')) return url;
-            // Si es una URL de Drive, asegurar formato de exportación
-            if (url.includes('drive.google.com')) {
-                const match = url.match(/[-\w]{25,}/);
-                if (match) {
-                    return `https://drive.google.com/uc?export=view&id=${match[0]}`;
-                }
-            }
-            return url;
-        }
-
-        function crearNoticia(noticia, destacada = false) {
-            const container = document.createElement('div');
-            container.className = destacada ? 'noticia-destacada' : 'noticia-card';
-
-            const tieneImagen = noticia.enlace_imagen && noticia.enlace_imagen.length > 0;
-            const tieneTextoLargo = noticia.texto_largo && noticia.texto_largo.length > 0;
-            const imagenUrl = tieneImagen ? convertirURLImagen(noticia.enlace_imagen) : '';
-
-            // Debug: Mostrar en consola lo que se está parseando
-            console.log('Noticia:', {
-                fecha: noticia.fecha,
-                cabecera: noticia.cabecera,
-                texto_corto: noticia.texto_corto ? noticia.texto_corto.substring(0, 50) + '...' : '(vacío)',
-                texto_largo: noticia.texto_largo ? noticia.texto_largo.substring(0, 50) + '...' : '(vacío)',
-                enlace_imagen: noticia.enlace_imagen ? noticia.enlace_imagen.substring(0, 30) + '...' : '(vacío)'
-            });
-
-            let html = `
-                <div class="fecha">📅 ${formatearFecha(noticia.fecha)}</div>
-                <div class="cabecera">${noticia.cabecera || 'Sen título'}</div>
-                <div class="texto-corto">${noticia.texto_corto || ''}</div>
-            `;
-
-            // Botón "Ler máis" SOLO si hay texto largo o imagen
-            if (tieneTextoLargo || tieneImagen) {
-                html += `
-                    <button class="toggle-btn" onclick="toggleNoticia(this)">
-                        <span class="btn-text">▶ Ler máis</span>
-                    </button>
-                `;
-            }
-
-            // Detalle (oculto inicialmente)
-            html += `<div class="detalle">`;
-
-            // Imagen (solo en el detalle)
-            if (tieneImagen && imagenUrl) {
-                html += `
-                    <div class="imagen">
-                        <img src="${imagenUrl}" 
-                             alt="${noticia.cabecera || 'Imaxe'}" 
-                             loading="lazy" 
-                             onerror="this.style.display='none'"
-                             onload="this.classList.add('loaded')"
-                             class="loading">
-                    </div>
-                `;
-            }
-
-            // Texto largo (solo en el detalle) - CONVIERTE | EN SALTO DE LÍNEA
-            if (tieneTextoLargo) {
-                // Reemplazar | por <br> para saltos de línea
-                const textoConSaltos = noticia.texto_largo.replace(/\|/g, '<br><br>');
-                html += `<div class="texto-largo">${textoConSaltos}</div>`;
-            }
-
-            html += `</div>`; // fin detalle
-
-            container.innerHTML = html;
-            return container;
-        }
-
-        // ===== FUNCIÓN PARA TOGGLE =====
-        function toggleNoticia(btn) {
-            const card = btn.closest('.noticia-card, .noticia-destacada');
-            if (!card) return;
-
-            const isOpen = card.classList.contains('abierta');
-            const btnText = btn.querySelector('.btn-text');
-
-            if (isOpen) {
-                card.classList.remove('abierta');
-                if (btnText) btnText.textContent = '▶ Ler máis';
-            } else {
-                card.classList.add('abierta');
-                if (btnText) btnText.textContent = '▲ Ler menos';
-            }
-        }
-
-        window.toggleNoticia = toggleNoticia;
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- JS: Config + Utils + Components + Layout + App -->
+    <script src="/js/config.js" defer></script>
+    <script src="/js/utils.js" defer></script>
+    <script src="/js/components.js" defer></script>
+    <script src="/js/layout.js" defer></script>
+    <script src="/js/app.js" defer></script>
+    
+    <!-- Script específico de noticias -->
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarNoticias();
+        });
 
         async function cargarNoticias() {
             const destacadaContainer = document.getElementById('noticiaDestacada');
             const gridContainer = document.getElementById('noticiasGrid');
 
+            if (!destacadaContainer || !gridContainer) return;
+
             try {
-                console.log('🔄 Cargando noticias desde:', CONFIG_NOTICIAS.sheetUrl);
-                const response = await fetch(CONFIG_NOTICIAS.sheetUrl);
+                console.log('🔄 Cargando noticias...');
+                const response = await fetch(CONFIG.sheets.noticias);
                 const csv = await response.text();
-                console.log('📄 CSV recibido (primeros 200 caracteres):', csv.substring(0, 200));
-                
                 const noticias = parseCSV(csv);
-                console.log('📊 Noticias parseadas:', noticias);
 
                 if (noticias.length === 0) {
                     destacadaContainer.innerHTML = '<p class="no-noticias">Non hai novas dispoñibles.</p>';
@@ -564,16 +53,18 @@
 
                 validas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
+                // Noticia destacada = la más reciente
                 const destacada = validas[0];
                 destacadaContainer.innerHTML = '';
-                destacadaContainer.appendChild(crearNoticia(destacada, true));
+                destacadaContainer.appendChild(crearTarjetaNoticia(destacada, true));
 
+                // Resto de noticias
                 gridContainer.innerHTML = '';
                 validas.slice(1).forEach(noticia => {
-                    gridContainer.appendChild(crearNoticia(noticia, false));
+                    gridContainer.appendChild(crearTarjetaNoticia(noticia, false));
                 });
 
-                console.log(`✅ Noticias cargadas: ${validas.length}`);
+                console.log(`✅ ${validas.length} noticias cargadas`);
 
             } catch (error) {
                 console.error('Error cargando noticias:', error);
@@ -581,8 +72,24 @@
                 setTimeout(cargarNoticias, 5000);
             }
         }
-
-        document.addEventListener('DOMContentLoaded', cargarNoticias);
     </script>
+</head>
+<body>
+
+    <main class="main-content">
+        <h1 class="page-title">📰 NOVAS DO CLUB</h1>
+        <p class="page-subtitle">Mantéñente ao día de todo o que acontece no CB O Grove</p>
+
+        <!-- NOTICIA DESTACADA -->
+        <div id="noticiaDestacada" class="noticia-destacada">
+            <p class="loading-text">Cargando última nova...</p>
+        </div>
+
+        <!-- RESTO DE NOTICIAS -->
+        <div class="noticias-grid" id="noticiasGrid">
+            <p class="loading-text">Cargando novas...</p>
+        </div>
+    </main>
+
 </body>
 </html>
