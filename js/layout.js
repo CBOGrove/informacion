@@ -26,7 +26,7 @@ function inyectarHeader() {
             <nav class="main-nav">
                 <a href="index.html">Inicio</a>
                 <a href="plantillas.html">Plantillas</a>
-                <a href="jornadas.html">Jornadas</a>
+                <a href="xornadas.html">Xornadas</a>
                 <a href="noticias.html">Noticias</a>
                 <a href="patrocinadores.html">Patrocinadores</a>
                 <a href="sorteos.html">Sorteos</a>
