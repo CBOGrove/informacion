@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noticias · Club Baloncesto O Grove</title>
+    <title>Patrocinadores · Club Baloncesto O Grove</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
@@ -17,54 +17,117 @@
     
     <script defer>
         document.addEventListener('DOMContentLoaded', function() {
-            cargarNoticias();
+            cargarPatrocinadores();
         });
 
-        async function cargarNoticias() {
-            const destacadaContainer = document.getElementById('noticiaDestacada');
-            const gridContainer = document.getElementById('noticiasGrid');
+        function formatearTextoConSaltos(texto) {
+            if (!texto) return '';
+            const lineas = texto.split('|').map(line => line.trim());
+            return lineas.map(line => `<span class="linea">${line}</span>`).join('');
+        }
 
-            if (!destacadaContainer || !gridContainer) return;
+        function crearTarjetaPatrocinador(patrocinador) {
+            const container = document.createElement('div');
+            container.className = 'patrocinador-card';
+
+            const logoUrl = patrocinador.logo ? convertirURLImagen(patrocinador.logo) : '';
+            const nombre = patrocinador.nombre || 'Sen nome';
+            const descripcion = patrocinador.descripcion || '';
+            const telefono = patrocinador.telefono || '';
+            const mapsUrl = patrocinador.maps || '';
+
+            const descripcionHTML = formatearTextoConSaltos(descripcion);
+
+            let html = `
+                <div class="logo-container">
+                    <img src="${logoUrl}" alt="${nombre}" loading="lazy" onerror="this.style.display='none'">
+                </div>
+                <div class="nombre">${nombre}</div>
+                <div class="descripcion">${descripcionHTML}</div>
+                <div class="info-extra">
+            `;
+
+            if (telefono) {
+                html += `
+                    <div class="telefono">
+                        <i class="fas fa-phone"></i>
+                        <span>${telefono}</span>
+                    </div>
+                `;
+            }
+
+            if (mapsUrl) {
+                html += `
+                    <a href="${mapsUrl}" target="_blank" rel="noopener" class="maps-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Ver localización
+                    </a>
+                `;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+            return container;
+        }
+
+        function crearTarjetaAnunciate() {
+            const container = document.createElement('div');
+            container.className = 'patrocinador-card anunciate';
+            
+            container.innerHTML = `
+                <div class="icono-anuncio">📢</div>
+                <div class="titulo-anuncio">Anúnciese aquí</div>
+                <div class="texto-anuncio">
+                    Apoia ao Club Baloncesto O Grove<br>
+                    e dá visibilidade á túa empresa
+                </div>
+                <a href="contacto.html" class="btn-contacto">
+                    <i class="fas fa-envelope"></i> Contactar
+                </a>
+            `;
+
+            return container;
+        }
+
+        async function cargarPatrocinadores() {
+            const grid = document.getElementById('patrocinadoresGrid');
+            if (!grid) return;
 
             try {
-                console.log('🔄 Cargando noticias...');
-                const response = await fetch(CONFIG.sheets.noticias);
+                console.log('🔄 Cargando patrocinadores...');
+                const response = await fetch(CONFIG.sheets.patrocinadores);
                 const csv = await response.text();
-                const noticias = parseCSVNoticias(csv);
+                const patrocinadores = parseCSVPatrocinadores(csv);
 
-                console.log('📊 Noticias parseadas:', noticias);
+                console.log('📊 Patrocinadores parseados:', patrocinadores);
 
-                if (noticias.length === 0) {
-                    destacadaContainer.innerHTML = '<p class="no-noticias">Non hai novas dispoñibles.</p>';
-                    gridContainer.innerHTML = '';
-                    return;
+                const privados = patrocinadores.filter(p => 
+                    p.nombre && (!p.tipo || p.tipo.toUpperCase() !== 'SI')
+                );
+
+                grid.innerHTML = '';
+
+                if (privados.length > 0) {
+                    privados.forEach(p => {
+                        grid.appendChild(crearTarjetaPatrocinador(p));
+                    });
                 }
 
-                const validas = noticias.filter(n => n.fecha && n.cabecera);
+                grid.appendChild(crearTarjetaAnunciate());
 
-                if (validas.length === 0) {
-                    destacadaContainer.innerHTML = '<p class="no-noticias">Non hai novas dispoñibles.</p>';
-                    gridContainer.innerHTML = '';
-                    return;
-                }
-
-                validas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-
-                const destacada = validas[0];
-                destacadaContainer.innerHTML = '';
-                destacadaContainer.appendChild(crearTarjetaNoticia(destacada, true));
-
-                gridContainer.innerHTML = '';
-                validas.slice(1).forEach(noticia => {
-                    gridContainer.appendChild(crearTarjetaNoticia(noticia, false));
-                });
-
-                console.log(`✅ ${validas.length} noticias cargadas`);
+                console.log(`✅ ${privados.length} patrocinadores privados cargados`);
 
             } catch (error) {
-                console.error('Error cargando noticias:', error);
-                destacadaContainer.innerHTML = '<p class="no-noticias" style="color:#e74c3c;">⚠️ Erro cargando as novas. Reintentando...</p>';
-                setTimeout(cargarNoticias, 5000);
+                console.error('Error cargando patrocinadores:', error);
+                grid.innerHTML = `
+                    <div class="no-patrocinadores" style="color:#e74c3c;">
+                        ⚠️ Erro cargando os patrocinadores.
+                    </div>
+                `;
+                setTimeout(() => {
+                    grid.innerHTML = '';
+                    grid.appendChild(crearTarjetaAnunciate());
+                }, 1000);
             }
         }
     </script>
@@ -72,15 +135,14 @@
 <body>
 
     <main class="main-content">
-        <h1 class="page-title">📰 NOVAS DO CLUB</h1>
-        <p class="page-subtitle">Mantéñente ao día de todo o que acontece no CB O Grove</p>
+        <h1 class="page-title">🏆 PATROCINADORES</h1>
+        <p class="page-subtitle">Empresas e entidades que fan posible o noso club</p>
 
-        <div id="noticiaDestacada" class="noticia-destacada">
-            <p class="loading-text">Cargando última nova...</p>
-        </div>
-
-        <div class="noticias-grid" id="noticiasGrid">
-            <p class="loading-text">Cargando novas...</p>
+        <div class="patrocinadores-grid" id="patrocinadoresGrid">
+            <div class="spinner-container">
+                <div class="spinner"></div>
+                <p style="color: var(--gris-texto);">Cargando patrocinadores...</p>
+            </div>
         </div>
     </main>
 
