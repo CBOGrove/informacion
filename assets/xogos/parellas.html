@@ -8,13 +8,13 @@
     <!-- ===== FONTS ===== -->
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
     
-    <!-- ===== CSS GLOBAL DE LA WEB (solo header/footer) ===== -->
-    <link rel="stylesheet" href="../../css/style.css">
+    <!-- ===== CSS GLOBAL DE LA WEB ===== -->
+    <link rel="stylesheet" href="/informacion/css/style.css">
     
     <!-- ===== SCRIPTS PARA HEADER/FOOTER ===== -->
-    <script src="../../js/config.js" defer></script>
-    <script src="../../js/utils.js" defer></script>
-    <script src="../../js/layout.js" defer></script>
+    <script src="/informacion/js/config.js" defer></script>
+    <script src="/informacion/js/utils.js" defer></script>
+    <script src="/informacion/js/layout.js" defer></script>
 
     <style>
         /* ============================================
@@ -47,7 +47,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('../../assets/img/logos/club/logo-negro.png');
+            background-image: url('/informacion/assets/img/logos/club/logo-negro.png');
             background-size: auto 60%;
             background-repeat: no-repeat;
             background-position: center center;
@@ -56,7 +56,7 @@
             pointer-events: none;
         }
 
-        /* ===== HEADER DEL JUEGO (simplificado, sin logo redundante) ===== */
+        /* ===== HEADER DEL JUEGO (integrado con el layout) ===== */
         .game-header {
             width: 100%;
             max-width: 1100px;
@@ -78,6 +78,17 @@
             font-size: 1.5rem;
             color: #c9a03d;
             text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .game-header .header-title .logo-small {
+            height: 40px;
+            width: auto;
+            border-radius: 50%;
+            border: 2px solid #c9a03d;
+            box-shadow: 0 0 20px rgba(201, 160, 61, 0.2);
         }
 
         .game-header .header-sub {
@@ -156,7 +167,7 @@
             min-height: 320px;
         }
 
-        /* ===== CARTA IDÉNTICA A PLANTILLAS (pero adaptada) ===== */
+        /* ===== CARTA IDÉNTICA A PLANTILLAS (adaptada) ===== */
         .game-player-card {
             width: 100%;
             max-width: 200px;
@@ -190,7 +201,7 @@
             left: -10%;
             opacity: 0.15;
             transform: rotate(35deg);
-            background-image: url('../../assets/img/logos/club/logo-negro.png');
+            background-image: url('/informacion/assets/img/logos/club/logo-negro.png');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -487,6 +498,10 @@
             }
             .game-header .header-title {
                 font-size: 1.2rem;
+                justify-content: center;
+            }
+            .game-header .header-title .logo-small {
+                height: 32px;
             }
             .game-container { padding: 1.2rem; }
             .formation-container {
@@ -551,6 +566,9 @@
             .instructions .kampa-credit img {
                 height: 22px;
             }
+            .game-header .header-title .logo-small {
+                height: 28px;
+            }
         }
     </style>
 </head>
@@ -562,10 +580,11 @@
     <main class="main-content">
         <div class="game-wrapper">
 
-            <!-- HEADER DEL JUEGO (simple, sin logo redundante) -->
+            <!-- HEADER DEL JUEGO (con logo pequeño a la izquierda) -->
             <div class="game-header">
-                <div>
-                    <span class="header-title">🏀 Aliña o equipo!</span>
+                <div class="header-title">
+                    <img src="/informacion/assets/img/logos/club/logo-dorado.png" alt="CB O Grove" class="logo-small" onerror="this.style.display='none'">
+                    Aliña o equipo!
                 </div>
                 <span class="header-sub">🔄 Fai clic nas cartas para intercambiar</span>
             </div>
@@ -610,7 +629,7 @@
                         <strong>🎮 ATALLOS:</strong> <kbd>1-5</kbd> Seleccionar · <kbd>R</kbd> Novo xogo · <kbd>ESC</kbd> Rendirse
                     </div>
                     <div class="kampa-credit">
-                        <img src="../../assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" onerror="this.style.display='none'">
+                        <img src="/informacion/assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" onerror="this.style.display='none'">
                         <span>Creado por <a href="https://taplink.cc/kampa_snmt" target="_blank">@kampa_snmt</a></span>
                     </div>
                 </div>
@@ -629,15 +648,14 @@
         // =============================================
         // CONFIGURACIÓN (usando CONFIG global de la web)
         // =============================================
-        // Si CONFIG no está definido (fallback), usar valores por defecto
         const CONFIG_LOCAL = (typeof CONFIG !== 'undefined') ? CONFIG : {
             sheets: {
                 femenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
                 masculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205'
             },
             drive: {
-                femenino: '../../assets/img/plantillas/femenino/',
-                masculino: '../../assets/img/plantillas/masculino/'
+                femenino: '/informacion/assets/img/plantillas/femenino/',
+                masculino: '/informacion/assets/img/plantillas/masculino/'
             }
         };
 
