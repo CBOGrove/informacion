@@ -3,22 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>As parellas · CB O Grove</title>
+    <title>Aliña o equipo! · CB O Grove</title>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- ===== FONTS ===== -->
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- ===== CSS GLOBAL DE LA WEB (solo header/footer) ===== -->
+    <link rel="stylesheet" href="../../css/style.css">
+    
+    <!-- ===== SCRIPTS PARA HEADER/FOOTER ===== -->
+    <script src="../../js/config.js" defer></script>
+    <script src="../../js/utils.js" defer></script>
+    <script src="../../js/layout.js" defer></script>
 
     <style>
         /* ============================================
-           ESTILOS COPIADOS DE ALIÑA O EQUIPO
-           (Solo lo necesario para este juego)
+           RESET Y BASE (solo para el juego)
            ============================================ */
-        
+        .game-wrapper * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
         .game-wrapper {
+            min-height: 60vh;
+            background: linear-gradient(145deg, #f8f9fc 0%, #eef2f7 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== ESCUDO DE FONDO (solo en el área del juego) ===== */
+        .game-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('../../assets/img/logos/club/logo-negro.png');
+            background-size: auto 60%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            opacity: 0.06;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== HEADER DEL JUEGO (simplificado, sin logo redundante) ===== */
+        .game-header {
             width: 100%;
             max-width: 1100px;
-            margin: 0 auto;
+            background: #1e3a5f;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.3);
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .game-header .header-title {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.5rem;
+            color: #c9a03d;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+        }
+
+        .game-header .header-sub {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .game-container {
+            width: 100%;
+            max-width: 1100px;
             background: rgba(255,255,255,0.85);
             backdrop-filter: blur(4px);
             padding: 2rem;
@@ -29,744 +100,942 @@
             z-index: 1;
         }
 
-        /* ===== SELECTOR DE CONFIGURACIÓN ===== */
-        .setup-panel {
-            background: rgba(30, 58, 95, 0.05);
-            border-radius: 16px;
-            padding: 1.5rem 2rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(201, 160, 61, 0.15);
+        /* ===== CONTADOR ===== */
+        .countdown-container {
+            background: #1e3a5f;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
             text-align: center;
-        }
-        
-        .setup-title {
-            font-family: var(--font-titulos);
-            font-size: 2rem;
-            color: var(--azul-club);
-            margin-bottom: 1.2rem;
-        }
-        
-        .setup-row {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-        }
-        
-        .setup-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.4rem;
-            min-width: 100px;
-        }
-        
-        .setup-group-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--gris-texto);
-            font-weight: 600;
-        }
-        
-        .setup-group-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .setup-btn {
-            padding: 0.4rem 1rem;
-            border: 2px solid var(--azul-club);
-            border-radius: 30px;
-            background: rgba(255,255,255,0.6);
-            color: var(--azul-club);
-            font-family: var(--font-titulos);
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .setup-btn:hover {
-            background: var(--azul-club);
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        .setup-btn.active {
-            background: var(--azul-club);
-            color: white;
-        }
-        
-        .start-btn {
-            background: var(--azul-club);
-            color: white;
-            font-size: 1.2rem;
-            padding: 0.7rem 2.5rem;
-            border: none;
-            border-radius: 50px;
-            font-family: var(--font-titulos);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.3);
-            margin-top: 0.3rem;
-        }
-        
-        .start-btn:hover {
-            background: var(--dorado);
-            color: var(--azul-club);
-            transform: translateY(-3px);
+            margin-bottom: 1.5rem;
+            border: 2px solid #c9a03d;
         }
 
-        /* ===== TABLERO DE CARTAS ===== */
-        .board {
-            display: flex;
-            justify-content: center;
-            margin: 1.2rem 0;
-            min-height: 300px;
+        .countdown-text {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 0.9rem;
+            color: white;
+            opacity: 0.8;
+            letter-spacing: 1px;
         }
-        
-        .cards-grid {
+
+        .countdown-number {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #c9a03d;
+            text-shadow: 0 0 20px rgba(201, 160, 61, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .countdown-number.warning {
+            color: #ffcc00;
+            animation: pulse-warning 1s infinite;
+        }
+
+        .countdown-number.emergencia {
+            color: #ff4444;
+            animation: pulse-emergencia 0.6s infinite;
+        }
+
+        @keyframes pulse-warning {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        @keyframes pulse-emergencia {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.95); }
+        }
+
+        /* ===== TABLERO DE JUGADORES ===== */
+        .formation-container {
             display: grid;
-            gap: 12px;
-            justify-content: center;
-            width: 100%;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+            justify-items: center;
+            margin: 1.5rem 0;
+            min-height: 320px;
         }
 
-        /* ===== CARTA (idéntica a Aliña o equipo) ===== */
-        .card {
+        /* ===== CARTA IDÉNTICA A PLANTILLAS (pero adaptada) ===== */
+        .game-player-card {
+            width: 100%;
+            max-width: 200px;
             aspect-ratio: 2 / 3;
-            background: transparent;
+            background: #FFD700;
             border-radius: 12px;
+            border: 3px solid #000000;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
             cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
-            transition: transform 0.2s ease;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
-            transform-style: preserve-3d;
-            max-width: 130px;
-            min-width: 65px;
-            margin: 0 auto;
+            overflow: hidden;
+            flex-shrink: 0;
         }
-        
-        .card:hover:not(.flipped):not(.disabled) {
-            transform: scale(1.04);
+
+        .game-player-card:hover:not(.selected) {
+            transform: translateY(-4px) scale(1.02);
         }
-        
-        .card-front,
-        .card-back {
+
+        .game-player-card.selected {
+            transform: scale(1.05);
+            border-color: #c9a03d;
+            box-shadow: 0 0 25px rgba(201, 160, 61, 0.5);
+        }
+
+        .game-player-card .card-background {
             position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            opacity: 0.15;
+            transform: rotate(35deg);
+            background-image: url('../../assets/img/logos/club/logo-negro.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: brightness(0) contrast(1);
+            pointer-events: none;
+        }
+
+        .game-player-card .photo-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 75px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-player-card .photo-container img {
             width: 100%;
             height: 100%;
-            backface-visibility: hidden;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            overflow: hidden;
-            padding: 6px;
-            border: 3px solid #000000;
-        }
-        
-        /* REVERSO */
-        .card-back {
-            background: #FFD700;
-            transform: rotateY(0deg);
-            border-color: #000000;
-        }
-        
-        .card-back img {
-            width: 75%;
-            height: 75%;
-            object-fit: contain;
-        }
-        
-        .card-back .fallback {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #000;
-            font-family: var(--font-titulos);
-        }
-        
-        /* ANVERSO */
-        .card-front {
-            background: #f5f5f5;
-            transform: rotateY(180deg);
-            border-color: #000000;
-            flex-direction: column;
-            padding: 8px;
-        }
-        
-        .card-front .card-foto {
-            width: 100%;
-            height: 70%;
             object-fit: cover;
-            border-radius: 6px;
-            background: #eee;
         }
-        
-        .card-front .card-foto-placeholder {
+
+        .game-player-card .photo-container .placeholder {
             width: 100%;
-            height: 70%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
-            background: rgba(30, 58, 95, 0.05);
-            border-radius: 6px;
-            color: var(--gris-texto);
-        }
-        
-        .card-front .card-info {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--azul-club);
-            text-align: center;
-            padding: 4px 0;
-            line-height: 1.2;
-            font-family: var(--font-titulos);
-            width: 100%;
-        }
-        
-        .card-front .card-info .dorsal {
-            display: inline-block;
-            background: var(--azul-club);
-            color: white;
-            padding: 0 8px;
-            border-radius: 12px;
-            font-size: 0.65rem;
-            margin-left: 4px;
-        }
-        
-        .card.flipped .card-back {
-            transform: rotateY(180deg);
-        }
-        
-        .card.flipped .card-front {
-            transform: rotateY(0deg);
-        }
-        
-        .card.disabled {
-            pointer-events: none;
-            opacity: 0.5;
+            font-weight: bold;
+            color: #000;
+            background: rgba(255, 215, 0, 0.3);
         }
 
-        /* ===== ESTADO ===== */
-        .status-area {
-            margin: 1rem 0 0.5rem;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--azul-club);
-            min-height: 50px;
-            font-family: var(--font-titulos);
+        .game-player-card .player-number {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: 2px solid #000000;
+            background: #000000;
+            color: #FFD700;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            z-index: 3;
+        }
+
+        .game-player-card .name-container {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            height: 50px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            background: #000000;
+            border: 1.5px solid #000000;
+            z-index: 2;
+        }
+
+        .game-player-card .player-name {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            color: #FFD700;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        /* ===== ESTADO Y MENSAJES ===== */
+        .status-container {
+            margin: 1.2rem 0;
+            padding: 0.8rem;
+            background: rgba(30, 58, 95, 0.08);
+            border-radius: 12px;
+            border-left: 4px solid #c9a03d;
+        }
+
+        .status-text {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.3rem;
+            color: #1e3a5f;
             text-align: center;
         }
-        
-        .status-area .victory {
-            background: var(--dorado);
-            color: var(--azul-club);
-            display: inline-block;
-            padding: 0.5rem 2rem;
-            border-radius: 50px;
+
+        .message {
+            font-size: 1rem;
+            color: #555555;
+            text-align: center;
+            min-height: 2rem;
+            padding: 0.5rem;
         }
+
+        .message.acierto { color: #2e7d32; }
+        .message.error { color: #c62828; }
 
         /* ===== BOTONES ===== */
-        .info-buttons {
+        .buttons-container {
             display: flex;
             justify-content: center;
             gap: 1rem;
-            margin-top: 1rem;
+            margin: 1.2rem 0 0.5rem;
             flex-wrap: wrap;
         }
-        
-        .info-buttons button {
-            padding: 0.5rem 1.5rem;
-            font-family: var(--font-titulos);
-            font-size: 0.9rem;
+
+        .game-button {
+            padding: 0.6rem 2rem;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1rem;
             font-weight: 600;
-            background: var(--azul-club);
+            background: #1e3a5f;
             color: white;
             border: none;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s;
-        }
-        
-        .info-buttons button:hover {
-            background: var(--dorado);
-            color: var(--azul-club);
-            transform: translateY(-2px);
-        }
-        
-        .info-buttons button.help-btn {
-            background: #6c757d;
-        }
-        
-        .info-buttons button.help-btn:hover {
-            background: #5a6268;
-            color: white;
-        }
-        
-        .info-buttons .shortcut {
-            font-size: 0.6rem;
-            opacity: 0.6;
-            display: block;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
-        .loading-text {
+        .game-button:hover:not(:disabled) {
+            background: #c9a03d;
+            color: #1e3a5f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .game-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .game-button.danger {
+            background: #c62828;
+        }
+
+        .game-button.danger:hover:not(:disabled) {
+            background: #d32f2f;
+            color: white;
+        }
+
+        /* ===== OVERLAY DE RESULTADO ===== */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 1.5rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .result-overlay.hidden {
+            display: none;
+        }
+
+        .result-message {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 2.5rem;
+            color: #c9a03d;
             text-align: center;
-            color: var(--gris-texto);
-            padding: 2rem;
+            text-shadow: 3px 3px 6px #000;
+            padding: 0 20px;
+        }
+
+        .result-message.victoria { color: #4caf50; }
+        .result-message.derrota { color: #ff4444; }
+
+        .result-pattern {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.2rem;
+            color: #fff;
+            text-align: center;
+            background: rgba(0,0,0,0.5);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            border: 2px solid #c9a03d;
+            max-width: 90%;
+        }
+
+        .result-pattern span {
+            display: inline-block;
+            margin: 0 0.5rem;
+            padding: 0.2rem 0.8rem;
+            background: rgba(255,215,0,0.15);
+            border-radius: 8px;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        /* ===== INSTRUCCIONES (con logo de Kampa) ===== */
+        .instructions {
+            margin-top: 1.2rem;
+            padding: 1rem 1.5rem;
+            background: rgba(30, 58, 95, 0.05);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #555555;
+            line-height: 1.7;
+            text-align: left;
+            border: 1px solid rgba(30, 58, 95, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .instructions .text {
+            flex: 1;
+        }
+
+        .instructions strong {
+            color: #1e3a5f;
+        }
+
+        .instructions kbd {
+            background: #1e3a5f;
+            color: white;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+
+        .instructions .kampa-credit {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #999;
+            flex-shrink: 0;
+        }
+
+        .instructions .kampa-credit img {
+            height: 28px;
+            width: auto;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .instructions .kampa-credit img:hover {
+            transform: scale(1.1);
+        }
+
+        .instructions .kampa-credit a {
+            color: #c9a03d;
+            text-decoration: none;
+        }
+
+        .instructions .kampa-credit a:hover {
+            text-decoration: underline;
         }
 
         /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .game-wrapper { padding: 1rem; }
-            .setup-panel { padding: 1rem; }
-            .setup-title { font-size: 1.5rem; }
-            .setup-row { gap: 0.8rem; }
-            .setup-group { min-width: 80px; }
-            .setup-btn { font-size: 0.7rem; padding: 0.3rem 0.7rem; }
-            .start-btn { font-size: 1rem; padding: 0.5rem 1.5rem; }
-            .cards-grid { gap: 10px; }
-            .card { min-width: 55px; max-width: 95px; }
-            .card-front .card-info { font-size: 0.65rem; }
-            .status-area { font-size: 1rem; }
+        @media (max-width: 1024px) {
+            .formation-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.2rem;
+            }
         }
-        
+
+        @media (max-width: 768px) {
+            .game-header {
+                padding: 0.6rem 1rem;
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+            .game-header .header-title {
+                font-size: 1.2rem;
+            }
+            .game-container { padding: 1.2rem; }
+            .formation-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            .game-player-card {
+                max-width: 160px;
+            }
+            .game-player-card .player-number {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+                top: 8px;
+                left: 8px;
+            }
+            .game-player-card .name-container {
+                height: 42px;
+                bottom: 8px;
+                left: 8px;
+                right: 8px;
+            }
+            .game-player-card .player-name {
+                font-size: 0.8rem;
+            }
+            .game-player-card .photo-container {
+                top: 14px;
+                left: 14px;
+                right: 14px;
+                bottom: 62px;
+            }
+            .countdown-number {
+                font-size: 2.2rem;
+            }
+            .status-text {
+                font-size: 1rem;
+            }
+            .result-message {
+                font-size: 1.8rem;
+            }
+            .instructions {
+                flex-direction: column;
+                text-align: center;
+            }
+            .instructions .kampa-credit {
+                justify-content: center;
+            }
+        }
+
         @media (max-width: 480px) {
-            .card { min-width: 50px; max-width: 75px; }
-            .cards-grid { gap: 8px; }
-            .card-front .card-info { font-size: 0.55rem; }
-            .status-area { font-size: 0.85rem; }
+            .formation-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+            .game-player-card {
+                max-width: 140px;
+            }
+            .game-button {
+                padding: 0.4rem 1.2rem;
+                font-size: 0.8rem;
+            }
+            .instructions .kampa-credit img {
+                height: 22px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== HEADER INYECTADO POR LAYOUT.JS ===== -->
+    <!-- ===== EL HEADER Y FOOTER LOS INYECTA layout.js ===== -->
 
-    <div class="main-content">
+    <!-- ===== CONTENIDO PRINCIPAL DEL JUEGO ===== -->
+    <main class="main-content">
         <div class="game-wrapper">
 
-            <!-- ===== SETUP ===== -->
-            <div id="setupPanel" class="setup-panel">
-                <div class="setup-title">🏀 AS PARELLAS</div>
-                
-                <div class="setup-row">
-                    <div class="setup-group">
-                        <span class="setup-group-label">🎯 Dificultade</span>
-                        <div class="setup-group-buttons" id="difficultySelector">
-                            <button data-diff="easy" class="setup-btn active">Fácil</button>
-                            <button data-diff="medium" class="setup-btn">Medio</button>
-                        </div>
-                    </div>
+            <!-- HEADER DEL JUEGO (simple, sin logo redundante) -->
+            <div class="game-header">
+                <div>
+                    <span class="header-title">🏀 Aliña o equipo!</span>
                 </div>
-                
-                <div class="setup-row">
-                    <div class="setup-group">
-                        <span class="setup-group-label">🔢 Parellas</span>
-                        <div class="setup-group-buttons" id="pairSelector">
-                            <button data-pairs="4" class="setup-btn">4</button>
-                            <button data-pairs="6" class="setup-btn active">6</button>
-                            <button data-pairs="8" class="setup-btn">8</button>
-                            <button data-pairs="10" class="setup-btn">10</button>
-                        </div>
-                    </div>
-                    
-                    <div class="setup-group">
-                        <span class="setup-group-label">👥 Equipo</span>
-                        <div class="setup-group-buttons" id="teamSelector">
-                            <button data-team="femenino" class="setup-btn active">Femenino</button>
-                            <button data-team="masculino" class="setup-btn">Masculino</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <button id="startGameBtn" class="start-btn">🎮 INICIAR PARTIDA</button>
-                <div style="margin-top:6px; font-size:0.7rem; color:var(--gris-texto); opacity:0.6;">
-                    Fácil: foto ↔ foto | Medio: foto ↔ nome + dorsal
-                </div>
+                <span class="header-sub">🔄 Fai clic nas cartas para intercambiar</span>
             </div>
 
-            <!-- ===== XOGO ===== -->
-            <div id="gameArea" style="display:none;">
-                <div class="board">
-                    <div id="cardsGrid" class="cards-grid">
-                        <div class="loading-text">Cargando xogadores...</div>
+            <!-- CONTENEDOR DEL JUEGO -->
+            <div class="game-container">
+
+                <!-- CONTADOR -->
+                <div class="countdown-container">
+                    <div class="countdown-text">⏱️ MOVEMENTOS RESTANTES</div>
+                    <div class="countdown-number" id="countdown">24</div>
+                </div>
+
+                <!-- TABLERO DE JUGADORES -->
+                <div class="formation-container" id="formationContainer">
+                    <p style="grid-column:1/-1; text-align:center; color:#555; padding:2rem 0;">Cargando xogadores...</p>
+                </div>
+
+                <!-- ESTADO -->
+                <div class="status-container">
+                    <div class="status-text" id="statusText">0/5 CORRECTOS</div>
+                </div>
+
+                <!-- MENSAJES -->
+                <div class="message" id="message">🔄 Fai clic nunha xogadora para seleccionala</div>
+
+                <!-- BOTONES -->
+                <div class="buttons-container">
+                    <button class="game-button" id="newGameBtn">🔄 NOVO XOGO</button>
+                    <button class="game-button danger" id="giveUpBtn">🏳️ RENDIRSE</button>
+                </div>
+
+                <!-- INSTRUCCIONES con logo de Kampa -->
+                <div class="instructions">
+                    <div class="text">
+                        <strong>🎯 COMO XOGAR:</strong><br>
+                        1. Tes <strong>24 movementos</strong> para aliñar o equipo correcto<br>
+                        2. Fai clic nunha xogadora para seleccionala <kbd>1-5</kbd><br>
+                        3. Fai clic noutra para <strong>intercambialas</strong><br>
+                        4. Cando remates os movementos, descóbrese a aliñación correcta<br>
+                        5. <strong>Obxectivo:</strong> Todas no seu lugar! 🏆<br>
+                        <strong>🎮 ATALLOS:</strong> <kbd>1-5</kbd> Seleccionar · <kbd>R</kbd> Novo xogo · <kbd>ESC</kbd> Rendirse
+                    </div>
+                    <div class="kampa-credit">
+                        <img src="../../assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" onerror="this.style.display='none'">
+                        <span>Creado por <a href="https://taplink.cc/kampa_snmt" target="_blank">@kampa_snmt</a></span>
                     </div>
                 </div>
-                
-                <div class="status-area" id="statusMessage">🔄 Atopa as parellas</div>
-                
-                <div class="info-buttons">
-                    <button id="newGameBtn">🔄 Nova partida <span class="shortcut">(N)</span></button>
-                    <button id="helpBtn" class="help-btn">❓ Axuda <span class="shortcut">(H)</span></button>
-                </div>
             </div>
-
         </div>
-    </div>
+    </main>
 
-    <!-- ===== FOOTER INYECTADO POR LAYOUT.JS ===== -->
+    <!-- OVERLAY DE RESULTADO -->
+    <div class="result-overlay hidden" id="resultOverlay">
+        <div class="result-message" id="resultMessage"></div>
+        <div class="result-pattern" id="resultPattern"></div>
+        <button class="game-button" id="playAgainBtn">🔄 XOGAR DE NOVO</button>
+    </div>
 
     <script>
         // =============================================
-        // AS PARELLAS - LÓXICA
+        // CONFIGURACIÓN (usando CONFIG global de la web)
+        // =============================================
+        // Si CONFIG no está definido (fallback), usar valores por defecto
+        const CONFIG_LOCAL = (typeof CONFIG !== 'undefined') ? CONFIG : {
+            sheets: {
+                femenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
+                masculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205'
+            },
+            drive: {
+                femenino: '../../assets/img/plantillas/femenino/',
+                masculino: '../../assets/img/plantillas/masculino/'
+            }
+        };
+
+        const MOVEMENTOS_TOTAIS = 24;
+        const NUM_XOGADORES = 5;
+
+        // =============================================
+        // ESTADO DO XOGO
+        // =============================================
+        let estado = {
+            xogadores: [],
+            aliñacionCorrecta: [],
+            aliñacionActual: [],
+            seleccionado: null,
+            movementosRestantes: MOVEMENTOS_TOTAIS,
+            xogoActivo: true,
+            vitoria: false
+        };
+
+        // =============================================
+        // ELEMENTOS DOM
+        // =============================================
+        const formationContainer = document.getElementById('formationContainer');
+        const statusText = document.getElementById('statusText');
+        const message = document.getElementById('message');
+        const countdown = document.getElementById('countdown');
+        const newGameBtn = document.getElementById('newGameBtn');
+        const giveUpBtn = document.getElementById('giveUpBtn');
+        const resultOverlay = document.getElementById('resultOverlay');
+        const resultMessage = document.getElementById('resultMessage');
+        const resultPattern = document.getElementById('resultPattern');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+
+        // =============================================
+        // FUNCIÓNS AUXILIARES
         // =============================================
 
-        (function() {
-            'use strict';
-
-            // ===== CONFIG =====
-            const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv';
-            const DRIVE = {
-                femenino: 'assets/img/plantillas/femenino/',
-                masculino: 'assets/img/plantillas/masculino/'
-            };
-
-            // ===== ESTADO =====
-            let state = {
-                team: 'femenino',
-                difficulty: 'easy',
-                pairs: 6,
-                players: [],
-                cards: [],
-                selected1: null,
-                selected2: null,
-                locked: false,
-                active: false,
-                matched: 0,
-                total: 0
-            };
-
-            // ===== DOM =====
-            const setupPanel = document.getElementById('setupPanel');
-            const gameArea = document.getElementById('gameArea');
-            const cardsGrid = document.getElementById('cardsGrid');
-            const statusMsg = document.getElementById('statusMessage');
-            const startBtn = document.getElementById('startGameBtn');
-            const newBtn = document.getElementById('newGameBtn');
-            const helpBtn = document.getElementById('helpBtn');
-
-            // ===== UTILS =====
-            function shuffle(arr) {
-                for (let i = arr.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [arr[i], arr[j]] = [arr[j], arr[i]];
-                }
-                return arr;
+        function barallar(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
+            return array;
+        }
 
-            function parseCSVLine(line) {
-                const vals = [];
-                let cur = '';
-                let inQuotes = false;
-                for (let i = 0; i < line.length; i++) {
-                    const c = line[i];
-                    if (c === '"') { inQuotes = !inQuotes; continue; }
-                    if (c === ',' && !inQuotes) { vals.push(cur.trim()); cur = ''; continue; }
-                    cur += c;
-                }
-                vals.push(cur.trim());
-                return vals;
+        function arraysIguais(arr1, arr2) {
+            if (arr1.length !== arr2.length) return false;
+            for (let i = 0; i < arr1.length; i++) {
+                if (arr1[i].id !== arr2[i].id) return false;
             }
+            return true;
+        }
 
-            function parsePlayers(csv) {
-                const lines = csv.split('\n').filter(l => l.trim());
-                if (lines.length < 2) return [];
-                const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-                const idxNum = headers.findIndex(h => h.includes('numero') || h.includes('dorsal'));
-                const idxNom = headers.findIndex(h => h.includes('nombre') || h.includes('nome'));
-                const idxStaff = headers.findIndex(h => h.includes('entrenador') || h.includes('staff'));
-                const result = [];
-                for (let i = 1; i < lines.length; i++) {
-                    const vals = parseCSVLine(lines[i]);
-                    const num = (vals[idxNum] || '').trim();
-                    const nom = (vals[idxNom] || '').trim();
-                    const staff = (vals[idxStaff] || '').trim();
-                    if (num && nom && !['SI', 'SÍ', 'TRUE', '1'].includes(staff.toUpperCase())) {
-                        result.push({ numero: num, nombre: nom, dorsal: parseInt(num) || 0 });
+        function esStaff(valor) {
+            if (!valor) return false;
+            const v = String(valor).toUpperCase().trim();
+            return v === 'SI' || v === 'SÍ' || v === 'TRUE' || v === '1';
+        }
+
+        // =============================================
+        // CARGA DE XOGADORES DESDE SHEETS
+        // =============================================
+
+        function parseCSVLocal(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+
+            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+            
+            const headerMap = {};
+            rawHeaders.forEach((h, index) => {
+                if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) {
+                    headerMap['numero'] = index;
+                } else if (h.includes('nombre') || h.includes('nome') || h.includes('jugador')) {
+                    headerMap['nombre'] = index;
+                } else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) {
+                    headerMap['entrenador'] = index;
+                } else if (h.includes('info') || h.includes('extra') || h.includes('detras') || h.includes('frase')) {
+                    headerMap['info_extra'] = index;
+                }
+            });
+
+            if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
+            if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
+            if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
+            if (headerMap['info_extra'] === undefined) headerMap['info_extra'] = 3;
+
+            return lines.slice(1).map(line => {
+                const values = line.split(',').map(v => v.trim());
+                const obj = {};
+                Object.keys(headerMap).forEach(key => {
+                    let value = values[headerMap[key]] || '';
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.slice(1, -1);
                     }
-                }
-                return result;
-            }
-
-            function getLayout(total) {
-                if (total <= 8) return { cols: 4 };
-                if (total <= 12) return { cols: 4 };
-                if (total <= 16) return { cols: 4 };
-                return { cols: 5 };
-            }
-
-            // ===== CARGA =====
-            async function loadPlayers(team) {
-                try {
-                    const gid = team === 'femenino' ? '0' : '1375196205';
-                    const url = SHEET_URL + '&gid=' + gid;
-                    const resp = await fetch(url);
-                    const csv = await resp.text();
-                    return parsePlayers(csv);
-                } catch (e) {
-                    console.error(e);
-                    return [];
-                }
-            }
-
-            // ===== GENERAR CARTAS =====
-            function generateCards(players, numPairs, difficulty, team) {
-                const selected = shuffle(players).slice(0, numPairs);
-                const base = DRIVE[team];
-                let cards = [];
-                selected.forEach((p, idx) => {
-                    const foto = base + p.numero + '.png';
-                    if (difficulty === 'easy') {
-                        cards.push({ id: 'a' + idx, pair: idx, type: 'foto', value: foto, name: p.nombre, dorsal: p.dorsal, flipped: false, gone: false });
-                        cards.push({ id: 'b' + idx, pair: idx, type: 'foto', value: foto, name: p.nombre, dorsal: p.dorsal, flipped: false, gone: false });
-                    } else {
-                        cards.push({ id: 'a' + idx, pair: idx, type: 'foto', value: foto, name: p.nombre, dorsal: p.dorsal, flipped: false, gone: false });
-                        cards.push({ id: 'b' + idx, pair: idx, type: 'info', value: p.nombre + ' #' + p.dorsal, name: p.nombre, dorsal: p.dorsal, flipped: false, gone: false });
-                    }
+                    obj[key] = value;
                 });
-                return shuffle(cards);
+                return obj;
+            });
+        }
+
+        async function cargarXogadoresDesdeSheet(url, xenero) {
+            try {
+                console.log(`🔄 Cargando ${xenero}...`);
+                const response = await fetch(url);
+                const csv = await response.text();
+                const datos = parseCSVLocal(csv);
+                const xogadores = datos.filter(j => !esStaff(j.entrenador));
+                
+                return xogadores.map(j => ({
+                    id: `${xenero}-${j.numero}`,
+                    nome: j.nombre || `Xogador ${j.numero}`,
+                    dorsal: parseInt(j.numero) || 0,
+                    foto: `${CONFIG_LOCAL.drive[xenero]}${j.numero}.png`,
+                    xenero: xenero,
+                    info_extra: j.info_extra || ''
+                }));
+            } catch (error) {
+                console.error(`Error cargando ${xenero}:`, error);
+                return [];
             }
+        }
 
-            // ===== RENDER =====
-            function render(cards) {
-                cardsGrid.innerHTML = '';
-                const total = cards.length;
-                const layout = getLayout(total);
-                cardsGrid.style.gridTemplateColumns = 'repeat(' + layout.cols + ', minmax(60px, 120px))';
-                cardsGrid.style.gap = '12px';
+        async function cargarTodasXogadoras() {
+            const [femenino, masculino] = await Promise.all([
+                cargarXogadoresDesdeSheet(CONFIG_LOCAL.sheets.femenino, 'femenino'),
+                cargarXogadoresDesdeSheet(CONFIG_LOCAL.sheets.masculino, 'masculino')
+            ]);
 
-                cards.forEach((c, idx) => {
-                    const el = document.createElement('div');
-                    el.className = 'card';
-                    if (c.flipped) el.classList.add('flipped');
-                    if (c.gone) el.classList.add('disabled');
-                    el.dataset.idx = idx;
+            const todas = [...femenino, ...masculino];
+            const validos = todas.filter(x => x.dorsal > 0);
+            console.log(`✅ Cargados ${validos.length} xogadores (${femenino.length} fem, ${masculino.length} mas)`);
+            return validos;
+        }
 
-                    // Reverso
-                    const back = document.createElement('div');
-                    back.className = 'card-back';
-                    const img = document.createElement('img');
-                    img.src = 'assets/img/logos/club/logo-negro.png';
-                    img.alt = 'Logo';
-                    img.onerror = function() { this.parentElement.innerHTML = '<div class="fallback">🏀</div>'; };
-                    back.appendChild(img);
+        // =============================================
+        // LÓXICA DO XOGO
+        // =============================================
 
-                    // Anverso
-                    const front = document.createElement('div');
-                    front.className = 'card-front';
+        function seleccionarXogadoresAleatorios(todos, cantidade) {
+            const barallados = barallar([...todos]);
+            return barallados.slice(0, cantidade);
+        }
 
-                    if (c.type === 'foto') {
-                        const f = document.createElement('img');
-                        f.className = 'card-foto';
-                        f.src = c.value;
-                        f.alt = c.name;
-                        f.loading = 'lazy';
-                        f.onerror = function() {
-                            this.style.display = 'none';
-                            const ph = document.createElement('div');
-                            ph.className = 'card-foto-placeholder';
-                            ph.textContent = '🏀';
-                            this.parentElement.appendChild(ph);
-                        };
-                        front.appendChild(f);
-                        if (state.difficulty === 'easy') {
-                            const info = document.createElement('div');
-                            info.className = 'card-info';
-                            info.textContent = c.name;
-                            front.appendChild(info);
-                        }
-                    } else {
-                        const info = document.createElement('div');
-                        info.className = 'card-info';
-                        info.innerHTML = c.name + ' <span class="dorsal">#' + c.dorsal + '</span>';
-                        front.appendChild(info);
-                    }
+        function xerarAliñacionAleatoria(xogadores) {
+            return barallar([...xogadores]);
+        }
 
-                    el.appendChild(back);
-                    el.appendChild(front);
-
-                    el.addEventListener('click', function() {
-                        const i = parseInt(this.dataset.idx);
-                        handleClick(i);
+        function inicializarXogo(xogadores) {
+            if (!xogadores || xogadores.length < NUM_XOGADORES) {
+                console.warn('⚠️ Non hai suficientes xogadores, usando exemplos');
+                xogadores = [];
+                for (let i = 1; i <= 10; i++) {
+                    xogadores.push({
+                        id: `ex-${i}`,
+                        nome: `Xogador ${i}`,
+                        dorsal: i,
+                        foto: '',
+                        xenero: i % 2 === 0 ? 'femenino' : 'masculino',
+                        info_extra: ''
                     });
-
-                    cardsGrid.appendChild(el);
-                    c.el = el;
-                });
-            }
-
-            function updateCard(idx) {
-                const c = state.cards[idx];
-                if (!c || !c.el) return;
-                c.el.classList.toggle('flipped', c.flipped);
-                c.el.classList.toggle('disabled', c.gone);
-            }
-
-            // ===== LÓGICA =====
-            function handleClick(idx) {
-                if (!state.active || state.locked) return;
-                const c = state.cards[idx];
-                if (c.gone || c.flipped) return;
-                if (state.selected1 && state.selected2) return;
-
-                c.flipped = true;
-                updateCard(idx);
-
-                if (!state.selected1) {
-                    state.selected1 = { idx, pair: c.pair };
-                } else if (!state.selected2 && state.selected1.idx !== idx) {
-                    state.selected2 = { idx, pair: c.pair };
-                    state.locked = true;
-                    checkMatch();
-                } else if (state.selected1.idx === idx) {
-                    c.flipped = false;
-                    updateCard(idx);
-                    state.selected1 = null;
                 }
             }
 
-            function checkMatch() {
-                const s1 = state.selected1;
-                const s2 = state.selected2;
-                if (!s1 || !s2) return;
+            const seleccionados = seleccionarXogadoresAleatorios(xogadores, NUM_XOGADORES);
+            const aliñacionCorrecta = xerarAliñacionAleatoria(seleccionados);
+            
+            let aliñacionActual;
+            let intentos = 0;
+            do {
+                aliñacionActual = xerarAliñacionAleatoria(seleccionados);
+                intentos++;
+            } while (arraysIguais(aliñacionActual, aliñacionCorrecta) && intentos < 20);
 
-                if (s1.pair === s2.pair) {
-                    statusMsg.textContent = '🎯 ¡CANASTA!';
-                    state.matched++;
-                    state.cards[s1.idx].gone = true;
-                    state.cards[s2.idx].gone = true;
-                    updateCard(s1.idx);
-                    updateCard(s2.idx);
-                    state.selected1 = null;
-                    state.selected2 = null;
-                    state.locked = false;
-                    if (state.matched === state.total) {
-                        state.active = false;
-                        statusMsg.innerHTML = '<span class="victory">🏆 ¡VITORIA! 🏆</span>';
-                    }
+            estado.xogadores = xogadores;
+            estado.aliñacionCorrecta = aliñacionCorrecta;
+            estado.aliñacionActual = aliñacionActual;
+            estado.seleccionado = null;
+            estado.movementosRestantes = MOVEMENTOS_TOTAIS;
+            estado.xogoActivo = true;
+            estado.vitoria = false;
+
+            resultOverlay.classList.add('hidden');
+            actualizarInterfaz();
+            renderizarTaboleiro();
+            message.textContent = '🔄 Fai clic nunha xogadora para seleccionala';
+            message.className = 'message';
+
+            console.log('🎯 Aliñación correcta:', estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
+        }
+
+        function renderizarTaboleiro() {
+            formationContainer.innerHTML = '';
+            
+            estado.aliñacionActual.forEach((xogador, index) => {
+                const card = document.createElement('div');
+                card.className = 'game-player-card';
+                card.dataset.index = index;
+
+                const background = document.createElement('div');
+                background.className = 'card-background';
+                card.appendChild(background);
+
+                const number = document.createElement('div');
+                number.className = 'player-number';
+                number.textContent = xogador.dorsal || '?';
+                card.appendChild(number);
+
+                const photoContainer = document.createElement('div');
+                photoContainer.className = 'photo-container';
+                if (xogador.foto) {
+                    const img = document.createElement('img');
+                    img.src = xogador.foto;
+                    img.alt = xogador.nome;
+                    img.loading = 'lazy';
+                    img.onerror = function() {
+                        this.parentElement.innerHTML = `<div class="placeholder">🏀</div>`;
+                    };
+                    photoContainer.appendChild(img);
                 } else {
-                    statusMsg.textContent = '❌ Fallo...';
-                    setTimeout(() => {
-                        if (!state.active) return;
-                        const c1 = state.cards[s1.idx];
-                        const c2 = state.cards[s2.idx];
-                        if (c1 && !c1.gone) { c1.flipped = false;
-                            updateCard(s1.idx); }
-                        if (c2 && !c2.gone) { c2.flipped = false;
-                            updateCard(s2.idx); }
-                        state.selected1 = null;
-                        state.selected2 = null;
-                        state.locked = false;
-                        statusMsg.textContent = '🔍 Sigue buscando...';
-                    }, 800);
+                    photoContainer.innerHTML = `<div class="placeholder">🏀</div>`;
+                }
+                card.appendChild(photoContainer);
+
+                const nameContainer = document.createElement('div');
+                nameContainer.className = 'name-container';
+                const name = document.createElement('div');
+                name.className = 'player-name';
+                name.textContent = xogador.nome || 'Sen nome';
+                nameContainer.appendChild(name);
+                card.appendChild(nameContainer);
+
+                card.addEventListener('click', () => manejarClick(index));
+                formationContainer.appendChild(card);
+            });
+
+            if (estado.seleccionado !== null) {
+                const cards = formationContainer.querySelectorAll('.game-player-card');
+                if (cards[estado.seleccionado]) {
+                    cards[estado.seleccionado].classList.add('selected');
                 }
             }
+        }
 
-            // ===== AYUDA =====
-            function showHelp() {
-                if (!state.active || state.locked) return;
-                const avail = state.cards.filter((c, i) => !c.gone && !c.flipped);
-                if (avail.length < 2) { statusMsg.textContent = '⚠️ Non hai cartas ocultas'; return; }
-                const idx1 = state.cards.indexOf(avail[Math.floor(Math.random() * avail.length)]);
-                let idx2 = state.cards.indexOf(avail[Math.floor(Math.random() * avail.length)]);
-                while (idx2 === idx1 && avail.length > 1) {
-                    idx2 = state.cards.indexOf(avail[Math.floor(Math.random() * avail.length)]);
+        function manejarClick(index) {
+            if (!estado.xogoActivo || estado.vitoria) return;
+            
+            if (estado.seleccionado === null) {
+                estado.seleccionado = index;
+                renderizarTaboleiro();
+                message.textContent = `✅ Seleccionado: ${estado.aliñacionActual[index].nome}`;
+                return;
+            }
+            
+            if (estado.seleccionado === index) {
+                estado.seleccionado = null;
+                renderizarTaboleiro();
+                message.textContent = '🔄 Fai clic nunha xogadora para seleccionala';
+                return;
+            }
+            
+            intercambiar(estado.seleccionado, index);
+        }
+
+        function intercambiar(idx1, idx2) {
+            [estado.aliñacionActual[idx1], estado.aliñacionActual[idx2]] = 
+            [estado.aliñacionActual[idx2], estado.aliñacionActual[idx1]];
+            
+            estado.movementosRestantes--;
+            estado.seleccionado = null;
+            
+            actualizarInterfaz();
+            renderizarTaboleiro();
+            
+            message.textContent = `🔄 Intercambiadas posicións ${idx1+1} e ${idx2+1}`;
+            message.className = 'message';
+            
+            comprobarVitoria();
+        }
+
+        function comprobarVitoria() {
+            const correctos = calcularCorrectos();
+            
+            if (correctos === NUM_XOGADORES) {
+                estado.vitoria = true;
+                estado.xogoActivo = false;
+                mostrarResultado(true);
+                return;
+            }
+            
+            if (estado.movementosRestantes <= 0) {
+                estado.xogoActivo = false;
+                mostrarResultado(false);
+            }
+        }
+
+        function calcularCorrectos() {
+            let correctos = 0;
+            for (let i = 0; i < NUM_XOGADORES; i++) {
+                if (estado.aliñacionActual[i].id === estado.aliñacionCorrecta[i].id) {
+                    correctos++;
                 }
-                state.cards[idx1].flipped = true;
-                state.cards[idx2].flipped = true;
-                updateCard(idx1);
-                updateCard(idx2);
-                statusMsg.textContent = '💡 Mostrando 2 cartas...';
-                state.locked = true;
-                setTimeout(() => {
-                    if (!state.active) return;
-                    if (!state.cards[idx1].gone) { state.cards[idx1].flipped = false;
-                        updateCard(idx1); }
-                    if (!state.cards[idx2].gone) { state.cards[idx2].flipped = false;
-                        updateCard(idx2); }
-                    state.locked = false;
-                    statusMsg.textContent = '🔍 Continúa...';
-                    state.selected1 = null;
-                    state.selected2 = null;
-                }, 1000);
             }
+            return correctos;
+        }
 
-            // ===== INICIAR =====
-            async function startGame() {
-                const players = await loadPlayers(state.team);
-                if (players.length < state.pairs) {
-                    statusMsg.textContent = '⚠️ Non hai suficientes xogadores (' + players.length + ' dispoñibles)';
-                    return;
+        function actualizarInterfaz() {
+            const correctos = calcularCorrectos();
+            statusText.textContent = `${correctos}/${NUM_XOGADORES} CORRECTOS`;
+            
+            countdown.textContent = estado.movementosRestantes;
+            countdown.className = 'countdown-number';
+            if (estado.movementosRestantes <= 8) {
+                countdown.classList.add('emergencia');
+            } else if (estado.movementosRestantes <= 16) {
+                countdown.classList.add('warning');
+            }
+        }
+
+        // =============================================
+        // RESULTADOS
+        // =============================================
+
+        function mostrarResultado(vitoria) {
+            resultOverlay.classList.remove('hidden');
+            
+            if (vitoria) {
+                resultMessage.textContent = '🏆 ¡VITORIA! 🏀\nAliñaches o equipo perfecto!';
+                resultMessage.className = 'result-message victoria';
+            } else {
+                resultMessage.textContent = '⏰ TEMPO REMATADO\nA aliñación correcta era:';
+                resultMessage.className = 'result-message derrota';
+            }
+            
+            resultPattern.innerHTML = estado.aliñacionCorrecta.map(x => 
+                `<span>${x.nome} (#${x.dorsal})</span>`
+            ).join(' → ');
+        }
+
+        // =============================================
+        // EVENTOS
+        // =============================================
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '5') {
+                const idx = parseInt(e.key) - 1;
+                if (idx < estado.aliñacionActual.length) {
+                    manejarClick(idx);
                 }
-                state.players = players;
-                state.total = state.pairs;
-                state.matched = 0;
-                state.cards = generateCards(players, state.pairs, state.difficulty, state.team);
-                render(state.cards);
-                state.selected1 = null;
-                state.selected2 = null;
-                state.locked = false;
-                state.active = true;
-                setupPanel.style.display = 'none';
-                gameArea.style.display = 'block';
-                statusMsg.textContent = '🎲 Atopa as parellas! (H para axuda)';
             }
-
-            function resetGame() {
-                setupPanel.style.display = 'block';
-                gameArea.style.display = 'none';
-                state.active = false;
-                state.cards = [];
-                cardsGrid.innerHTML = '';
-                statusMsg.textContent = '🔄 Nova partida';
+            if (e.key === 'r' || e.key === 'R') {
+                e.preventDefault();
+                reiniciarXogo();
             }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                if (estado.xogoActivo && !estado.vitoria) {
+                    if (confirm('Seguro que queres renderte?')) {
+                        estado.xogoActivo = false;
+                        mostrarResultado(false);
+                    }
+                }
+            }
+        });
 
-            // ===== EVENTOS =====
-            document.querySelectorAll('#difficultySelector .setup-btn').forEach(b => {
-                b.addEventListener('click', function() {
-                    document.querySelectorAll('#difficultySelector .setup-btn').forEach(x => x.classList.remove('active'));
-                    this.classList.add('active');
-                    state.difficulty = this.dataset.diff;
-                });
-            });
+        newGameBtn.addEventListener('click', reiniciarXogo);
+        giveUpBtn.addEventListener('click', () => {
+            if (estado.xogoActivo && !estado.vitoria) {
+                if (confirm('Seguro que queres renderte?')) {
+                    estado.xogoActivo = false;
+                    mostrarResultado(false);
+                }
+            }
+        });
+        playAgainBtn.addEventListener('click', reiniciarXogo);
 
-            document.querySelectorAll('#pairSelector .setup-btn').forEach(b => {
-                b.addEventListener('click', function() {
-                    document.querySelectorAll('#pairSelector .setup-btn').forEach(x => x.classList.remove('active'));
-                    this.classList.add('active');
-                    state.pairs = parseInt(this.dataset.pairs);
-                });
-            });
+        // =============================================
+        // INICIALIZACIÓN
+        // =============================================
 
-            document.querySelectorAll('#teamSelector .setup-btn').forEach(b => {
-                b.addEventListener('click', function() {
-                    document.querySelectorAll('#teamSelector .setup-btn').forEach(x => x.classList.remove('active'));
-                    this.classList.add('active');
-                    state.team = this.dataset.team;
-                });
-            });
+        async function reiniciarXogo() {
+            const xogadores = await cargarTodasXogadoras();
+            inicializarXogo(xogadores);
+        }
 
-            startBtn.addEventListener('click', startGame);
-            newBtn.addEventListener('click', resetGame);
-            helpBtn.addEventListener('click', showHelp);
+        // Esperar a que layout.js cargue el header/footer antes de iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM listo, iniciando Aliña o equipo...');
+            reiniciarXogo();
+        });
 
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'n' || e.key === 'N') { e.preventDefault(); if (gameArea.style.display !== 'none') resetGame(); }
-                if (e.key === 'h' || e.key === 'H') { e.preventDefault(); if (gameArea.style.display !== 'none' && state.active) showHelp(); }
-                if (e.key === 'Escape') { if (gameArea.style.display !== 'none') resetGame(); }
-            });
-
-            console.log('🏀 As parellas - Listo');
-        })();
+        // Debug helper
+        window.mostrarSolucion = function() {
+            console.log('🎯 Solución:', estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
+            console.log('📊 Actual:', estado.aliñacionActual.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
+            console.log(`✅ Correctos: ${calcularCorrectos()}/${NUM_XOGADORES}`);
+            console.log(`⏱️ Movementos: ${estado.movementosRestantes}`);
+        };
     </script>
-
 </body>
 </html>
