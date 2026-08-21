@@ -5,685 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plantillas · Club Baloncesto O Grove</title>
     
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=2">
-
-    <style>
-        /* ===== SELECTOR DE EQUIPO ===== */
-        .team-selector {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2.5rem;
-            flex-wrap: wrap;
-        }
-        .team-btn {
-            padding: 0.8rem 2.5rem;
-            border: 3px solid var(--azul-club);
-            border-radius: 50px;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            color: var(--azul-club);
-            font-family: var(--font-titulos);
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .team-btn:hover {
-            background: var(--azul-club);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
-        }
-        .team-btn.active {
-            background: var(--azul-club);
-            color: white;
-            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
-        }
-
-        /* ===== CONTENEDOR DE PLANTILLAS ===== */
-        .team-container { display: none; }
-        .team-container.active { display: block; }
-
-        /* ===== SECCIÓN DE EQUIPO ===== */
-        .team-section {
-            margin-bottom: 2rem;
-        }
-
-        /* ===== GRILLA DE JUGADORES (5 columnas) ===== */
-        .players-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 2rem;
-            justify-items: center;
-            justify-content: center;
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
-        /* ===== STAFF EN HORIZONTAL ===== */
-        .staff-row {
-            display: flex;
-            justify-content: center;
-            gap: 4rem;
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 2px dashed var(--dorado);
-            flex-wrap: wrap;
-            background: rgba(255,255,255,0.3);
-            backdrop-filter: blur(4px);
-            border-radius: 15px;
-            padding: 1.5rem 2rem;
-        }
-
-        .staff-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .staff-group-label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--azul-club);
-            font-weight: 700;
-            opacity: 0.8;
-            border-bottom: 2px solid var(--dorado);
-            padding-bottom: 0.3rem;
-        }
-
-        .staff-group-cards {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        /* ===== FLIP CONTAINER ===== */
-        .flip-container {
-            perspective: 1000px;
-            width: 233px;
-            height: 350px;
-            flex-shrink: 0;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .flip-container:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .flip-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
-        }
-
-        .flip-container.flipped .flip-inner {
-            transform: rotateY(180deg);
-        }
-
-        /* ===== FRENTE Y DETRÁS ===== */
-        .flip-front,
-        .flip-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            border-radius: 12px;
-            overflow: hidden;
-            top: 0;
-            left: 0;
-        }
-
-        .flip-front {
-            z-index: 2;
-            transform: rotateY(0deg);
-        }
-
-        .flip-back {
-            transform: rotateY(180deg);
-            z-index: 1;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        /* ===== FICHA DE JUGADOR - FRENTE ===== */
-        .player-card {
-            width: 233px;
-            height: 350px;
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 3px solid #000000;
-            background: #FFD700;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-            flex-shrink: 0;
-        }
-
-        /* ===== FICHA INVERTIDA (STAFF) ===== */
-        .player-card.invertido {
-            background: #000000;
-            border: 3px solid #FFD700;
-        }
-        .player-card.invertido .card-background {
-            filter: brightness(1) invert(1) contrast(1);
-        }
-        .player-card.invertido .photo-container {
-            background: rgba(255, 215, 0, 0.1);
-            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.2);
-        }
-        .player-card.invertido .player-number {
-            background: #FFD700;
-            color: #000000;
-            border: 2px solid #FFD700;
-            box-shadow: 0 3px 6px rgba(255, 215, 0, 0.3);
-        }
-        .player-card.invertido .name-container {
-            background: #FFD700;
-            border: 1.5px solid #FFD700;
-        }
-        .player-card.invertido .player-name {
-            color: #000000;
-        }
-        .player-card.invertido .photo-error {
-            color: white !important;
-            background: rgba(0, 0, 0, 0.3) !important;
-        }
-
-        /* ===== ELEMENTOS INTERNOS DEL FRENTE ===== */
-        .card-background {
-            position: absolute;
-            width: 120%;
-            height: 120%;
-            top: -10%;
-            left: -10%;
-            opacity: 0.15;
-            transform: rotate(35deg);
-            background-image: url('assets/img/logos/club/logo-negro.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            filter: brightness(0) contrast(1);
-            pointer-events: none;
-        }
-
-        .photo-container {
-            position: absolute;
-            top: 25px;
-            left: 25px;
-            right: 25px;
-            bottom: 80px;
-            border-radius: 8px;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.1);
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .photo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .photo-error {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
-            color: #000000;
-            background: rgba(255, 215, 0, 0.3);
-        }
-
-        .player-number {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
-            border: 2px solid #000000;
-            background: #000000;
-            color: #FFD700;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-            z-index: 3;
-        }
-
-        .name-container {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            right: 15px;
-            height: 55px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4px 8px;
-            background: #000000;
-            border: 1.5px solid #000000;
-            z-index: 2;
-        }
-
-        .player-name {
-            font-size: 22px;
-            font-weight: bold;
-            text-transform: uppercase;
-            text-align: center;
-            color: #FFD700;
-            letter-spacing: 0.8px;
-            line-height: 1.1;
-        }
-
-        /* ===== ESTILOS PARA LA PARTE DE ATRÁS ===== */
-        .flip-back .back-content {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            padding: 0;
-            box-sizing: border-box;
-            position: relative;
-        }
-
-        /* Fondo con escudo en la parte trasera */
-        .flip-back .back-card-background {
-            position: absolute;
-            width: 120%;
-            height: 120%;
-            top: -10%;
-            left: -10%;
-            opacity: 0.15;
-            transform: rotate(35deg);
-            background-image: url('assets/img/logos/club/logo-negro.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            filter: brightness(0) contrast(1);
-            pointer-events: none;
-        }
-
-        /* Número en la parte trasera (igual que el frente) */
-        .flip-back .back-number {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
-            border: 2px solid #000000;
-            background: #000000;
-            color: #FFD700;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-            z-index: 3;
-        }
-
-        .flip-back .back-number.invertido-back {
-            background: #FFD700;
-            color: #000000;
-            border: 2px solid #FFD700;
-        }
-
-        /* Contenedor de foto (vacío, solo marco) en la parte trasera - SIN BORDE PUNTEADO */
-        .flip-back .back-photo-container {
-            position: absolute;
-            top: 25px;
-            left: 25px;
-            right: 25px;
-            bottom: 80px;
-            border-radius: 8px;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.05);
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
-            border: none;
-        }
-
-        .flip-back .back-photo-container.invertido-back {
-            background: rgba(255, 215, 0, 0.05);
-        }
-
-        .flip-back .back-text-area {
-            position: absolute;
-            top: 35px;
-            left: 35px;
-            right: 35px;
-            bottom: 90px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 0.5rem;
-            overflow-y: auto;
-            z-index: 1;
-        }
-
-        .flip-back .back-text-area p {
-            margin: 0.15rem 0;
-            font-size: 1rem;
-            font-weight: 500;
-            line-height: 1.5;
-            letter-spacing: 0.3px;
-            font-family: var(--font-textos);
-            padding: 0 0.5rem;
-        }
-
-        .flip-back .back-text-area .back-line-first {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-
-        .flip-back .back-text-area .back-line-empty {
-            opacity: 0.2;
-            font-size: 1.5rem;
-        }
-
-        /* Nombre en la parte trasera (igual que el frente) */
-        .flip-back .back-name-container {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            right: 15px;
-            height: 55px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4px 8px;
-            z-index: 2;
-        }
-
-        .flip-back .back-name {
-            font-size: 22px;
-            font-weight: bold;
-            text-transform: uppercase;
-            text-align: center;
-            letter-spacing: 0.8px;
-            line-height: 1.1;
-            font-family: var(--font-titulos);
-        }
-
-        /* ===== TÍTULO DE PÁGINA ===== */
-        .page-title {
-            text-align: center;
-            color: var(--azul-club);
-            font-family: var(--font-titulos);
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
-        }
-        .page-subtitle {
-            text-align: center;
-            color: var(--gris-texto);
-            margin-bottom: 2rem;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1200px) {
-            .players-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .flip-container {
-                width: 200px;
-                height: 300px;
-            }
-            .player-card {
-                width: 200px;
-                height: 300px;
-            }
-        }
-        @media (max-width: 992px) {
-            .players-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .flip-container {
-                width: 200px;
-                height: 300px;
-            }
-            .player-card {
-                width: 200px;
-                height: 300px;
-            }
-        }
-        @media (max-width: 768px) {
-            .players-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-            .flip-container {
-                width: 180px;
-                height: 270px;
-            }
-            .player-card {
-                width: 180px;
-                height: 270px;
-            }
-            .photo-container {
-                top: 18px;
-                left: 18px;
-                right: 18px;
-                bottom: 62px;
-            }
-            .flip-back .back-photo-container {
-                top: 18px;
-                left: 18px;
-                right: 18px;
-                bottom: 62px;
-            }
-            .flip-back .back-text-area {
-                top: 28px;
-                left: 28px;
-                right: 28px;
-                bottom: 72px;
-            }
-            .player-number {
-                width: 42px;
-                height: 42px;
-                font-size: 20px;
-                top: 10px;
-                left: 10px;
-            }
-            .flip-back .back-number {
-                width: 42px;
-                height: 42px;
-                font-size: 20px;
-                top: 10px;
-                left: 10px;
-            }
-            .name-container {
-                height: 42px;
-                bottom: 10px;
-                left: 10px;
-                right: 10px;
-            }
-            .flip-back .back-name-container {
-                height: 42px;
-                bottom: 10px;
-                left: 10px;
-                right: 10px;
-            }
-            .player-name {
-                font-size: 16px;
-                letter-spacing: 0.5px;
-            }
-            .flip-back .back-name {
-                font-size: 16px;
-            }
-            .team-btn {
-                padding: 0.5rem 1.5rem;
-                font-size: 0.9rem;
-            }
-            .staff-row {
-                flex-direction: column;
-                gap: 1.5rem;
-                align-items: center;
-                padding: 1rem;
-            }
-            .staff-group-cards {
-                gap: 1rem;
-            }
-            .staff-group-label {
-                font-size: 0.8rem;
-                letter-spacing: 2px;
-            }
-            .flip-back .back-text-area p {
-                font-size: 0.85rem;
-            }
-            .flip-back .back-text-area .back-line-first {
-                font-size: 0.95rem;
-            }
-        }
-        @media (max-width: 480px) {
-            .players-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.8rem;
-            }
-            .flip-container {
-                width: 150px;
-                height: 225px;
-            }
-            .player-card {
-                width: 150px;
-                height: 225px;
-            }
-            .photo-container {
-                top: 14px;
-                left: 14px;
-                right: 14px;
-                bottom: 50px;
-            }
-            .flip-back .back-photo-container {
-                top: 14px;
-                left: 14px;
-                right: 14px;
-                bottom: 50px;
-            }
-            .flip-back .back-text-area {
-                top: 22px;
-                left: 22px;
-                right: 22px;
-                bottom: 58px;
-                padding: 0.2rem;
-            }
-            .player-number {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-                top: 8px;
-                left: 8px;
-            }
-            .flip-back .back-number {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-                top: 8px;
-                left: 8px;
-            }
-            .name-container {
-                height: 36px;
-                bottom: 8px;
-                left: 8px;
-                right: 8px;
-                padding: 2px 4px;
-            }
-            .flip-back .back-name-container {
-                height: 36px;
-                bottom: 8px;
-                left: 8px;
-                right: 8px;
-                padding: 2px 4px;
-            }
-            .player-name {
-                font-size: 13px;
-                letter-spacing: 0.3px;
-            }
-            .flip-back .back-name {
-                font-size: 13px;
-            }
-            .staff-row {
-                gap: 1rem;
-                padding: 0.8rem;
-            }
-            .staff-group-cards {
-                gap: 0.8rem;
-            }
-            .staff-group-label {
-                font-size: 0.7rem;
-                letter-spacing: 1.5px;
-            }
-            .flip-back .back-text-area p {
-                font-size: 0.7rem;
-            }
-            .flip-back .back-text-area .back-line-first {
-                font-size: 0.8rem;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- ===== CONTENIDO PRINCIPAL ===== -->
-    <main class="main-content">
-        <h1 class="page-title">NOSAS PLANTILLAS</h1>
-        <p class="page-subtitle">Coñece a todos os xogadores e xogadoras do club</p>
-
-        <div class="team-selector">
-            <button class="team-btn active" data-team="femenino" onclick="mostrarEquipo('femenino')">
-                ⚪ Femenino
-            </button>
-            <button class="team-btn" data-team="masculino" onclick="mostrarEquipo('masculino')">
-                ⚫ Masculino
-            </button>
-        </div>
-
-        <div class="team-container active" id="equipo-femenino">
-            <div class="team-section">
-                <div class="players-grid" id="gridFemenino">
-                    <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto);">Cargando xogadoras...</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="team-container" id="equipo-masculino">
-            <div class="team-section">
-                <div class="players-grid" id="gridMasculino">
-                    <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto);">Cargando xogadores...</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- ===== SCRIPTS ===== -->
-    <script src="js/app.js?v=2"></script>
-    <script src="js/layout.js"></script>
-    <script>
-        const CONFIG_PLANTILLAS = {
-            sheetFemenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
-            sheetMasculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205',
-            driveFemenino: 'assets/img/plantillas/femenino/',
-            driveMasculino: 'assets/img/plantillas/masculino/'
-        };
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- JS: Config + Utils + Components + Layout + App -->
+    <script src="/js/config.js" defer></script>
+    <script src="/js/utils.js" defer></script>
+    <script src="/js/components.js" defer></script>
+    <script src="/js/layout.js" defer></script>
+    <script src="/js/app.js" defer></script>
+    
+    <!-- Script específico de plantillas -->
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarPlantillas();
+        });
 
         function mostrarEquipo(equipo) {
             document.querySelectorAll('.team-btn').forEach(btn => {
@@ -694,16 +34,13 @@
             });
         }
 
-        function esStaff(valor) {
-            if (!valor) return false;
-            const v = String(valor).toUpperCase().trim();
-            return v === 'SI' || v === 'SÍ' || v === 'TRUE' || v === '1';
-        }
-
         function crearFicha(jugador, equipo) {
             const esStaffMiembro = esStaff(jugador.entrenador);
             
-            const driveBase = equipo === 'femenino' ? CONFIG_PLANTILLAS.driveFemenino : CONFIG_PLANTILLAS.driveMasculino;
+            const driveBase = equipo === 'femenino' 
+                ? CONFIG.drive.femenino 
+                : CONFIG.drive.masculino;
+            
             const timestamp = Date.now();
             const fotoUrl = `${driveBase}${jugador.numero}.png?t=${timestamp}`;
             
@@ -715,7 +52,6 @@
             let backLines = [];
             if (jugador.info_extra && jugador.info_extra.trim()) {
                 backLines = String(jugador.info_extra).split('|').map(line => line.trim());
-                console.log(`📝 Info extra para ${jugador.nombre}:`, backLines);
             }
 
             // ===== CONTENEDOR FLIP =====
@@ -725,15 +61,13 @@
             const flipInner = document.createElement('div');
             flipInner.className = 'flip-inner';
 
-            // =============================================
-            // ===== FRENTE (con foto y número) =====
-            // =============================================
+            // ===== FRENTE =====
             const front = document.createElement('div');
             front.className = 'flip-front';
 
             const card = document.createElement('div');
             card.className = `player-card${esStaffMiembro ? ' invertido' : ''}`;
-            const logoFondo = 'assets/img/logos/club/logo-negro.png';
+            const logoFondo = '/assets/img/logos/club/logo-negro.png';
 
             card.innerHTML = `
                 <div class="card-background" style="background-image: url('${logoFondo}?t=${timestamp}');"></div>
@@ -751,13 +85,10 @@
 
             front.appendChild(card);
 
-            // =============================================
-            // ===== DETRÁS (con marco, escudo, número y texto) =====
-            // =============================================
+            // ===== DETRÁS =====
             const back = document.createElement('div');
             back.className = 'flip-back';
 
-            // Configurar fondo y borde según staff
             const bgColor = esStaffMiembro ? '#000000' : '#FFD700';
             const borderColor = esStaffMiembro ? '#FFD700' : '#000000';
             const textColor = esStaffMiembro ? '#FFD700' : '#000000';
@@ -765,16 +96,13 @@
             const nameTextColor = esStaffMiembro ? '#000000' : '#FFD700';
             const numberBgColor = esStaffMiembro ? '#FFD700' : '#000000';
             const numberTextColor = esStaffMiembro ? '#000000' : '#FFD700';
-            const numberBorderColor = esStaffMiembro ? '#FFD700' : '#000000';
 
             back.style.background = bgColor;
             back.style.border = `3px solid ${borderColor}`;
 
-            // Contenido de atrás
             const backContent = document.createElement('div');
             backContent.className = 'back-content';
 
-            // Escudo de fondo
             const backLogo = document.createElement('div');
             backLogo.className = 'back-card-background';
             backLogo.style.backgroundImage = `url('${logoFondo}?t=${timestamp}')`;
@@ -783,21 +111,18 @@
             }
             backContent.appendChild(backLogo);
 
-            // Número en la parte trasera
             const backNumber = document.createElement('div');
             backNumber.className = `back-number${esStaffMiembro ? ' invertido-back' : ''}`;
             backNumber.textContent = numDisplay;
             backNumber.style.background = numberBgColor;
             backNumber.style.color = numberTextColor;
-            backNumber.style.border = `2px solid ${numberBorderColor}`;
+            backNumber.style.border = `2px solid ${borderColor}`;
             backContent.appendChild(backNumber);
 
-            // Marco contenedor (donde iría la foto) - SIN BORDE PUNTEADO
             const backPhotoContainer = document.createElement('div');
             backPhotoContainer.className = `back-photo-container${esStaffMiembro ? ' invertido-back' : ''}`;
             backContent.appendChild(backPhotoContainer);
 
-            // Área de texto (sobre el marco)
             const textArea = document.createElement('div');
             textArea.className = 'back-text-area';
 
@@ -821,7 +146,6 @@
 
             backContent.appendChild(textArea);
 
-            // Nombre en la parte de atrás (igual que en el frente)
             const nameBack = document.createElement('div');
             nameBack.className = 'back-name-container';
             nameBack.style.background = nameBgColor;
@@ -836,12 +160,10 @@
             backContent.appendChild(nameBack);
             back.appendChild(backContent);
 
-            // ===== MONTAR FLIP =====
             flipInner.appendChild(front);
             flipInner.appendChild(back);
             flipContainer.appendChild(flipInner);
 
-            // ===== EVENTO CLICK =====
             flipContainer.addEventListener('click', function(e) {
                 e.stopPropagation();
                 this.classList.toggle('flipped');
@@ -850,35 +172,38 @@
             return flipContainer;
         }
 
-        function parseCSV(csv) {
+        function mapearHeadersPlantilla(headers) {
+            const map = {
+                numero: ['numero', 'dorsal', 'número'],
+                nombre: ['nombre', 'nome', 'jugador'],
+                entrenador: ['entrenador', 'staff', 'tecnico'],
+                info_extra: ['info', 'extra', 'detras', 'frase']
+            };
+            return mapearHeaders(headers, map);
+        }
+
+        function parseCSVPlantilla(csv) {
             const lines = csv.split('\n').filter(line => line.trim());
             if (lines.length < 2) return [];
 
             const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
-            
-            const headerMap = {};
-            rawHeaders.forEach((h, index) => {
-                if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) {
-                    headerMap['numero'] = index;
-                } else if (h.includes('nombre') || h.includes('nome') || h.includes('jugador')) {
-                    headerMap['nombre'] = index;
-                } else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) {
-                    headerMap['entrenador'] = index;
-                } else if (h.includes('info') || h.includes('extra') || h.includes('detras') || h.includes('frase')) {
-                    headerMap['info_extra'] = index;
-                }
-            });
+            const headerMap = mapearHeadersPlantilla(rawHeaders);
 
-            if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
-            if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
-            if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
-            if (headerMap['info_extra'] === undefined) headerMap['info_extra'] = 3;
+            // Asignar índices por defecto
+            if (headerMap.numero === undefined) headerMap.numero = 0;
+            if (headerMap.nombre === undefined) headerMap.nombre = 1;
+            if (headerMap.entrenador === undefined) headerMap.entrenador = 2;
+            if (headerMap.info_extra === undefined) headerMap.info_extra = 3;
 
             return lines.slice(1).map(line => {
-                const values = line.split(',').map(v => v.trim());
+                const values = parseCSVLine(line);
                 const obj = {};
                 Object.keys(headerMap).forEach(key => {
-                    obj[key] = values[headerMap[key]] || '';
+                    let value = values[headerMap[key]] || '';
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.slice(1, -1);
+                    }
+                    obj[key] = value;
                 });
                 return obj;
             });
@@ -886,18 +211,13 @@
 
         async function cargarHoja(url, equipo, gridId) {
             try {
-                console.log(`🔄 Cargando ${equipo} desde:`, url);
+                console.log(`🔄 Cargando ${equipo}...`);
                 const response = await fetch(url);
                 const csv = await response.text();
-                console.log(`📄 CSV recibido (primeros 200 caracteres):`, csv.substring(0, 200));
-                
-                const datos = parseCSV(csv);
-                console.log(`📊 Datos parseados (${datos.length} filas):`, datos);
+                const datos = parseCSVPlantilla(csv);
 
                 const staff = datos.filter(j => esStaff(j.entrenador));
                 const jugadores = datos.filter(j => !esStaff(j.entrenador));
-
-                console.log(`👥 Jugadores: ${jugadores.length}, Staff: ${staff.length}`);
 
                 jugadores.sort((a, b) => {
                     const numA = parseInt(a.numero);
@@ -972,12 +292,51 @@
 
         async function cargarPlantillas() {
             console.log('🚀 Iniciando carga de plantillas...');
-            await cargarHoja(CONFIG_PLANTILLAS.sheetFemenino, 'femenino', 'gridFemenino');
-            await cargarHoja(CONFIG_PLANTILLAS.sheetMasculino, 'masculino', 'gridMasculino');
-            console.log(`✅ Plantillas cargadas correctamente`);
+            
+            // Usar las sheets de CONFIG
+            const femeninoUrl = CONFIG.sheets.plantillas + '&gid=0';
+            const masculinoUrl = CONFIG.sheets.plantillas + '&gid=1375196205';
+            
+            await cargarHoja(femeninoUrl, 'femenino', 'gridFemenino');
+            await cargarHoja(masculinoUrl, 'masculino', 'gridMasculino');
+            console.log('✅ Plantillas cargadas correctamente');
         }
 
-        document.addEventListener('DOMContentLoaded', cargarPlantillas);
+        // Exponer funciones globalmente
+        window.mostrarEquipo = mostrarEquipo;
     </script>
+</head>
+<body>
+
+    <main class="main-content">
+        <h1 class="page-title">NOSAS PLANTILLAS</h1>
+        <p class="page-subtitle">Coñece a todos os xogadores e xogadoras do club</p>
+
+        <div class="team-selector">
+            <button class="team-btn active" data-team="femenino" onclick="mostrarEquipo('femenino')">
+                ⚪ Femenino
+            </button>
+            <button class="team-btn" data-team="masculino" onclick="mostrarEquipo('masculino')">
+                ⚫ Masculino
+            </button>
+        </div>
+
+        <div class="team-container active" id="equipo-femenino">
+            <div class="team-section">
+                <div class="players-grid" id="gridFemenino">
+                    <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto);">Cargando xogadoras...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-container" id="equipo-masculino">
+            <div class="team-section">
+                <div class="players-grid" id="gridMasculino">
+                    <p style="grid-column:1/-1; text-align:center; color:var(--gris-texto);">Cargando xogadores...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
 </body>
 </html>
