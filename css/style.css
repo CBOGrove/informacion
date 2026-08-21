@@ -1,6 +1,7 @@
-/* ===== VARIABLES GLOBALES ===== */
+/* ============================================
+   VARIABLES GLOBALES
+   ============================================ */
 :root {
-    /* Colores institucionales */
     --azul-club: #1e3a5f;
     --azul-claro: #2c4a7a;
     --dorado: #c9a03d;
@@ -11,26 +12,24 @@
     --gris-texto: #555555;
     --gris-claro: #e8ecf1;
     
-    /* Tipografías */
     --font-titulos: 'Graduate', 'Segoe UI', sans-serif;
     --font-textos: 'Segoe UI', Arial, sans-serif;
     
-    /* Sombras */
     --sombra-suave: 0 4px 20px rgba(0,0,0,0.08);
     --sombra-media: 0 8px 30px rgba(0,0,0,0.12);
     --sombra-fuerte: 0 12px 40px rgba(0,0,0,0.2);
 }
 
-/* ===== RESET Y BASE ===== */
+/* ============================================
+   RESET Y BASE
+   ============================================ */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
     font-family: var(--font-textos);
@@ -42,7 +41,9 @@ body {
     position: relative;
 }
 
-/* ===== ESCUDO DE FONDO (TODAS LAS PÁGINAS) ===== */
+/* ============================================
+   ESCUDO DE FONDO
+   ============================================ */
 body::before {
     content: "";
     position: fixed;
@@ -50,17 +51,18 @@ body::before {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-image: url('../assets/img/logos/club/logo-negro.png');
+    background-image: url('/assets/img/logos/club/logo-negro.png');
     background-size: auto 70%;
     background-repeat: no-repeat;
     background-position: center center;
     opacity: 0.06;
-    transform: rotate(0deg);
     z-index: 0;
     pointer-events: none;
 }
 
-/* ===== HEADER ===== */
+/* ============================================
+   HEADER
+   ============================================ */
 .main-header {
     background: var(--azul-club);
     padding: 1rem 2rem;
@@ -75,12 +77,11 @@ body::before {
     z-index: 100;
 }
 
-/* ===== LOGO SIN BORDE Y SIN MARCO ===== */
 .logo {
     display: flex;
     align-items: center;
     gap: 1rem;
-    color: var(--dorado);                /* ← Texto en dorado */
+    color: var(--dorado);
     text-decoration: none;
     font-size: 1.3rem;
     font-weight: 700;
@@ -88,12 +89,11 @@ body::before {
 }
 
 .logo img {
-    height: 55px;                        /* ← 10% más grande (50 → 55) */
+    height: 55px;
     width: auto;
-    border-radius: 0;                    /* ← Sin círculo */
-    border: none;                        /* ← SIN BORDE */
-    box-shadow: none;                    /* ← SIN MARCO */
-    /* ===== BRILLO DETRÁS DEL LOGO (solo luz, sin marco) ===== */
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
     filter: drop-shadow(0 0 20px rgba(201, 160, 61, 0.3))
             drop-shadow(0 0 50px rgba(201, 160, 61, 0.1));
     transition: filter 0.3s ease;
@@ -104,7 +104,6 @@ body::before {
             drop-shadow(0 0 70px rgba(201, 160, 61, 0.2));
 }
 
-/* ===== NAVEGACIÓN ===== */
 .main-nav {
     display: flex;
     gap: 0.5rem;
@@ -128,8 +127,8 @@ body::before {
 }
 
 .twitch-badge {
-    background: #9146FF;
-    color: white;
+    background: #555;
+    color: #fff;
     padding: 0.3rem 0.8rem;
     border-radius: 30px;
     font-size: 0.8rem;
@@ -140,6 +139,7 @@ body::before {
 }
 
 .twitch-badge.live {
+    background: #9146FF;
     animation: pulse 1.5s infinite;
 }
 
@@ -148,7 +148,9 @@ body::before {
     50% { opacity: 0.6; }
 }
 
-/* ===== MAIN CONTENT ===== */
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
 .main-content {
     flex: 1;
     max-width: 1400px;
@@ -159,7 +161,9 @@ body::before {
     z-index: 1;
 }
 
-/* ===== FOOTER ===== */
+/* ============================================
+   FOOTER
+   ============================================ */
 .main-footer {
     background: var(--azul-club);
     color: var(--blanco);
@@ -193,44 +197,473 @@ body::before {
     opacity: 0.7;
 }
 
-/* ===== UTILIDADES ===== */
+/* ============================================
+   UTILIDADES
+   ============================================ */
 .text-center { text-align: center; }
 .mt-1 { margin-top: 1rem; }
 .mb-1 { margin-bottom: 1rem; }
 .mt-2 { margin-top: 2rem; }
 .mb-2 { margin-bottom: 2rem; }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .main-header {
-        flex-direction: column;
-        padding: 1rem;
-    }
-    
-    .main-nav {
-        justify-content: center;
-        gap: 0.3rem;
-    }
-    
-    .main-nav a {
-        font-size: 0.8rem;
-        padding: 0.3rem 0.8rem;
-    }
-    
-    .logo {
-        font-size: 1.1rem;
-    }
-
-    .logo img {
-        height: 45px;                    /* ← 10% más grande en móvil */
-    }
-    
-    .main-footer .redes {
-        font-size: 1.5rem;
-        gap: 1rem;
-    }
-    
-    .main-content {
-        padding: 1rem;
-    }
+/* ============================================
+   SPINNER DE CARGA
+   ============================================ */
+.spinner-container {
+    text-align: center;
+    padding: 3rem 0;
 }
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(201, 160, 61, 0.1);
+    border-top: 5px solid var(--dorado);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ============================================
+   TARJETAS DE JUGADOR (FLIP)
+   ============================================ */
+.flip-container {
+    perspective: 1000px;
+    width: 233px;
+    height: 350px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.flip-container:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+.flip-container.flipped .flip-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-front,
+.flip-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 12px;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+}
+
+.flip-front { z-index: 2; transform: rotateY(0deg); }
+.flip-back { transform: rotateY(180deg); z-index: 1; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); }
+
+/* ============================================
+   TARJETA DE JUGADOR - FRENTE
+   ============================================ */
+.player-card {
+    width: 233px;
+    height: 350px;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 3px solid #000000;
+    background: #FFD700;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+}
+
+.player-card.invertido {
+    background: #000000;
+    border: 3px solid #FFD700;
+}
+
+.player-card.invertido .card-background {
+    filter: brightness(1) invert(1) contrast(1);
+}
+
+.player-card.invertido .photo-container {
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+.player-card.invertido .player-number {
+    background: #FFD700;
+    color: #000000;
+    border: 2px solid #FFD700;
+    box-shadow: 0 3px 6px rgba(255, 215, 0, 0.3);
+}
+
+.player-card.invertido .name-container {
+    background: #FFD700;
+    border: 1.5px solid #FFD700;
+}
+
+.player-card.invertido .player-name {
+    color: #000000;
+}
+
+.player-card.invertido .photo-error {
+    color: white !important;
+    background: rgba(0, 0, 0, 0.3) !important;
+}
+
+.card-background {
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    top: -10%;
+    left: -10%;
+    opacity: 0.15;
+    transform: rotate(35deg);
+    background-image: url('/assets/img/logos/club/logo-negro.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: brightness(0) contrast(1);
+    pointer-events: none;
+}
+
+.photo-container {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    right: 25px;
+    bottom: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.photo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-error {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    color: #000000;
+    background: rgba(255, 215, 0, 0.3);
+}
+
+.player-number {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    border: 2px solid #000000;
+    background: #000000;
+    color: #FFD700;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    z-index: 3;
+}
+
+.name-container {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    height: 55px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    background: #000000;
+    border: 1.5px solid #000000;
+    z-index: 2;
+}
+
+.player-name {
+    font-size: 22px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    color: #FFD700;
+    letter-spacing: 0.8px;
+    line-height: 1.1;
+}
+
+/* ============================================
+   TARJETA DE JUGADOR - DETRÁS
+   ============================================ */
+.back-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.back-card-background {
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    top: -10%;
+    left: -10%;
+    opacity: 0.15;
+    transform: rotate(35deg);
+    background-image: url('/assets/img/logos/club/logo-negro.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: brightness(0) contrast(1);
+    pointer-events: none;
+}
+
+.back-number {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    border: 2px solid #000000;
+    background: #000000;
+    color: #FFD700;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    z-index: 3;
+}
+
+.back-number.invertido-back {
+    background: #FFD700;
+    color: #000000;
+    border: 2px solid #FFD700;
+}
+
+.back-photo-container {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    right: 25px;
+    bottom: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.back-photo-container.invertido-back {
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.back-text-area {
+    position: absolute;
+    top: 35px;
+    left: 35px;
+    right: 35px;
+    bottom: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem;
+    overflow-y: auto;
+    z-index: 1;
+}
+
+.back-text-area p {
+    margin: 0.15rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.3px;
+    font-family: var(--font-textos);
+    padding: 0 0.5rem;
+}
+
+.back-text-area .back-line-first {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.back-name-container {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    height: 55px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    z-index: 2;
+}
+
+.back-name {
+    font-size: 22px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 0.8px;
+    line-height: 1.1;
+    font-family: var(--font-titulos);
+}
+
+/* ============================================
+   NOTICIAS
+   ============================================ */
+.noticias-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.noticia-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+    border-radius: 15px;
+    padding: 1.5rem 2rem;
+    border-left: 5px solid var(--dorado);
+    box-shadow: var(--sombra-suave);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+}
+
+.noticia-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sombra-media);
+}
+
+.noticia-card .fecha {
+    font-size: 0.85rem;
+    color: var(--gris-texto);
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+}
+
+.noticia-card .cabecera {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--azul-club);
+    font-family: var(--font-titulos);
+    margin-bottom: 0.3rem;
+}
+
+.noticia-card .texto-corto {
+    color: #444;
+    line-height: 1.6;
+    overflow: visible;
+    max-height: none;
+}
+
+.noticia-card .toggle-btn {
+    display: inline-block;
+    margin-top: 0.8rem;
+    color: var(--dorado);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-textos);
+    padding: 0;
+}
+
+.noticia-card .toggle-btn:hover {
+    color: var(--azul-club);
+}
+
+.noticia-card .detalle {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out, padding 0.3s ease-in-out;
+    padding: 0;
+    margin-top: 0;
+}
+
+.noticia-card.abierta .detalle {
+    max-height: 2000px;
+    padding: 1rem 0 0 0;
+    margin-top: 0.5rem;
+    border-top: 1px solid rgba(201, 160, 61, 0.3);
+}
+
+.noticia-card .detalle .texto-largo {
+    color: #444;
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+/* Noticia destacada */
+.noticia-destacada {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(4px);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    border: 2px solid var(--dorado);
+    box-shadow: var(--sombra-media);
+    cursor: pointer;
+}
+
+.noticia-destacada .fecha {
+    font-size: 0.9rem;
+    color: var(--gris-texto);
+    margin-bottom: 0.3rem;
+}
+
+.noticia-destacada .cabecera {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--azul-club);
+    font-family: var(--font-titulos);
+    margin-bottom: 0.5rem;
+}
+
+.noticia-destacada .texto-corto {
+    font-size: 1.1rem;
+    color: #444;
+    line-height: 1.7;
+    overflow: visible;
+    max-height: none;
+}
+
+.noticia-destacada .toggle-btn {
+   
