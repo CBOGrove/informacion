@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="gl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xornadas · Club Baloncesto O Grove</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script src="js/config.js" defer></script>
+    <script src="js/utils.js" defer></script>
+    <script src="js/components.js" defer></script>
+    <script src="js/layout.js" defer></script>
+    <script src="js/app.js" defer></script>
+    
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarXornadas();
+        });
+
+        function mostrarEquipo(equipo) {
+            document.querySelectorAll('.xornada-team-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.team === equipo);
+            });
+            document.querySelectorAll('.xornada-team-container').forEach(el => {
+                el.classList.toggle('active', el.id === `xornada-${equipo}`);
+            });
+        }
+
+        async function cargarXornadas() {
+            console.log('🚀 Cargando xornadas...');
+            
+            // Cargar femenino y masculino en paralelo
+            const femeninoUrl = CONFIG.sheets.xornadas + '&gid=' + CONFIG.xornadasGid.femenino;
+            const masculinoUrl = CONFIG.sheets.xornadas + '&gid=' + CONFIG.xornadasGid.masculino;
+            
+            await cargarXornadaEquipo(femeninoUrl, 'femenino', 'gridFemenino');
+            await cargarXornadaEquipo(masculinoUrl, 'masculino', 'gridMasculino');
+            
+            console.log('✅ Xornadas cargadas correctamente');
+        }
+
+        async function cargarXornadaEquipo(url, equipo, gridId) {
+            const grid = document.getElementById(gridId);
+            if (!grid) return;
+
+            try {
+                console.log(`🔄 Cargando xornadas de ${equipo}...`);
+                const response = await fetch(url);
+                const csv = await response.text();
+                const xornadas = parseCSVXornadas(csv);
+
+                // Ordenar por número de xornada (ascendente)
+                xornadas.sort((a, b) => {
+                    const numA = parseInt(a.xornada) || 0;
+                    const numB = parseInt(b.xornada) || 0;
+                    return numA - numB;
+                });
+
+                grid.innerHTML = '';
+
+                if (xornadas.length === 0) {
+                    grid.innerHTML = `<p class="no-xornadas">Non hai xornadas dispoñibles para este equipo.</p>`;
+                    return;
+                }
+
+                xornadas.forEach(x => {
+                    grid.appendChild(crearTarjetaXornada(x));
+                });
+
+                console.log(`✅ ${xornadas.length} xornadas cargadas para ${equipo}`);
+
+            } catch (error) {
+                console.error(`Error cargando xornadas de ${equipo}:`, error);
+                grid.innerHTML = `
+                    <p class="no-xornadas" style="color:#e74c3c;">
+                        ⚠️ Erro cargando as xornadas. Reintentando...
+                    </p>
+                `;
+                setTimeout(() => cargarXornadaEquipo(url, equipo, gridId), 5000);
+            }
+        }
+
+        // Exponer funciones globalmente
+        window.mostrarEquipo = mostrarEquipo;
+    </script>
+</head>
+<body>
+
+    <main class="main-content">
+        <h1 class="page-title">📅 XORNADAS</h1>
+        <p class="page-subtitle">Calendario e resultados do CB O Grove</p>
+
+        <!-- Selector de equipo (igual que plantillas) -->
+        <div class="xornada-selector">
+            <button class="xornada-team-btn active" data-team="femenino" onclick="mostrarEquipo('femenino')">
+                ⚪ Femenino
+            </button>
+            <button class="xornada-team-btn" data-team="masculino" onclick="mostrarEquipo('masculino')">
+                ⚫ Masculino
+            </button>
+        </div>
+
+        <!-- Contenedor Femenino -->
+        <div class="xornada-team-container active" id="xornada-femenino">
+            <div class="xornada-grid" id="gridFemenino">
+                <p class="loading-text">Cargando xornadas...</p>
+            </div>
+        </div>
+
+        <!-- Contenedor Masculino -->
+        <div class="xornada-team-container" id="xornada-masculino">
+            <div class="xornada-grid" id="gridMasculino">
+                <p class="loading-text">Cargando xornadas...</p>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
