@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="gl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A ruleta da sorte · CB O Grove</title>
+    
+    <!-- ===== FONTS ===== -->
+    <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ===== CSS GLOBAL DE LA WEB ===== -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- ===== SCRIPTS GLOBALES ===== -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/layout.js"></script>
+
+    <style>
+        /* ============================================
+           RESET Y BASE
+           ============================================ */
+        .game-wrapper * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .game-wrapper {
+            min-height: 60vh;
+            background: linear-gradient(145deg, #f8f9fc 0%, #eef2f7 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/img/logos/club/logo-negro.png');
+            background-size: auto 60%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            opacity: 0.06;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== TÍTULO ===== */
+        .game-title {
+            width: 100%;
+            max-width: 1100px;
+            text-align: center;
+            padding: 1rem 0 0.5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-title h1 {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 2.2rem;
+            color: #1e3a5f;
+        }
+
+        .game-title .subtitle {
+            color: #777;
+            font-size: 1rem;
+        }
+
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .game-container {
+            width: 100%;
+            max-width: 1100px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(4px);
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== SELECTOR DE PISTAS ===== */
+        .setup-panel {
+            text-align: center;
+        }
+
+        .setup-title {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.5rem;
+            color: #1e3a5f;
+            margin-bottom: 0.5rem;
+        }
+
+        .setup-subtitle {
+            color: #777;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .pistas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1rem;
+            max-width: 900px;
+            margin: 0 auto 2rem;
+        }
+
+        .pista-card {
+            background: rgba(255,255,255,0.92);
+            border: 2px solid #c9a03d;
+            border-radius: 15px;
+            padding: 1.2rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .pista-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(201, 160, 61, 0.3);
+            border-color: #1e3a5f;
+        }
+
+        .pista-card .pista-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pista-card .pista-text {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            color: #1e3a5f;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .pista-card .pista-info {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 0.5rem;
+        }
+
+        .loading-text {
+            text-align: center;
+            color: #777;
+            padding: 2rem 0;
+            font-size: 1.1rem;
+        }
+
+        /* ===== LOGOS + MARCADOR ===== */
+        .top-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .score-panel {
+            background: #1e3a5f;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            border: 3px solid #c9a03d;
+            text-align: center;
+            flex: 1;
+            min-width: 300px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .score-title {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.1rem;
+            color: #c9a03d;
+            margin-bottom: 0.3rem;
+            letter-spacing: 1px;
+        }
+
+        .score-amount {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4caf50;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-amount.negative {
+            color: #ff4444;
+        }
+
+        .counters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .counter-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            min-width: 80px;
+            border: 1px solid rgba(201, 160, 61, 0.3);
+        }
+
+        .counter-item div:first-child {
+            color: #c9a03d;
+            font-size: 0.7rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .counter-item div:last-child {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+        }
+
+        /* ===== PANEL DE LA FRASE ===== */
+        .puzzle-container {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .puzzle-board {
+            background: linear-gradient(145deg, #1e3a5f, #0d1f33);
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 6px solid #c9a03d;
+            max-width: 100%;
+            transition: all 0.3s ease;
+            overflow-x: auto;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            margin: 6px 0;
+            gap: 6px;
+        }
+
+        .tile {
+            height: 60px;
+            min-width: 45px;
+            background: white;
+            border: 3px solid #003366;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #000033;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-family: 'Graduate', 'Arial Black', sans-serif;
+            flex-shrink: 0;
+            font-size: 1.8rem;
+        }
+
+        .tile.space {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            width: 20px;
+            min-width: 20px;
+        }
+
+        .tile.revealed {
+            background: #4caf50;
+            color: white;
+            border-color: #2e7d32;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .tile.special-char {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        @keyframes flip {
+            0% { transform: rotateY(0deg); background: white; color: #000033; }
+            50% { transform: rotateY(90deg); background: #c9a03d; color: #000; }
+            100% { transform: rotateY(0deg); background: #c9a03d; color: #000; }
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 rgba(201, 160, 61, 0.7); }
+            50% { box-shadow: 0 0 20px rgba(201, 160, 61, 0.9); }
+            100% { box-shadow: 0 0 0 rgba(201, 160, 61, 0.7); }
+        }
+
+        .tile.victory {
+            animation: flip 0.8s ease forwards, pulse-gold 2s infinite 0.8s;
+        }
+
+        /* ===== PISTA (debajo del panel) ===== */
+        .pista-panel {
+            background: #1e3a5f;
+            border: 2px solid #c9a03d;
+            border-radius: 12px;
+            padding: 0.8rem 1.5rem;
+            margin: 1rem auto;
+            max-width: 800px;
+            text-align: center;
+            color: #c9a03d;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .pista-panel .pista-label {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+            display: block;
+            margin-bottom: 0.2rem;
+            letter-spacing: 2px;
+        }
+
+        /* ===== LETRAS USADAS ===== */
+        .used-letters {
+            font-size: 1rem;
+            color: #1e3a5f;
+            text-align: center;
+            letter-spacing: 2px;
+            min-height: 30px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            padding: 0 20px;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+        }
+
+        /* ===== MENSAJES ===== */
+        .message-container {
+            height: 60px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            transition: all 0.3s ease;
+            color: #1e3a5f;
+        }
+
+        .message.acierto {
+            color: #2e7d32;
+        }
+
+        .message.error {
+            color: #c62828;
+        }
+
+        /* ===== BOTONES ===== */
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .game-button {
+            padding: 0.6rem 2rem;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .game-button:hover:not(:disabled) {
+            background: #c9a03d;
+            color: #1e3a5f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .game-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .game-button.secondary {
+            background: #666;
+        }
+
+        .game-button.secondary:hover:not(:disabled) {
+            background: #888;
+            color: white;
+        }
+
+        /* ===== INSTRUCCIONES ===== */
+        .instructions {
+            margin-top: 1.2rem;
+            padding: 1rem 1.5rem;
+            background: rgba(30, 58, 95, 0.05);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #555555;
+            line-height: 1.7;
+            text-align: left;
+            border: 1px solid rgba(30, 58, 95, 0.08);
+        }
+
+        .instructions strong {
+            color: #1e3a5f;
+        }
+
+        .instructions kbd {
+            background: #1e3a5f;
+            color: white;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .game-title h1 { font-size: 1.6rem; }
+            .game-container { padding: 1.2rem; }
+            .logo { width: 80px; height: 80px; }
+            .score-panel { padding: 0.8rem 1.2rem; min-width: 100%; }
+            .score-amount { font-size: 2rem; }
+            .puzzle-board { padding: 1rem; }
+            .tile { height: 45px; min-width: 35px; font-size: 1.3rem; }
+            .tile.space { width: 15px; min-width: 15px; }
+            .pista-panel { font-size: 0.95rem; padding: 0.6rem 1rem; }
+            .game-button { padding: 0.5rem 1.5rem; font-size: 0.9rem; }
+        }
+
+        @media (max-width: 480px) {
+            .tile { height: 38px; min-width: 28px; font-size: 1.1rem; border-width: 2px; }
+            .tile.space { width: 10px; min-width: 10px; }
+            .row { gap: 4px; }
+            .puzzle-board { padding: 0.8rem; border-width: 4px; }
+            .pista-panel { font-size: 0.85rem; }
+            .message-container { font-size: 1rem; }
+            .pistas-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="main-content">
+        <div class="game-wrapper">
+
+            <div class="game-title">
+                <h1>A ruleta da sorte</h1>
+                <p class="subtitle">🎡 Adiviña a frase oculta</p>
+            </div>
+
+            <div class="game-container">
+
+                <!-- ===== SELECTOR DE PISTAS ===== -->
+                <div class="setup-panel" id="setupPanel">
+                    <div class="setup-title">🎯 Elixe unha pista</div>
+                    <div class="setup-subtitle">Cada pista pertence a unha frase diferente do noso club</div>
+                    <div class="pistas-grid" id="pistasGrid">
+                        <p class="loading-text">📥 Cargando pistas...</p>
+                    </div>
+                </div>
+
+                <!-- ===== ZONA DE XOGO ===== -->
+                <div id="gameArea" style="display: none;">
+
+                    <!-- LOGOS + MARCADOR -->
+                    <div class="top-container">
+                        <div class="logo" id="logoKampa">
+                            <img src="assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onerror="this.style.display='none';">
+                        </div>
+
+                        <div class="score-panel">
+                            <div class="score-title">🏀 MARCADOR</div>
+                            <div class="score-amount" id="points">0</div>
+                            <div class="counters">
+                                <div class="counter-item">
+                                    <div>VOCAIS</div>
+                                    <div id="vowelsCounter">3</div>
+                                </div>
+                                <div class="counter-item">
+                                    <div>CONSOANTES</div>
+                                    <div id="consonantsCounter">5</div>
+                                </div>
+                                <div class="counter-item">
+                                    <div>COMPRAS</div>
+                                    <div id="totalCounter">0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="logo" id="logoClub">
+                            <img src="assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none';">
+                        </div>
+                    </div>
+
+                    <!-- PANEL DE FRASE -->
+                    <div class="puzzle-container">
+                        <div class="puzzle-board" id="puzzleBoard"></div>
+                    </div>
+
+                    <!-- PISTA -->
+                    <div class="pista-panel" id="pistaPanel">
+                        <span class="pista-label">💡 PISTA</span>
+                        <span id="pistaText">—</span>
+                    </div>
+
+                    <!-- LETRAS USADAS -->
+                    <div class="used-letters" id="usedLetters">Letras usadas: —</div>
+
+                    <!-- MENSAJES -->
+                    <div class="message-container">
+                        <div class="message" id="message">Pulsa calquera letra para comezar</div>
+                    </div>
+
+                    <!-- BOTONES -->
+                    <div class="buttons-container">
+                        <button class="game-button" id="riskButton">🎯 ARRIESGAR FRASE</button>
+                        <button class="game-button secondary" id="backButton">⬅️ VOLVER AO SELECTOR</button>
+                    </div>
+
+                    <!-- INSTRUCCIONES -->
+                    <div class="instructions">
+                        <strong>🎮 CONTROLES:</strong> Teclado para letras · <kbd>Enter</kbd> Arriesgar frase · <kbd>Esc</kbd> Volver<br>
+                        <strong>💰 ECONOMÍA:</strong> As vocais e consoantes gratis veñen dadas por cada pista · Extras cstan puntos<br>
+                        <strong>🎯 OBXECTIVO:</strong> Descubre a frase completa antes de quedarte sen puntos
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // =============================================
+        // CONFIGURACIÓN
+        // =============================================
+        var FRASES_URL = (typeof CONFIG !== 'undefined' && CONFIG.sheets && CONFIG.sheets.frases)
+            ? CONFIG.sheets.frases
+            : 'https://docs.google.com/spreadsheets/d/19WRLxEoIGkaqW_tmnbA-aP1zyU0Pyc_2MR3v7xUSCLM/export?format=csv';
+
+        // Valores por defecto si el sheet no los trae
+        var DEFAULT_VOCALES_GRATIS = 3;
+        var DEFAULT_CONSONANTES_GRATIS = 5;
+
+        // Precios y recompensas
+        var PRECIOS = {
+            VOCAL_ACIERTO: 10,
+            CONSONANTE_ACIERTO: 5,
+            VOCAL_EXTRA_1: 15,
+            VOCAL_EXTRA_2: 20,
+            CONSONANTE_EXTRA: 8
+        };
+
+        var PENALIZACIONES = {
+            VOCAL_REPETIDA: 5,
+            CONSONANTE_REPETIDA: 2,
+            FRASE_INCORRECTA: 10
+        };
+
+        var BONUS = {
+            VICTORIA_BASE: 50,
+            VOCAL_NO_USADA: 15,
+            CONSONANTE_NO_USADA: 8
+        };
+
+        // =============================================
+        // ESTADO
+        // =============================================
+        var estado = {
+            frases: [],
+            fraseActual: null,
+            puntos: 0,
+            fraseOculta: [],
+            letrasUsadas: new Set(),
+            letrasDescubiertas: new Set(),
+            compras: { vocales: 0, consonantes: 0, total: 0 },
+            vocalesGratis: DEFAULT_VOCALES_GRATIS,
+            consonantesGratis: DEFAULT_CONSONANTES_GRATIS,
+            juegoActivo: false,
+            victoriaLograda: false,
+            elementosTile: []
+        };
+
+        // =============================================
+        // DOM
+        // =============================================
+        var setupPanel = document.getElementById('setupPanel');
+        var pistasGrid = document.getElementById('pistasGrid');
+        var gameArea = document.getElementById('gameArea');
+        var pointsElement = document.getElementById('points');
+        var vowelsCounter = document.getElementById('vowelsCounter');
+        var consonantsCounter = document.getElementById('consonantsCounter');
+        var totalCounter = document.getElementById('totalCounter');
+        var puzzleBoard = document.getElementById('puzzleBoard');
+        var pistaText = document.getElementById('pistaText');
+        var usedLettersElement = document.getElementById('usedLetters');
+        var messageElement = document.getElementById('message');
+        var riskButton = document.getElementById('riskButton');
+        var backButton = document.getElementById('backButton');
+
+        // =============================================
+        // PARSEO CSV ROBUSTO
+        // =============================================
+        function parseCSVFrases(csv) {
+            var lines = csv.replace(/\r/g, '').split('\n').filter(function(l) { return l.trim(); });
+            if (lines.length === 0) return [];
+
+            var result = [];
+            var startIndex = 0;
+
+            // Detectar si la primera fila es header (contiene "frase" o "pista")
+            var firstLower = lines[0].toLowerCase();
+            if (firstLower.indexOf('frase') !== -1 || firstLower.indexOf('pista') !== -1) {
+                startIndex = 1;
+            }
+
+            for (var i = startIndex; i < lines.length; i++) {
+                var values = parseCSVLine(lines[i]);
+                
+                var frase = (values[0] || '').trim().replace(/^"|"$/g, '');
+                var pista = (values[1] || '').trim().replace(/^"|"$/g, '');
+                var vocales = parseInt((values[2] || '').trim()) || DEFAULT_VOCALES_GRATIS;
+                var consonantes = parseInt((values[3] || '').trim()) || DEFAULT_CONSONANTES_GRATIS;
+
+                // Saltar filas sin frase
+                if (!frase) continue;
+
+                result.push({
+                    frase: frase,
+                    pista: pista || '(sen pista)',
+                    vocalesGratis: vocales,
+                    consonantesGratis: consonantes
+                });
+            }
+
+            return result;
+        }
+
+        function parseCSVLine(line) {
+            var values = [];
+            var current = '';
+            var insideQuotes = false;
+
+            for (var i = 0; i < line.length; i++) {
+                var char = line[i];
+                if (char === '"') {
+                    insideQuotes = !insideQuotes;
+                } else if (char === ',' && !insideQuotes) {
+                    values.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            values.push(current.trim());
+            return values;
+        }
+
+        // =============================================
+        // CARGA DE FRASES
+        // =============================================
+        async function cargarFrases() {
+            try {
+                console.log('🔄 Cargando frases desde:', FRASES_URL);
+                var response = await fetch(FRASES_URL);
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                var csv = await response.text();
+                var frases = parseCSVFrases(csv);
+                console.log('✅ ' + frases.length + ' frases cargadas');
+                return frases;
+            } catch (error) {
+                console.error('Error cargando frases:', error);
+                return [];
+            }
+        }
+
+        function renderizarSelectorPistas() {
+            pistasGrid.innerHTML = '';
+
+            if (estado.frases.length === 0) {
+                pistasGrid.innerHTML = '<p class="loading-text" style="color:#c62828;">⚠️ Non se puideron cargar as pistas. Comproba a conexión e recarga.</p>';
+                return;
+            }
+
+            estado.frases.forEach(function(f, index) {
+                var card = document.createElement('div');
+                card.className = 'pista-card';
+                card.innerHTML = 
+                    '<div class="pista-icon">💡</div>' +
+                    '<div class="pista-text">' + escapeHTML(f.pista) + '</div>' +
+                    '<div class="pista-info">' + f.vocalesGratis + ' vocais · ' + f.consonantesGratis + ' consoantes</div>';
+
+                card.addEventListener('click', function() {
+                    iniciarPartida(index);
+                });
+
+                pistasGrid.appendChild(card);
+            });
+        }
+
+        function escapeHTML(str) {
+            return String(str).replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+            });
+        }
+
+        // =============================================
+        // LÓGICA DEL JUEGO (adaptada del original)
+        // =============================================
+
+        function esCaracterEspecial(c) {
+            return ',.;:¿?¡!"\'-'.indexOf(c) !== -1;
+        }
+
+        function calcularDistribucionOptima(frase) {
+            var palabras = frase.split(' ');
+            var filas = [];
+            var filaActual = [];
+            var longitudFilaActual = 0;
+            var MAX_POR_FILA = 18;
+            var MIN_POR_FILA = 10;
+            var MAX_FILAS = 5;
+
+            for (var i = 0; i < palabras.length; i++) {
+                var palabra = palabras[i];
+                var longitudPalabra = palabra.length;
+
+                if (longitudFilaActual === 0) {
+                    if (longitudPalabra >= MAX_POR_FILA - 2) {
+                        if (filaActual.length > 0) filas.push(filaActual.slice());
+                        filas.push([palabra]);
+                        filaActual = [];
+                        longitudFilaActual = 0;
+                    } else {
+                        filaActual.push(palabra);
+                        longitudFilaActual = longitudPalabra;
+                    }
+                } else {
+                    var longitudConEspacio = longitudFilaActual + 1 + longitudPalabra;
+                    if (longitudConEspacio <= MAX_POR_FILA) {
+                        filaActual.push(palabra);
+                        longitudFilaActual = longitudConEspacio;
+                    } else if (filas.length + 1 < MAX_FILAS) {
+                        if (longitudFilaActual < MIN_POR_FILA && longitudConEspacio <= MAX_POR_FILA + 3) {
+                            filaActual.push(palabra);
+                            longitudFilaActual = longitudConEspacio;
+                        } else {
+                            filas.push(filaActual.slice());
+                            filaActual = [palabra];
+                            longitudFilaActual = longitudPalabra;
+                        }
+                    } else {
+                        filaActual.push(palabra);
+                        longitudFilaActual = longitudConEspacio;
+                    }
+                }
+            }
+
+            if (filaActual.length > 0) filas.push(filaActual);
+            return filas;
+        }
+
+        function crearTablero() {
+            puzzleBoard.innerHTML = '';
+            estado.elementosTile = [];
+            estado.fraseOculta = [];
+
+            var distribucion = calcularDistribucionOptima(estado.fraseActual.frase.toUpperCase());
+
+            distribucion.forEach(function(palabrasFila) {
+                if (palabrasFila.length === 0) {
+                    var row = document.createElement('div');
+                    row.className = 'row';
+                    puzzleBoard.appendChild(row);
+                    return;
+                }
+
+                var row = document.createElement('div');
+                row.className = 'row';
+
+                var filaCompleta = palabrasFila.join(' ');
+
+                for (var i = 0; i < filaCompleta.length; i++) {
+                    var tile = document.createElement('div');
+                    var caracter = filaCompleta[i];
+
+                    if (caracter === ' ') {
+                        tile.className = 'tile space';
+                        tile.textContent = '';
+                        estado.fraseOculta.push({ char: ' ', type: 'space', revealed: true, element: tile });
+                    } else if (esCaracterEspecial(caracter)) {
+                        tile.className = 'tile special-char';
+                        tile.textContent = caracter;
+                        estado.fraseOculta.push({ char: caracter, type: 'special', revealed: true, element: tile });
+                    } else {
+                        tile.className = 'tile';
+                        tile.textContent = '_';
+                        tile.dataset.letra = caracter;
+                        estado.fraseOculta.push({ char: caracter, type: 'letter', revealed: false, element: tile });
+                        estado.elementosTile.push(tile);
+                    }
+
+                    row.appendChild(tile);
+                }
+
+                puzzleBoard.appendChild(row);
+            });
+        }
+
+        // =============================================
+        // ACTUALIZACIONES UI
+        // =============================================
+        function actualizarPuntos() {
+            pointsElement.textContent = estado.puntos;
+            pointsElement.classList.toggle('negative', estado.puntos < 0);
+        }
+
+        function actualizarContadores() {
+            var vocalesRestantes = Math.max(0, estado.vocalesGratis - estado.compras.vocales);
+            var consonantesRestantes = Math.max(0, estado.consonantesGratis - estado.compras.consonantes);
+            vowelsCounter.textContent = vocalesRestantes;
+            consonantsCounter.textContent = consonantesRestantes;
+            totalCounter.textContent = estado.compras.total;
+        }
+
+        function actualizarLetrasUsadas() {
+            if (estado.letrasUsadas.size === 0) {
+                usedLettersElement.textContent = 'Letras usadas: —';
+            } else {
+                usedLettersElement.textContent = 'Letras usadas: ' + Array.from(estado.letrasUsadas).sort().join(', ');
+            }
+        }
+
+        function mostrarMensaje(texto, tipo) {
+            messageElement.textContent = texto;
+            messageElement.className = 'message';
+            if (tipo) messageElement.classList.add(tipo);
+        }
+
+        // =============================================
+        // LÓGICA DE LETRAS
+        // =============================================
+        function normalizarLetra(letra) {
+            var mapa = {
+                'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U', 'Ü': 'U',
+                'À': 'A', 'È': 'E', 'Ì': 'I', 'Ò': 'O', 'Ù': 'U'
+            };
+            return mapa[letra] || letra;
+        }
+
+        function procesarLetra(letra) {
+            if (!estado.juegoActivo || estado.victoriaLograda) return;
+
+            letra = letra.toUpperCase();
+            if (!/^[A-ZÑÁÉÍÓÚÜ]$/.test(letra)) return;
+
+            if (estado.letrasUsadas.has(letra)) {
+                var esVocal = /[AEIOUÁÉÍÓÚÜ]/.test(letra);
+                var penalizacion = esVocal ? PENALIZACIONES.VOCAL_REPETIDA : PENALIZACIONES.CONSONANTE_REPETIDA;
+                estado.puntos -= penalizacion;
+                mostrarMensaje('¡LETRA REPETIDA! -' + penalizacion + ' puntos', 'error');
+                actualizarPuntos();
+                return;
+            }
+
+            var esVocal = /[AEIOUÁÉÍÓÚÜ]/.test(letra);
+            if (esVocal) {
+                estado.compras.vocales++;
+            } else {
+                estado.compras.consonantes++;
+            }
+            estado.compras.total++;
+            estado.letrasUsadas.add(letra);
+
+            var letraNormalizada = normalizarLetra(letra);
+            var aciertos = 0;
+            var tilesParaRevelar = [];
+
+            estado.fraseOculta.forEach(function(item) {
+                if (item.type === 'letter' && !item.revealed) {
+                    if (normalizarLetra(item.char) === letraNormalizada) {
+                        item.revealed = true;
+                        tilesParaRevelar.push(item.element);
+                        aciertos++;
+                        estado.letrasDescubiertas.add(item.char);
+                    }
+                }
+            });
+
+            if (aciertos > 0) {
+                tilesParaRevelar.forEach(function(tile) {
+                    tile.textContent = tile.dataset.letra;
+                    tile.classList.add('revealed');
+                });
+
+                var puntosGanados = esVocal ? PRECIOS.VOCAL_ACIERTO : PRECIOS.CONSONANTE_ACIERTO;
+                estado.puntos += puntosGanados;
+
+                var costoExtra = 0;
+                if (esVocal && estado.compras.vocales > estado.vocalesGratis) {
+                    if (estado.compras.vocales === estado.vocalesGratis + 1) {
+                        costoExtra = PRECIOS.VOCAL_EXTRA_1;
+                    } else {
+                        costoExtra = PRECIOS.VOCAL_EXTRA_2;
+                    }
+                    estado.puntos -= costoExtra;
+                } else if (!esVocal && estado.compras.consonantes > estado.consonantesGratis) {
+                    costoExtra = PRECIOS.CONSONANTE_EXTRA;
+                    estado.puntos -= costoExtra;
+                }
+
+                var mensajeCosto = costoExtra > 0 ? ' (Costou ' + costoExtra + ' pts)' : '';
+                mostrarMensaje('¡CANASTA! A ' + letra + ' aparece ' + aciertos + ' vez' + (aciertos > 1 ? 'es' : '') + '. +' + puntosGanados + ' pts' + mensajeCosto, 'acierto');
+
+                verificarVictoria();
+            } else {
+                mostrarMensaje('¡AIRBALL! A ' + letra + ' non está na frase', 'error');
+            }
+
+            actualizarPuntos();
+            actualizarContadores();
+            actualizarLetrasUsadas();
+        }
+
+        function verificarVictoria() {
+            var todasDescubiertas = estado.fraseOculta.every(function(item) {
+                return item.type !== 'letter' || item.revealed;
+            });
+            if (todasDescubiertas) {
+                finalizarJuego(true);
+            }
+        }
+
+        function calcularBonusVictoria() {
+            var bonus = BONUS.VICTORIA_BASE;
+            var vocalesNoUsadas = estado.vocalesGratis - Math.min(estado.compras.vocales, estado.vocalesGratis);
+            bonus += vocalesNoUsadas * BONUS.VOCAL_NO_USADA;
+            var consonantesNoUsadas = estado.consonantesGratis - Math.min(estado.compras.consonantes, estado.consonantesGratis);
+            bonus += consonantesNoUsadas * BONUS.CONSONANTE_NO_USADA;
+            return bonus;
+        }
+
+        function animarVictoria() {
+            return new Promise(function(resolve) {
+                estado.elementosTile.forEach(function(tile, index) {
+                    setTimeout(function() {
+                        tile.classList.add('victory');
+                        tile.textContent = tile.dataset.letra;
+                        if (index === estado.elementosTile.length - 1) {
+                            setTimeout(resolve, 1000);
+                        }
+                    }, index * 150);
+                });
+            });
+        }
+
+        async function finalizarJuego(victoria) {
+            if (estado.victoriaLograda) return;
+
+            if (victoria) {
+                estado.victoriaLograda = true;
+                estado.juegoActivo = false;
+
+                var bonus = calcularBonusVictoria();
+                estado.puntos += bonus;
+                mostrarMensaje('¡¡¡VICTORIA!!! +' + bonus + ' puntos de bonus', 'acierto');
+                actualizarPuntos();
+
+                await animarVictoria();
+
+                setTimeout(function() {
+                    mostrarMensaje('Puntuación final: ' + estado.puntos + ' puntos', 'acierto');
+                }, 500);
+
+                riskButton.disabled = true;
+            } else {
+                estado.juegoActivo = false;
+                estado.fraseOculta.forEach(function(item) {
+                    if (item.type === 'letter' && item.element) {
+                        item.element.textContent = item.char;
+                        item.element.style.background = '#f44336';
+                        item.element.style.color = 'white';
+                        item.element.style.borderColor = '#c62828';
+                    }
+                });
+                mostrarMensaje('A frase era: ' + estado.fraseActual.frase, 'error');
+                riskButton.disabled = true;
+            }
+        }
+
+        function arriesgarFrase() {
+            if (!estado.juegoActivo || estado.victoriaLograda) return;
+            var intento = prompt('Escribe a frase completa:');
+            if (!intento) return;
+            if (intento.toUpperCase() === estado.fraseActual.frase.toUpperCase()) {
+                finalizarJuego(true);
+            } else {
+                estado.puntos -= PENALIZACIONES.FRASE_INCORRECTA;
+                mostrarMensaje('Frase incorrecta. -' + PENALIZACIONES.FRASE_INCORRECTA + ' puntos', 'error');
+                actualizarPuntos();
+            }
+        }
+
+        // =============================================
+        // INICIO DE PARTIDA
+        // =============================================
+        function iniciarPartida(index) {
+            var f = estado.frases[index];
+            if (!f) return;
+
+            estado.fraseActual = f;
+            estado.vocalesGratis = f.vocalesGratis;
+            estado.consonantesGratis = f.consonantesGratis;
+            estado.puntos = 0;
+            estado.letrasUsadas.clear();
+            estado.letrasDescubiertas.clear();
+            estado.compras = { vocales: 0, consonantes: 0, total: 0 };
+            estado.juegoActivo = true;
+            estado.victoriaLograda = false;
+
+            setupPanel.style.display = 'none';
+            gameArea.style.display = 'block';
+            riskButton.disabled = false;
+
+            pistaText.textContent = f.pista;
+            crearTablero();
+            actualizarPuntos();
+            actualizarContadores();
+            actualizarLetrasUsadas();
+            mostrarMensaje('Pulsa calquera letra para comezar');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function volverAlSelector() {
+            if (estado.juegoActivo && !estado.victoriaLograda) {
+                if (!confirm('¿Seguro que queres saír? Perderás o progreso da partida actual.')) return;
+            }
+            estado.juegoActivo = false;
+            gameArea.style.display = 'none';
+            setupPanel.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // =============================================
+        // EVENTOS
+        // =============================================
+        document.addEventListener('keydown', function(event) {
+            if (!estado.juegoActivo) return;
+            if (/^[A-Za-zÑñÁÉÍÓÚáéíóúÜü]$/.test(event.key)) {
+                procesarLetra(event.key);
+            }
+            if (event.key === 'Enter') {
+                arriesgarFrase();
+            }
+            if (event.key === 'Escape') {
+                volverAlSelector();
+            }
+        });
+
+        riskButton.addEventListener('click', arriesgarFrase);
+        backButton.addEventListener('click', volverAlSelector);
+
+        // =============================================
+        // INICIALIZACIÓN
+        // =============================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('📄 DOM listo, cargando frases...');
+            estado.frases = await cargarFrases();
+            renderizarSelectorPistas();
+        });
+    </script>
+</body>
+</html>
