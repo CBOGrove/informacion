@@ -407,15 +407,6 @@
             line-height: 1.7;
             text-align: left;
             border: 1px solid rgba(30, 58, 95, 0.08);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .instructions .text {
-            flex: 1;
         }
 
         .instructions strong {
@@ -431,18 +422,21 @@
             font-family: monospace;
         }
 
-        .instructions .kampa-credit {
+        /* ===== CRÉDITO KAMPA (unificado) ===== */
+        .kampa-credit {
             display: flex;
             align-items: center;
+            justify-content: flex-end;
             gap: 0.5rem;
             font-size: 0.75rem;
             color: #999;
-            flex-shrink: 0;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(30, 58, 95, 0.08);
         }
 
-        /* Logo de Kampa SIN encapsular */
-        .instructions .kampa-credit img {
-            height: 30px;
+        .kampa-credit img {
+            height: 28px;
             width: auto;
             cursor: pointer;
             border: none;
@@ -452,16 +446,16 @@
             transition: transform 0.3s;
         }
 
-        .instructions .kampa-credit img:hover {
+        .kampa-credit img:hover {
             transform: scale(1.1);
         }
 
-        .instructions .kampa-credit a {
+        .kampa-credit a {
             color: #c9a03d;
             text-decoration: none;
         }
 
-        .instructions .kampa-credit a:hover {
+        .kampa-credit a:hover {
             text-decoration: underline;
         }
 
@@ -516,11 +510,7 @@
             .result-message {
                 font-size: 1.8rem;
             }
-            .instructions {
-                flex-direction: column;
-                text-align: center;
-            }
-            .instructions .kampa-credit {
+            .kampa-credit {
                 justify-content: center;
             }
         }
@@ -537,7 +527,7 @@
                 padding: 0.4rem 1.2rem;
                 font-size: 0.8rem;
             }
-            .instructions .kampa-credit img {
+            .kampa-credit img {
                 height: 24px;
             }
             .game-title h1 {
@@ -582,17 +572,16 @@
                 </div>
 
                 <div class="instructions">
-                    <div class="text">
-                        <strong>🎯 COMO XOGAR:</strong><br>
-                        1. Tes <strong>24 movementos</strong> para aliñar o equipo correcto<br>
-                        2. Fai clic nunha xogadora para seleccionala <kbd>1-5</kbd><br>
-                        3. Fai clic noutra para <strong>intercambialas</strong><br>
-                        4. Cando remates os movementos, descóbrese a aliñación correcta<br>
-                        5. <strong>Obxectivo:</strong> Todas no seu lugar! 🏆<br>
-                        <strong>🎮 ATALLOS:</strong> <kbd>1-5</kbd> Seleccionar · <kbd>R</kbd> Novo xogo · <kbd>ESC</kbd> Rendirse
-                    </div>
+                    <strong>🎯 COMO XOGAR:</strong><br>
+                    1. Tes <strong>24 movementos</strong> para aliñar o equipo correcto<br>
+                    2. Fai clic nunha xogadora para seleccionala <kbd>1-5</kbd><br>
+                    3. Fai clic noutra para <strong>intercambialas</strong><br>
+                    4. Cando remates os movementos, descóbrese a aliñación correcta<br>
+                    5. <strong>Obxectivo:</strong> Todas no seu lugar! 🏆<br>
+                    <strong>🎮 ATALLOS:</strong> <kbd>1-5</kbd> Seleccionar · <kbd>R</kbd> Novo xogo · <kbd>ESC</kbd> Rendirse
+
                     <div class="kampa-credit">
-                        <img src="assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" onerror="this.style.display='none'">
+                        <img src="assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" onerror="this.style.display='none';">
                         <span>Creado por <a href="https://taplink.cc/kampa_snmt" target="_blank">@kampa_snmt</a></span>
                     </div>
                 </div>
