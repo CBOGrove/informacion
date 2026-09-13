@@ -159,7 +159,7 @@
             font-size: 1.1rem;
         }
 
-        /* ===== LOGOS + MARCADOR ===== */
+        /* ===== LOGOS + PANEL CENTRAL ===== */
         .top-container {
             display: flex;
             justify-content: space-between;
@@ -184,7 +184,8 @@
             object-fit: contain;
         }
 
-        .score-panel {
+        /* ===== PANEL CENTRAL (pista + contadores) ===== */
+        .pista-panel {
             background: #1e3a5f;
             padding: 1rem 2rem;
             border-radius: 15px;
@@ -195,44 +196,41 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .score-title {
+        .pista-panel .pista-label {
             font-family: 'Graduate', 'Segoe UI', sans-serif;
-            font-size: 1.1rem;
+            font-size: 0.8rem;
             color: #c9a03d;
-            margin-bottom: 0.3rem;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 0.4rem;
         }
 
-        .score-amount {
+        .pista-panel .pista-text {
             font-family: 'Graduate', 'Segoe UI', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #4caf50;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
-            min-height: 50px;
+            font-size: 1.2rem;
+            color: #fff;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+            word-break: break-word;
+            margin-bottom: 0.8rem;
+            min-height: 2rem;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .score-amount.negative {
-            color: #ff4444;
-        }
-
-        .counters {
+        .contadores-panel {
             display: flex;
             justify-content: center;
             gap: 1rem;
-            margin-top: 0.8rem;
             flex-wrap: wrap;
         }
 
         .counter-item {
             background: rgba(255, 255, 255, 0.1);
-            padding: 0.4rem 0.8rem;
+            padding: 0.4rem 1rem;
             border-radius: 8px;
-            min-width: 80px;
+            min-width: 90px;
             border: 1px solid rgba(201, 160, 61, 0.3);
         }
 
@@ -245,7 +243,7 @@
 
         .counter-item div:last-child {
             color: #fff;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
             font-family: 'Graduate', 'Segoe UI', sans-serif;
         }
@@ -327,30 +325,6 @@
 
         .tile.victory {
             animation: flip 0.8s ease forwards, pulse-gold 2s infinite 0.8s;
-        }
-
-        /* ===== PISTA (debajo del panel) ===== */
-        .pista-panel {
-            background: #1e3a5f;
-            border: 2px solid #c9a03d;
-            border-radius: 12px;
-            padding: 0.8rem 1.5rem;
-            margin: 1rem auto;
-            max-width: 800px;
-            text-align: center;
-            color: #c9a03d;
-            font-family: 'Graduate', 'Segoe UI', sans-serif;
-            font-size: 1.1rem;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-
-        .pista-panel .pista-label {
-            font-size: 0.75rem;
-            color: rgba(255,255,255,0.6);
-            display: block;
-            margin-bottom: 0.2rem;
-            letter-spacing: 2px;
         }
 
         /* ===== LETRAS USADAS ===== */
@@ -465,12 +439,11 @@
             .game-title h1 { font-size: 1.6rem; }
             .game-container { padding: 1.2rem; }
             .logo { width: 80px; height: 80px; }
-            .score-panel { padding: 0.8rem 1.2rem; min-width: 100%; }
-            .score-amount { font-size: 2rem; }
+            .pista-panel { padding: 0.8rem 1.2rem; min-width: 100%; }
+            .pista-panel .pista-text { font-size: 1rem; }
             .puzzle-board { padding: 1rem; }
             .tile { height: 45px; min-width: 35px; font-size: 1.3rem; }
             .tile.space { width: 15px; min-width: 15px; }
-            .pista-panel { font-size: 0.95rem; padding: 0.6rem 1rem; }
             .game-button { padding: 0.5rem 1.5rem; font-size: 0.9rem; }
         }
 
@@ -479,7 +452,6 @@
             .tile.space { width: 10px; min-width: 10px; }
             .row { gap: 4px; }
             .puzzle-board { padding: 0.8rem; border-width: 4px; }
-            .pista-panel { font-size: 0.85rem; }
             .message-container { font-size: 1rem; }
             .pistas-grid { grid-template-columns: 1fr; }
         }
@@ -509,16 +481,16 @@
                 <!-- ===== ZONA DE XOGO ===== -->
                 <div id="gameArea" style="display: none;">
 
-                    <!-- LOGOS + MARCADOR -->
+                    <!-- LOGOS + PANEL CENTRAL -->
                     <div class="top-container">
                         <div class="logo" id="logoKampa">
                             <img src="assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onerror="this.style.display='none';">
                         </div>
 
-                        <div class="score-panel">
-                            <div class="score-title">🏀 MARCADOR</div>
-                            <div class="score-amount" id="points">0</div>
-                            <div class="counters">
+                        <div class="pista-panel">
+                            <span class="pista-label">💡 PISTA</span>
+                            <div class="pista-text" id="pistaText">—</div>
+                            <div class="contadores-panel">
                                 <div class="counter-item">
                                     <div>VOCAIS</div>
                                     <div id="vowelsCounter">3</div>
@@ -527,27 +499,17 @@
                                     <div>CONSOANTES</div>
                                     <div id="consonantsCounter">5</div>
                                 </div>
-                                <div class="counter-item">
-                                    <div>COMPRAS</div>
-                                    <div id="totalCounter">0</div>
-                                </div>
                             </div>
                         </div>
 
                         <div class="logo" id="logoClub">
-                            <img src="assets/img/logos/club/logo-dorado.png" alt="CB O Grove" onerror="this.style.display='none';">
+                            <img src="assets/img/logos/club/logo-negro.png" alt="CB O Grove" onerror="this.style.display='none';">
                         </div>
                     </div>
 
                     <!-- PANEL DE FRASE -->
                     <div class="puzzle-container">
                         <div class="puzzle-board" id="puzzleBoard"></div>
-                    </div>
-
-                    <!-- PISTA -->
-                    <div class="pista-panel" id="pistaPanel">
-                        <span class="pista-label">💡 PISTA</span>
-                        <span id="pistaText">—</span>
                     </div>
 
                     <!-- LETRAS USADAS -->
@@ -584,11 +546,9 @@
             ? CONFIG.sheets.frases
             : 'https://docs.google.com/spreadsheets/d/19WRLxEoIGkaqW_tmnbA-aP1zyU0Pyc_2MR3v7xUSCLM/export?format=csv';
 
-        // Valores por defecto si el sheet no los trae
         var DEFAULT_VOCALES_GRATIS = 3;
         var DEFAULT_CONSONANTES_GRATIS = 5;
 
-        // Precios y recompensas
         var PRECIOS = {
             VOCAL_ACIERTO: 10,
             CONSONANTE_ACIERTO: 5,
@@ -619,7 +579,7 @@
             fraseOculta: [],
             letrasUsadas: new Set(),
             letrasDescubiertas: new Set(),
-            compras: { vocales: 0, consonantes: 0, total: 0 },
+            compras: { vocales: 0, consonantes: 0 },
             vocalesGratis: DEFAULT_VOCALES_GRATIS,
             consonantesGratis: DEFAULT_CONSONANTES_GRATIS,
             juegoActivo: false,
@@ -633,10 +593,8 @@
         var setupPanel = document.getElementById('setupPanel');
         var pistasGrid = document.getElementById('pistasGrid');
         var gameArea = document.getElementById('gameArea');
-        var pointsElement = document.getElementById('points');
         var vowelsCounter = document.getElementById('vowelsCounter');
         var consonantsCounter = document.getElementById('consonantsCounter');
-        var totalCounter = document.getElementById('totalCounter');
         var puzzleBoard = document.getElementById('puzzleBoard');
         var pistaText = document.getElementById('pistaText');
         var usedLettersElement = document.getElementById('usedLetters');
@@ -645,7 +603,7 @@
         var backButton = document.getElementById('backButton');
 
         // =============================================
-        // PARSEO CSV ROBUSTO
+        // PARSEO CSV
         // =============================================
         function parseCSVFrases(csv) {
             var lines = csv.replace(/\r/g, '').split('\n').filter(function(l) { return l.trim(); });
@@ -654,7 +612,6 @@
             var result = [];
             var startIndex = 0;
 
-            // Detectar si la primera fila es header (contiene "frase" o "pista")
             var firstLower = lines[0].toLowerCase();
             if (firstLower.indexOf('frase') !== -1 || firstLower.indexOf('pista') !== -1) {
                 startIndex = 1;
@@ -668,7 +625,6 @@
                 var vocales = parseInt((values[2] || '').trim()) || DEFAULT_VOCALES_GRATIS;
                 var consonantes = parseInt((values[3] || '').trim()) || DEFAULT_CONSONANTES_GRATIS;
 
-                // Saltar filas sin frase
                 if (!frase) continue;
 
                 result.push({
@@ -753,7 +709,7 @@
         }
 
         // =============================================
-        // LÓGICA DEL JUEGO (adaptada del original)
+        // LÓGICA DEL JUEGO
         // =============================================
 
         function esCaracterEspecial(c) {
@@ -858,17 +814,11 @@
         // =============================================
         // ACTUALIZACIONES UI
         // =============================================
-        function actualizarPuntos() {
-            pointsElement.textContent = estado.puntos;
-            pointsElement.classList.toggle('negative', estado.puntos < 0);
-        }
-
         function actualizarContadores() {
             var vocalesRestantes = Math.max(0, estado.vocalesGratis - estado.compras.vocales);
             var consonantesRestantes = Math.max(0, estado.consonantesGratis - estado.compras.consonantes);
             vowelsCounter.textContent = vocalesRestantes;
             consonantsCounter.textContent = consonantesRestantes;
-            totalCounter.textContent = estado.compras.total;
         }
 
         function actualizarLetrasUsadas() {
@@ -905,9 +855,7 @@
             if (estado.letrasUsadas.has(letra)) {
                 var esVocal = /[AEIOUÁÉÍÓÚÜ]/.test(letra);
                 var penalizacion = esVocal ? PENALIZACIONES.VOCAL_REPETIDA : PENALIZACIONES.CONSONANTE_REPETIDA;
-                estado.puntos -= penalizacion;
                 mostrarMensaje('¡LETRA REPETIDA! -' + penalizacion + ' puntos', 'error');
-                actualizarPuntos();
                 return;
             }
 
@@ -917,7 +865,6 @@
             } else {
                 estado.compras.consonantes++;
             }
-            estado.compras.total++;
             estado.letrasUsadas.add(letra);
 
             var letraNormalizada = normalizarLetra(letra);
@@ -944,28 +891,13 @@
                 var puntosGanados = esVocal ? PRECIOS.VOCAL_ACIERTO : PRECIOS.CONSONANTE_ACIERTO;
                 estado.puntos += puntosGanados;
 
-                var costoExtra = 0;
-                if (esVocal && estado.compras.vocales > estado.vocalesGratis) {
-                    if (estado.compras.vocales === estado.vocalesGratis + 1) {
-                        costoExtra = PRECIOS.VOCAL_EXTRA_1;
-                    } else {
-                        costoExtra = PRECIOS.VOCAL_EXTRA_2;
-                    }
-                    estado.puntos -= costoExtra;
-                } else if (!esVocal && estado.compras.consonantes > estado.consonantesGratis) {
-                    costoExtra = PRECIOS.CONSONANTE_EXTRA;
-                    estado.puntos -= costoExtra;
-                }
-
-                var mensajeCosto = costoExtra > 0 ? ' (Costou ' + costoExtra + ' pts)' : '';
-                mostrarMensaje('¡CANASTA! A ' + letra + ' aparece ' + aciertos + ' vez' + (aciertos > 1 ? 'es' : '') + '. +' + puntosGanados + ' pts' + mensajeCosto, 'acierto');
+                mostrarMensaje('¡CANASTA! A ' + letra + ' aparece ' + aciertos + ' vez' + (aciertos > 1 ? 'es' : '') + '. +' + puntosGanados + ' pts', 'acierto');
 
                 verificarVictoria();
             } else {
                 mostrarMensaje('¡AIRBALL! A ' + letra + ' non está na frase', 'error');
             }
 
-            actualizarPuntos();
             actualizarContadores();
             actualizarLetrasUsadas();
         }
@@ -977,15 +909,6 @@
             if (todasDescubiertas) {
                 finalizarJuego(true);
             }
-        }
-
-        function calcularBonusVictoria() {
-            var bonus = BONUS.VICTORIA_BASE;
-            var vocalesNoUsadas = estado.vocalesGratis - Math.min(estado.compras.vocales, estado.vocalesGratis);
-            bonus += vocalesNoUsadas * BONUS.VOCAL_NO_USADA;
-            var consonantesNoUsadas = estado.consonantesGratis - Math.min(estado.compras.consonantes, estado.consonantesGratis);
-            bonus += consonantesNoUsadas * BONUS.CONSONANTE_NO_USADA;
-            return bonus;
         }
 
         function animarVictoria() {
@@ -1009,15 +932,12 @@
                 estado.victoriaLograda = true;
                 estado.juegoActivo = false;
 
-                var bonus = calcularBonusVictoria();
-                estado.puntos += bonus;
-                mostrarMensaje('¡¡¡VICTORIA!!! +' + bonus + ' puntos de bonus', 'acierto');
-                actualizarPuntos();
+                mostrarMensaje('¡¡¡VICTORIA!!! Descubriches a frase completa 🏆', 'acierto');
 
                 await animarVictoria();
 
                 setTimeout(function() {
-                    mostrarMensaje('Puntuación final: ' + estado.puntos + ' puntos', 'acierto');
+                    mostrarMensaje('A frase era: ' + estado.fraseActual.frase, 'acierto');
                 }, 500);
 
                 riskButton.disabled = true;
@@ -1043,9 +963,7 @@
             if (intento.toUpperCase() === estado.fraseActual.frase.toUpperCase()) {
                 finalizarJuego(true);
             } else {
-                estado.puntos -= PENALIZACIONES.FRASE_INCORRECTA;
-                mostrarMensaje('Frase incorrecta. -' + PENALIZACIONES.FRASE_INCORRECTA + ' puntos', 'error');
-                actualizarPuntos();
+                mostrarMensaje('Frase incorrecta.', 'error');
             }
         }
 
@@ -1062,7 +980,7 @@
             estado.puntos = 0;
             estado.letrasUsadas.clear();
             estado.letrasDescubiertas.clear();
-            estado.compras = { vocales: 0, consonantes: 0, total: 0 };
+            estado.compras = { vocales: 0, consonantes: 0 };
             estado.juegoActivo = true;
             estado.victoriaLograda = false;
 
@@ -1072,7 +990,6 @@
 
             pistaText.textContent = f.pista;
             crearTablero();
-            actualizarPuntos();
             actualizarContadores();
             actualizarLetrasUsadas();
             mostrarMensaje('Pulsa calquera letra para comezar');
