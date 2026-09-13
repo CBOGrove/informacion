@@ -609,12 +609,15 @@
 
     <script>
         // =============================================
-        // CONFIGURACIÓN LOCAL (fallback si CONFIG falla)
+        // CONFIGURACIÓN LOCAL
+        // Usa CONFIG.sheets.plantillas (mismo sheet que plantillas.html)
+        // y le añade el gid de cada equipo.
         // =============================================
-        var CONFIG_LOCAL = (typeof CONFIG !== 'undefined') ? CONFIG : {
+        var CONFIG_LOCAL = {
             sheets: {
-                femenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
-                masculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205'
+                plantillas: CONFIG.sheets.plantillas,
+                gidFemenino: '&gid=0',
+                gidMasculino: '&gid=1375196205'
             },
             drive: {
                 femenino: 'assets/img/plantillas/femenino/',
@@ -675,16 +678,13 @@
         // =============================================
 
         function parseCSVLocal(csv) {
-            // Limpiar \r y separar por líneas
             var lines = csv.replace(/\r/g, '').split('\n').filter(function(line) { return line.trim(); });
             
-            // Detectar si la primera línea es un header o datos
             var firstRow = lines[0].split(',');
             var tieneHeader = isNaN(parseInt(firstRow[0]));
             
             var startIndex = tieneHeader ? 1 : 0;
             
-            // Orden fijo de columnas: numero, nombre, entrenador, info
             var result = [];
             for (var i = startIndex; i < lines.length; i++) {
                 var values = lines[i].split(',');
@@ -713,7 +713,7 @@
 
         async function cargarXogadoresDesdeSheet(url, xenero) {
             try {
-                console.log('🔄 Cargando ' + xenero + '...');
+                console.log('🔄 Cargando ' + xenero + ' desde ' + url);
                 var response = await fetch(url);
                 var csv = await response.text();
                 var datos = parseCSVLocal(csv);
@@ -736,16 +736,18 @@
         }
 
         async function cargarTodasXogadoras() {
+            var urlFem = CONFIG_LOCAL.sheets.plantillas + CONFIG_LOCAL.sheets.gidFemenino;
+            var urlMas = CONFIG_LOCAL.sheets.plantillas + CONFIG_LOCAL.sheets.gidMasculino;
+
             var resultados = await Promise.all([
-                cargarXogadoresDesdeSheet(CONFIG_LOCAL.sheets.femenino, 'femenino'),
-                cargarXogadoresDesdeSheet(CONFIG_LOCAL.sheets.masculino, 'masculino')
+                cargarXogadoresDesdeSheet(urlFem, 'femenino'),
+                cargarXogadoresDesdeSheet(urlMas, 'masculino')
             ]);
 
             var femenino = resultados[0];
             var masculino = resultados[1];
 
             var todas = femenino.concat(masculino);
-            // Aceptar cualquier xogador con nome válido e dorsal numérico (incluído 0)
             var validos = todas.filter(function(x) {
                 return x.nome && x.nome.length > 0 && !isNaN(x.dorsal);
             });
