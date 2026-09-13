@@ -11,10 +11,10 @@
     <!-- ===== CSS GLOBAL DE LA WEB ===== -->
     <link rel="stylesheet" href="css/style.css">
     
-    <!-- ===== SCRIPTS PARA HEADER/FOOTER ===== -->
-    <script src="js/config.js" defer></script>
-    <script src="js/utils.js" defer></script>
-    <script src="js/layout.js" defer></script>
+    <!-- ===== SCRIPTS GLOBALES ===== -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/layout.js"></script>
 
     <style>
         /* ============================================
@@ -55,30 +55,20 @@
             pointer-events: none;
         }
 
-        /* ===== TÍTULO DEL JUEGO ===== */
+        /* ===== TÍTULO DEL JUEGO (sin logo) ===== */
         .game-title {
             width: 100%;
             max-width: 1100px;
             text-align: center;
             padding: 1rem 0 0.5rem 0;
+            position: relative;
+            z-index: 1;
         }
 
         .game-title h1 {
             font-family: 'Graduate', 'Segoe UI', sans-serif;
             font-size: 2.2rem;
             color: #1e3a5f;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .game-title h1 .logo-small {
-            height: 50px;
-            width: auto;
-            border-radius: 50%;
-            border: 2px solid #c9a03d;
-            box-shadow: 0 0 20px rgba(201, 160, 61, 0.2);
         }
 
         .game-title .subtitle {
@@ -379,6 +369,7 @@
             text-align: center;
             text-shadow: 3px 3px 6px #000;
             padding: 0 20px;
+            white-space: pre-line;
         }
 
         .result-message.victoria { color: #4caf50; }
@@ -449,11 +440,15 @@
             flex-shrink: 0;
         }
 
+        /* Logo de Kampa SIN encapsular */
         .instructions .kampa-credit img {
-            height: 28px;
+            height: 30px;
             width: auto;
             cursor: pointer;
-            border-radius: 50%;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
             transition: transform 0.3s;
         }
 
@@ -481,10 +476,6 @@
         @media (max-width: 768px) {
             .game-title h1 {
                 font-size: 1.6rem;
-                flex-wrap: wrap;
-            }
-            .game-title h1 .logo-small {
-                height: 40px;
             }
             .game-container { padding: 1.2rem; }
             .formation-container {
@@ -547,10 +538,7 @@
                 font-size: 0.8rem;
             }
             .instructions .kampa-credit img {
-                height: 22px;
-            }
-            .game-title h1 .logo-small {
-                height: 32px;
+                height: 24px;
             }
             .game-title h1 {
                 font-size: 1.3rem;
@@ -567,10 +555,7 @@
         <div class="game-wrapper">
 
             <div class="game-title">
-                <h1>
-                    <img src="assets/img/logos/club/logo-dorado.png" alt="CB O Grove" class="logo-small" onerror="this.style.display='none'">
-                    Aliña o equipo!
-                </h1>
+                <h1>Aliña o equipo!</h1>
                 <p class="subtitle">🔄 Fai clic nas cartas para intercambiar</p>
             </div>
 
@@ -624,9 +609,9 @@
 
     <script>
         // =============================================
-        // CONFIGURACIÓN
+        // CONFIGURACIÓN LOCAL (fallback si CONFIG falla)
         // =============================================
-        const CONFIG_LOCAL = (typeof CONFIG !== 'undefined') ? CONFIG : {
+        var CONFIG_LOCAL = (typeof CONFIG !== 'undefined') ? CONFIG : {
             sheets: {
                 femenino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=0',
                 masculino: 'https://docs.google.com/spreadsheets/d/1HyII2lYStJ8AdgL1vjWPc7N9S_4r4eCHKH-4WMLHD24/export?format=csv&gid=1375196205'
@@ -637,10 +622,16 @@
             }
         };
 
-        const MOVEMENTOS_TOTAIS = 24;
-        const NUM_XOGADORES = 5;
+        // =============================================
+        // CONSTANTES
+        // =============================================
+        var MOVEMENTOS_TOTAIS = 24;
+        var NUM_XOGADORES = 5;
 
-        let estado = {
+        // =============================================
+        // ESTADO DO XOGO
+        // =============================================
+        var estado = {
             xogadores: [],
             aliñacionCorrecta: [],
             aliñacionActual: [],
@@ -650,54 +641,54 @@
             vitoria: false
         };
 
-        const formationContainer = document.getElementById('formationContainer');
-        const statusText = document.getElementById('statusText');
-        const message = document.getElementById('message');
-        const countdown = document.getElementById('countdown');
-        const newGameBtn = document.getElementById('newGameBtn');
-        const giveUpBtn = document.getElementById('giveUpBtn');
-        const resultOverlay = document.getElementById('resultOverlay');
-        const resultMessage = document.getElementById('resultMessage');
-        const resultPattern = document.getElementById('resultPattern');
-        const playAgainBtn = document.getElementById('playAgainBtn');
+        // =============================================
+        // FUNCIÓNS AUXILIARES
+        // =============================================
 
         function barallar(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+            var arr = array.slice();
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
             }
-            return array;
+            return arr;
         }
 
         function arraysIguais(arr1, arr2) {
             if (arr1.length !== arr2.length) return false;
-            for (let i = 0; i < arr1.length; i++) {
+            for (var i = 0; i < arr1.length; i++) {
                 if (arr1[i].id !== arr2[i].id) return false;
             }
             return true;
         }
 
-        function esStaff(valor) {
+        function esStaffLocal(valor) {
             if (!valor) return false;
-            const v = String(valor).toUpperCase().trim();
+            var v = String(valor).toUpperCase().trim();
             return v === 'SI' || v === 'SÍ' || v === 'TRUE' || v === '1';
         }
 
+        // =============================================
+        // PARSEO CSV
+        // =============================================
+
         function parseCSVLocal(csv) {
-            const lines = csv.split('\n').filter(line => line.trim());
+            var lines = csv.split('\n').filter(function(line) { return line.trim(); });
             if (lines.length < 2) return [];
 
-            const rawHeaders = lines[0].split(',').map(h => h.trim().toLowerCase());
+            var rawHeaders = lines[0].split(',').map(function(h) { return h.trim().toLowerCase(); });
             
-            const headerMap = {};
-            rawHeaders.forEach((h, index) => {
-                if (h.includes('numero') || h.includes('dorsal') || h.includes('número')) {
+            var headerMap = {};
+            rawHeaders.forEach(function(h, index) {
+                if (h.indexOf('numero') !== -1 || h.indexOf('dorsal') !== -1 || h.indexOf('número') !== -1) {
                     headerMap['numero'] = index;
-                } else if (h.includes('nombre') || h.includes('nome') || h.includes('jugador')) {
+                } else if (h.indexOf('nombre') !== -1 || h.indexOf('nome') !== -1 || h.indexOf('jugador') !== -1) {
                     headerMap['nombre'] = index;
-                } else if (h.includes('entrenador') || h.includes('staff') || h.includes('tecnico')) {
+                } else if (h.indexOf('entrenador') !== -1 || h.indexOf('staff') !== -1 || h.indexOf('tecnico') !== -1) {
                     headerMap['entrenador'] = index;
-                } else if (h.includes('info') || h.includes('extra') || h.includes('detras') || h.includes('frase')) {
+                } else if (h.indexOf('info') !== -1 || h.indexOf('extra') !== -1 || h.indexOf('detras') !== -1 || h.indexOf('frase') !== -1) {
                     headerMap['info_extra'] = index;
                 }
             });
@@ -707,12 +698,12 @@
             if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
             if (headerMap['info_extra'] === undefined) headerMap['info_extra'] = 3;
 
-            return lines.slice(1).map(line => {
-                const values = line.split(',').map(v => v.trim());
-                const obj = {};
-                Object.keys(headerMap).forEach(key => {
-                    let value = values[headerMap[key]] || '';
-                    if (value.startsWith('"') && value.endsWith('"')) {
+            return lines.slice(1).map(function(line) {
+                var values = line.split(',').map(function(v) { return v.trim(); });
+                var obj = {};
+                Object.keys(headerMap).forEach(function(key) {
+                    var value = values[headerMap[key]] || '';
+                    if (value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
                         value = value.slice(1, -1);
                     }
                     obj[key] = value;
@@ -721,57 +712,70 @@
             });
         }
 
+        // =============================================
+        // CARGA DE XOGADORES
+        // =============================================
+
         async function cargarXogadoresDesdeSheet(url, xenero) {
             try {
-                console.log(`🔄 Cargando ${xenero}...`);
-                const response = await fetch(url);
-                const csv = await response.text();
-                const datos = parseCSVLocal(csv);
-                const xogadores = datos.filter(j => !esStaff(j.entrenador));
+                console.log('🔄 Cargando ' + xenero + '...');
+                var response = await fetch(url);
+                var csv = await response.text();
+                var datos = parseCSVLocal(csv);
+                var xogadores = datos.filter(function(j) { return !esStaffLocal(j.entrenador); });
                 
-                return xogadores.map(j => ({
-                    id: `${xenero}-${j.numero}`,
-                    nome: j.nombre || `Xogador ${j.numero}`,
-                    dorsal: parseInt(j.numero) || 0,
-                    foto: `${CONFIG_LOCAL.drive[xenero]}${j.numero}.png`,
-                    xenero: xenero,
-                    info_extra: j.info_extra || ''
-                }));
+                return xogadores.map(function(j) {
+                    return {
+                        id: xenero + '-' + j.numero,
+                        nome: j.nombre || ('Xogador ' + j.numero),
+                        dorsal: parseInt(j.numero) || 0,
+                        foto: CONFIG_LOCAL.drive[xenero] + j.numero + '.png',
+                        xenero: xenero,
+                        info_extra: j.info_extra || ''
+                    };
+                });
             } catch (error) {
-                console.error(`Error cargando ${xenero}:`, error);
+                console.error('Error cargando ' + xenero + ':', error);
                 return [];
             }
         }
 
         async function cargarTodasXogadoras() {
-            const [femenino, masculino] = await Promise.all([
+            var resultados = await Promise.all([
                 cargarXogadoresDesdeSheet(CONFIG_LOCAL.sheets.femenino, 'femenino'),
                 cargarXogadoresDesdeSheet(CONFIG_LOCAL.sheets.masculino, 'masculino')
             ]);
 
-            const todas = [...femenino, ...masculino];
-            const validos = todas.filter(x => x.dorsal > 0);
-            console.log(`✅ Cargados ${validos.length} xogadores (${femenino.length} fem, ${masculino.length} mas)`);
+            var femenino = resultados[0];
+            var masculino = resultados[1];
+
+            var todas = femenino.concat(masculino);
+            var validos = todas.filter(function(x) { return x.dorsal > 0; });
+            console.log('✅ Cargados ' + validos.length + ' xogadores (' + femenino.length + ' fem, ' + masculino.length + ' mas)');
             return validos;
         }
 
+        // =============================================
+        // LÓXICA DO XOGO
+        // =============================================
+
         function seleccionarXogadoresAleatorios(todos, cantidade) {
-            const barallados = barallar([...todos]);
+            var barallados = barallar(todos);
             return barallados.slice(0, cantidade);
         }
 
         function xerarAliñacionAleatoria(xogadores) {
-            return barallar([...xogadores]);
+            return barallar(xogadores);
         }
 
         function inicializarXogo(xogadores) {
             if (!xogadores || xogadores.length < NUM_XOGADORES) {
                 console.warn('⚠️ Non hai suficientes xogadores, usando exemplos');
                 xogadores = [];
-                for (let i = 1; i <= 10; i++) {
+                for (var i = 1; i <= 10; i++) {
                     xogadores.push({
-                        id: `ex-${i}`,
-                        nome: `Xogador ${i}`,
+                        id: 'ex-' + i,
+                        nome: 'Xogador ' + i,
                         dorsal: i,
                         foto: '',
                         xenero: i % 2 === 0 ? 'femenino' : 'masculino',
@@ -780,11 +784,11 @@
                 }
             }
 
-            const seleccionados = seleccionarXogadoresAleatorios(xogadores, NUM_XOGADORES);
-            const aliñacionCorrecta = xerarAliñacionAleatoria(seleccionados);
+            var seleccionados = seleccionarXogadoresAleatorios(xogadores, NUM_XOGADORES);
+            var aliñacionCorrecta = xerarAliñacionAleatoria(seleccionados);
             
-            let aliñacionActual;
-            let intentos = 0;
+            var aliñacionActual;
+            var intentos = 0;
             do {
                 aliñacionActual = xerarAliñacionAleatoria(seleccionados);
                 intentos++;
@@ -798,62 +802,64 @@
             estado.xogoActivo = true;
             estado.vitoria = false;
 
-            resultOverlay.classList.add('hidden');
+            document.getElementById('resultOverlay').classList.add('hidden');
             actualizarInterfaz();
             renderizarTaboleiro();
-            message.textContent = '🔄 Fai clic nunha xogadora para seleccionala';
-            message.className = 'message';
+            var msg = document.getElementById('message');
+            msg.textContent = '🔄 Fai clic nunha xogadora para seleccionala';
+            msg.className = 'message';
 
-            console.log('🎯 Aliñación correcta:', estado.aliñacionCorrecta.map(x => `${x.nome} (#${x.dorsal})`).join(' → '));
+            console.log('🎯 Aliñación correcta:', estado.aliñacionCorrecta.map(function(x) { return x.nome + ' (#' + x.dorsal + ')'; }).join(' → '));
         }
 
         function renderizarTaboleiro() {
+            var formationContainer = document.getElementById('formationContainer');
             formationContainer.innerHTML = '';
             
-            estado.aliñacionActual.forEach((xogador, index) => {
-                const card = document.createElement('div');
+            estado.aliñacionActual.forEach(function(xogador, index) {
+                var card = document.createElement('div');
                 card.className = 'game-player-card';
                 card.dataset.index = index;
 
-                const background = document.createElement('div');
+                var background = document.createElement('div');
                 background.className = 'card-background';
                 card.appendChild(background);
 
-                const number = document.createElement('div');
+                var number = document.createElement('div');
                 number.className = 'player-number';
                 number.textContent = xogador.dorsal || '?';
                 card.appendChild(number);
 
-                const photoContainer = document.createElement('div');
+                var photoContainer = document.createElement('div');
                 photoContainer.className = 'photo-container';
                 if (xogador.foto) {
-                    const img = document.createElement('img');
+                    var img = document.createElement('img');
                     img.src = xogador.foto;
                     img.alt = xogador.nome;
                     img.loading = 'lazy';
                     img.onerror = function() {
-                        this.parentElement.innerHTML = `<div class="placeholder">🏀</div>`;
+                        this.parentElement.innerHTML = '<div class="placeholder">🏀</div>';
                     };
                     photoContainer.appendChild(img);
                 } else {
-                    photoContainer.innerHTML = `<div class="placeholder">🏀</div>`;
+                    photoContainer.innerHTML = '<div class="placeholder">🏀</div>';
                 }
                 card.appendChild(photoContainer);
 
-                const nameContainer = document.createElement('div');
+                var nameContainer = document.createElement('div');
                 nameContainer.className = 'name-container';
-                const name = document.createElement('div');
+                var name = document.createElement('div');
                 name.className = 'player-name';
                 name.textContent = xogador.nome || 'Sen nome';
                 nameContainer.appendChild(name);
                 card.appendChild(nameContainer);
 
-                card.addEventListener('click', () => manejarClick(index));
+                card.addEventListener('click', function() { manejarClick(index); });
                 formationContainer.appendChild(card);
             });
 
             if (estado.seleccionado !== null) {
-                const cards = formationContainer.querySelectorAll('.game-player-card');
+                var cards = formationContainer.querySelectorAll('.game-player-card');
                 if (cards[estado.seleccionado]) {
                     cards[estado.seleccionado].classList.add('selected');
                 }
@@ -866,14 +872,14 @@
             if (estado.seleccionado === null) {
                 estado.seleccionado = index;
                 renderizarTaboleiro();
-                message.textContent = `✅ Seleccionado: ${estado.aliñacionActual[index].nome}`;
+                document.getElementById('message').textContent = '✅ Seleccionado: ' + estado.aliñacionActual[index].nome;
                 return;
             }
             
             if (estado.seleccionado === index) {
                 estado.seleccionado = null;
                 renderizarTaboleiro();
-                message.textContent = '🔄 Fai clic nunha xogadora para seleccionala';
+                document.getElementById('message').textContent = '🔄 Fai clic nunha xogadora para seleccionala';
                 return;
             }
             
@@ -881,5 +887,153 @@
         }
 
         function intercambiar(idx1, idx2) {
-            [estado.aliñacionActual[idx1], estado.aliñacionActual[idx2]] = 
-            [estado.aliñ
+            var temp = estado.aliñacionActual[idx1];
+            estado.aliñacionActual[idx1] = estado.aliñacionActual[idx2];
+            estado.aliñacionActual[idx2] = temp;
+            
+            estado.movementosRestantes--;
+            estado.seleccionado = null;
+            
+            actualizarInterfaz();
+            renderizarTaboleiro();
+            
+            var msg = document.getElementById('message');
+            msg.textContent = '🔄 Intercambiadas posicións ' + (idx1 + 1) + ' e ' + (idx2 + 1);
+            msg.className = 'message';
+            
+            comprobarVitoria();
+        }
+
+        function comprobarVitoria() {
+            var correctos = calcularCorrectos();
+            
+            if (correctos === NUM_XOGADORES) {
+                estado.vitoria = true;
+                estado.xogoActivo = false;
+                mostrarResultado(true);
+                return;
+            }
+            
+            if (estado.movementosRestantes <= 0) {
+                estado.xogoActivo = false;
+                mostrarResultado(false);
+            }
+        }
+
+        function calcularCorrectos() {
+            var correctos = 0;
+            for (var i = 0; i < NUM_XOGADORES; i++) {
+                if (estado.aliñacionActual[i].id === estado.aliñacionCorrecta[i].id) {
+                    correctos++;
+                }
+            }
+            return correctos;
+        }
+
+        function actualizarInterfaz() {
+            var correctos = calcularCorrectos();
+            document.getElementById('statusText').textContent = correctos + '/' + NUM_XOGADORES + ' CORRECTOS';
+            
+            var countdown = document.getElementById('countdown');
+            countdown.textContent = estado.movementosRestantes;
+            countdown.className = 'countdown-number';
+            if (estado.movementosRestantes <= 8) {
+                countdown.classList.add('emergencia');
+            } else if (estado.movementosRestantes <= 16) {
+                countdown.classList.add('warning');
+            }
+        }
+
+        // =============================================
+        // RESULTADOS
+        // =============================================
+
+        function mostrarResultado(vitoria) {
+            var overlay = document.getElementById('resultOverlay');
+            overlay.classList.remove('hidden');
+            
+            var msg = document.getElementById('resultMessage');
+            if (vitoria) {
+                msg.textContent = '🏆 ¡VITORIA! 🏀\nAliñaches o equipo perfecto!';
+                msg.className = 'result-message victoria';
+            } else {
+                msg.textContent = '⏰ TEMPO REMATADO\nA aliñación correcta era:';
+                msg.className = 'result-message derrota';
+            }
+            
+            document.getElementById('resultPattern').innerHTML = estado.aliñacionCorrecta.map(function(x) {
+                return '<span>' + x.nome + ' (#' + x.dorsal + ')</span>';
+            }).join(' → ');
+        }
+
+        // =============================================
+        // REINICIO
+        // =============================================
+
+        async function reiniciarXogo() {
+            try {
+                var xogadores = await cargarTodasXogadoras();
+                inicializarXogo(xogadores);
+            } catch (e) {
+                console.error('Erro ó reiniciar:', e);
+                inicializarXogo([]);
+            }
+        }
+
+        // =============================================
+        // EVENTOS
+        // =============================================
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key >= '1' && e.key <= '5') {
+                var idx = parseInt(e.key) - 1;
+                if (idx < estado.aliñacionActual.length) {
+                    manejarClick(idx);
+                }
+            }
+            if (e.key === 'r' || e.key === 'R') {
+                e.preventDefault();
+                reiniciarXogo();
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                if (estado.xogoActivo && !estado.vitoria) {
+                    if (confirm('Seguro que queres renderte?')) {
+                        estado.xogoActivo = false;
+                        mostrarResultado(false);
+                    }
+                }
+            }
+        });
+
+        // =============================================
+        // INICIALIZACIÓN
+        // =============================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM listo, iniciando Aliña o equipo...');
+            
+            document.getElementById('newGameBtn').addEventListener('click', reiniciarXogo);
+            document.getElementById('giveUpBtn').addEventListener('click', function() {
+                if (estado.xogoActivo && !estado.vitoria) {
+                    if (confirm('Seguro que queres renderte?')) {
+                        estado.xogoActivo = false;
+                        mostrarResultado(false);
+                    }
+                }
+            });
+            document.getElementById('playAgainBtn').addEventListener('click', reiniciarXogo);
+
+            reiniciarXogo();
+        });
+
+        // Debug helper
+        window.mostrarSolucion = function() {
+            console.log('🎯 Solución:', estado.aliñacionCorrecta.map(function(x) { return x.nome + ' (#' + x.dorsal + ')'; }).join(' → '));
+            console.log('📊 Actual:', estado.aliñacionActual.map(function(x) { return x.nome + ' (#' + x.dorsal + ')'; }).join(' → '));
+            console.log('✅ Correctos: ' + calcularCorrectos() + '/' + NUM_XOGADORES);
+            console.log('⏱️ Movementos: ' + estado.movementosRestantes);
+        };
+    </script>
+</body>
+</html>
