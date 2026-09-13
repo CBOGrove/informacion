@@ -159,31 +159,6 @@
             font-size: 1.1rem;
         }
 
-        /* ===== LOGOS + PANEL CENTRAL ===== */
-        .top-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .logo {
-            width: 120px;
-            height: 120px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
         /* ===== PANEL CENTRAL (pista + contadores) ===== */
         .pista-panel {
             background: #1e3a5f;
@@ -191,8 +166,7 @@
             border-radius: 15px;
             border: 3px solid #c9a03d;
             text-align: center;
-            flex: 1;
-            min-width: 300px;
+            margin-bottom: 1.5rem;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
@@ -434,17 +408,54 @@
             font-family: monospace;
         }
 
+        /* ===== CRÉDITO KAMPA (unificado) ===== */
+        .kampa-credit {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(30, 58, 95, 0.08);
+        }
+
+        .kampa-credit img {
+            height: 28px;
+            width: auto;
+            cursor: pointer;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            transition: transform 0.3s;
+        }
+
+        .kampa-credit img:hover {
+            transform: scale(1.1);
+        }
+
+        .kampa-credit a {
+            color: #c9a03d;
+            text-decoration: none;
+        }
+
+        .kampa-credit a:hover {
+            text-decoration: underline;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .game-title h1 { font-size: 1.6rem; }
             .game-container { padding: 1.2rem; }
-            .logo { width: 80px; height: 80px; }
-            .pista-panel { padding: 0.8rem 1.2rem; min-width: 100%; }
+            .pista-panel { padding: 0.8rem 1.2rem; }
             .pista-panel .pista-text { font-size: 1rem; }
             .puzzle-board { padding: 1rem; }
             .tile { height: 45px; min-width: 35px; font-size: 1.3rem; }
             .tile.space { width: 15px; min-width: 15px; }
             .game-button { padding: 0.5rem 1.5rem; font-size: 0.9rem; }
+            .kampa-credit { justify-content: center; }
         }
 
         @media (max-width: 480px) {
@@ -454,6 +465,7 @@
             .puzzle-board { padding: 0.8rem; border-width: 4px; }
             .message-container { font-size: 1rem; }
             .pistas-grid { grid-template-columns: 1fr; }
+            .kampa-credit img { height: 24px; }
         }
     </style>
 </head>
@@ -481,29 +493,19 @@
                 <!-- ===== ZONA DE XOGO ===== -->
                 <div id="gameArea" style="display: none;">
 
-                    <!-- LOGOS + PANEL CENTRAL -->
-                    <div class="top-container">
-                        <div class="logo" id="logoKampa">
-                            <img src="assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onerror="this.style.display='none';">
-                        </div>
-
-                        <div class="pista-panel">
-                            <span class="pista-label">💡 PISTA</span>
-                            <div class="pista-text" id="pistaText">—</div>
-                            <div class="contadores-panel">
-                                <div class="counter-item">
-                                    <div>VOCAIS</div>
-                                    <div id="vowelsCounter">3</div>
-                                </div>
-                                <div class="counter-item">
-                                    <div>CONSOANTES</div>
-                                    <div id="consonantsCounter">5</div>
-                                </div>
+                    <!-- PANEL CENTRAL (pista + contadores) -->
+                    <div class="pista-panel">
+                        <span class="pista-label">💡 PISTA</span>
+                        <div class="pista-text" id="pistaText">—</div>
+                        <div class="contadores-panel">
+                            <div class="counter-item">
+                                <div>VOCAIS</div>
+                                <div id="vowelsCounter">3</div>
                             </div>
-                        </div>
-
-                        <div class="logo" id="logoClub">
-                            <img src="assets/img/logos/club/logo-negro.png" alt="CB O Grove" onerror="this.style.display='none';">
+                            <div class="counter-item">
+                                <div>CONSOANTES</div>
+                                <div id="consonantsCounter">5</div>
+                            </div>
                         </div>
                     </div>
 
@@ -531,6 +533,11 @@
                         <strong>🎮 CONTROLES:</strong> Teclado para letras · <kbd>Enter</kbd> Arriesgar frase · <kbd>Esc</kbd> Volver<br>
                         <strong>💰 ECONOMÍA:</strong> As vocais e consoantes gratis veñen dadas por cada pista · Extras cstan puntos<br>
                         <strong>🎯 OBXECTIVO:</strong> Descubre a frase completa antes de quedarte sen puntos
+
+                        <div class="kampa-credit">
+                            <img src="assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" onerror="this.style.display='none';">
+                            <span>Creado por <a href="https://taplink.cc/kampa_snmt" target="_blank">@kampa_snmt</a></span>
+                        </div>
                     </div>
                 </div>
 
