@@ -471,6 +471,43 @@
             font-family: monospace;
         }
 
+        /* ===== CRÉDITO KAMPA (unificado) ===== */
+        .kampa-credit {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(30, 58, 95, 0.08);
+        }
+
+        .kampa-credit img {
+            height: 28px;
+            width: auto;
+            cursor: pointer;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            transition: transform 0.3s;
+        }
+
+        .kampa-credit img:hover {
+            transform: scale(1.1);
+        }
+
+        .kampa-credit a {
+            color: #c9a03d;
+            text-decoration: none;
+        }
+
+        .kampa-credit a:hover {
+            text-decoration: underline;
+        }
+
         /* ===== OVERLAY FINAL ===== */
         .result-overlay {
             position: fixed;
@@ -560,6 +597,7 @@
             .option-btn { font-size: 0.85rem; padding: 10px 8px; min-height: 50px; }
             .questions-btn { padding: 0.6rem 1.4rem; font-size: 0.85rem; }
             .start-btn { font-size: 1rem; padding: 0.7rem 1.8rem; }
+            .kampa-credit { justify-content: center; }
         }
 
         @media (max-width: 480px) {
@@ -579,6 +617,7 @@
             .options-grid { gap: 8px; }
             .feedback-message { font-size: 0.9rem; }
             .game-button { padding: 0.5rem 1.5rem; font-size: 0.85rem; }
+            .kampa-credit img { height: 24px; }
         }
     </style>
 </head>
@@ -648,6 +687,11 @@
                     <div class="instructions">
                         <strong>🎮 CONTROLES:</strong> <kbd>1</kbd>-<kbd>4</kbd> responder · <kbd>R</kbd> reiniciar<br>
                         <strong>🎯 OBXECTIVO:</strong> Adiviña o nome do xogador ou xogadora que aparece na carta
+
+                        <div class="kampa-credit">
+                            <img src="assets/img/logos/patrocinadores/kampa.png" alt="Kampa" onclick="window.open('https://taplink.cc/kampa_snmt','_blank')" onerror="this.style.display='none';">
+                            <span>Creado por <a href="https://taplink.cc/kampa_snmt" target="_blank">@kampa_snmt</a></span>
+                        </div>
                     </div>
                 </div>
 
