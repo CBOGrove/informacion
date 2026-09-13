@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="gl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quen é quen · CB O Grove</title>
+    
+    <!-- ===== FONTS ===== -->
+    <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
+    
+    <!-- ===== CSS GLOBAL DE LA WEB ===== -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- ===== SCRIPTS GLOBALES ===== -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/layout.js"></script>
+
+    <style>
+        /* ============================================
+           RESET Y BASE
+           ============================================ */
+        .game-wrapper * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .game-wrapper {
+            min-height: 60vh;
+            background: linear-gradient(145deg, #f8f9fc 0%, #eef2f7 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/img/logos/club/logo-negro.png');
+            background-size: auto 60%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            opacity: 0.06;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== TÍTULO ===== */
+        .game-title {
+            width: 100%;
+            max-width: 1100px;
+            text-align: center;
+            padding: 1rem 0 0.5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-title h1 {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 2.2rem;
+            color: #1e3a5f;
+        }
+
+        .game-title .subtitle {
+            color: #777;
+            font-size: 1rem;
+        }
+
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .game-container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(4px);
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== PANEL DE CONFIGURACIÓN ===== */
+        .setup-panel {
+            text-align: center;
+        }
+
+        .setup-title {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.5rem;
+            color: #1e3a5f;
+            margin-bottom: 0.5rem;
+        }
+
+        .setup-subtitle {
+            color: #777;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .questions-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .questions-btn {
+            padding: 0.8rem 2rem;
+            border: 3px solid #1e3a5f;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.7);
+            color: #1e3a5f;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .questions-btn:hover {
+            background: #1e3a5f;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
+        }
+
+        .questions-btn.active {
+            background: #1e3a5f;
+            color: white;
+            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
+        }
+
+        .start-btn {
+            background: #1e3a5f;
+            color: white;
+            padding: 0.8rem 2.5rem;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .start-btn:hover {
+            background: #c9a03d;
+            color: #1e3a5f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        /* ===== BARRA DE PROGRESO ===== */
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+            width: 100%;
+        }
+
+        .progress-bar .progress-track {
+            flex: 1;
+            height: 10px;
+            background: rgba(30, 58, 95, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar .progress-track .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #1e3a5f, #c9a03d);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-bar .progress-text {
+            color: #1e3a5f;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 0.9rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* ===== CARTA DEL JUGADOR ===== */
+        .card-display {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0 1.5rem;
+        }
+
+        .game-player-card {
+            width: 200px;
+            height: 300px;
+            background: #FFD700;
+            border-radius: 12px;
+            border: 3px solid #000000;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .game-player-card .card-background {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            opacity: 0.15;
+            transform: rotate(35deg);
+            background-image: url('assets/img/logos/club/logo-negro.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: brightness(0) contrast(1);
+            pointer-events: none;
+        }
+
+        .game-player-card .photo-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 75px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-player-card .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-player-card .photo-container .placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #000;
+            background: rgba(255, 215, 0, 0.3);
+        }
+
+        .game-player-card .player-number {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: 2px solid #000000;
+            background: #000000;
+            color: #FFD700;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            z-index: 3;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+        }
+
+        .game-player-card .name-container {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            height: 50px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            background: #000000;
+            border: 1.5px solid #000000;
+            z-index: 2;
+        }
+
+        .game-player-card .player-name {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            color: #FFD700;
+            letter-spacing: 4px;
+            line-height: 1;
+        }
+
+        /* ===== OPCIONES ===== */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            max-width: 600px;
+            margin: 0 auto 1.2rem;
+        }
+
+        .option-btn {
+            padding: 14px 12px;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            border: 2px solid #1e3a5f;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: rgba(255,255,255,0.9);
+            color: #1e3a5f;
+            text-align: center;
+            letter-spacing: 0.5px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-word;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            background: #1e3a5f;
+            color: white;
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
+        }
+
+        .option-btn.correct {
+            background: rgba(40, 167, 69, 0.9);
+            border-color: #28a745;
+            color: white;
+            animation: correctPulse 0.5s ease;
+        }
+
+        .option-btn.wrong {
+            background: rgba(220, 53, 69, 0.9);
+            border-color: #dc3545;
+            color: white;
+            animation: wrongShake 0.4s ease;
+        }
+
+        .option-btn.reveal-correct {
+            background: rgba(40, 167, 69, 0.3);
+            border-color: #28a745;
+            color: #2e7d32;
+        }
+
+        .option-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-btn.disabled:hover {
+            transform: none;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.05); }
+            60% { transform: scale(0.97); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+
+        /* ===== FEEDBACK ===== */
+        .feedback-message {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #555;
+            text-align: center;
+            min-height: 30px;
+            padding: 0.5rem;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+        }
+
+        .feedback-message.correct {
+            color: #2e7d32;
+        }
+
+        .feedback-message.wrong {
+            color: #c62828;
+        }
+
+        /* ===== BOTONES ===== */
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .game-button {
+            padding: 0.6rem 2rem;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .game-button:hover:not(:disabled) {
+            background: #c9a03d;
+            color: #1e3a5f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .game-button.secondary {
+            background: #666;
+        }
+
+        .game-button.secondary:hover:not(:disabled) {
+            background: #888;
+            color: white;
+        }
+
+        /* ===== INSTRUCCIONES ===== */
+        .instructions {
+            margin-top: 1.2rem;
+            padding: 1rem 1.5rem;
+            background: rgba(30, 58, 95, 0.05);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #555555;
+            line-height: 1.7;
+            text-align: left;
+            border: 1px solid rgba(30, 58, 95, 0.08);
+        }
+
+        .instructions strong {
+            color: #1e3a5f;
+        }
+
+        .instructions kbd {
+            background: #1e3a5f;
+            color: white;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+
+        /* ===== OVERLAY FINAL ===== */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            padding: 20px;
+        }
+
+        .result-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .result-content {
+            background: linear-gradient(145deg, #1e3a5f, #0d1f33);
+            border: 2px solid #c9a03d;
+            border-radius: 25px;
+            padding: 30px 35px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(201, 160, 61, 0.15);
+            animation: victoryIn 0.5s ease;
+        }
+
+        @keyframes victoryIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .result-content .trophy {
+            font-size: 3.5rem;
+            margin-bottom: 6px;
+        }
+
+        .result-content h2 {
+            color: #c9a03d;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+        }
+
+        .result-content .sub {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .result-content .stats {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+        }
+
+        .result-content .stats strong {
+            color: #c9a03d;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .game-title h1 { font-size: 1.6rem; }
+            .game-container { padding: 1.2rem; }
+            .game-player-card { width: 160px; height: 240px; }
+            .game-player-card .photo-container {
+                top: 14px; left: 14px; right: 14px; bottom: 62px;
+            }
+            .game-player-card .player-number {
+                width: 36px; height: 36px; font-size: 1rem;
+                top: 8px; left: 8px;
+            }
+            .game-player-card .name-container {
+                height: 42px; bottom: 8px; left: 8px; right: 8px;
+            }
+            .game-player-card .player-name { font-size: 1.5rem; letter-spacing: 2px; }
+            .option-btn { font-size: 0.85rem; padding: 10px 8px; min-height: 50px; }
+            .questions-btn { padding: 0.6rem 1.4rem; font-size: 0.85rem; }
+            .start-btn { font-size: 1rem; padding: 0.7rem 1.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            .game-player-card { width: 130px; height: 195px; }
+            .game-player-card .photo-container {
+                top: 10px; left: 10px; right: 10px; bottom: 50px;
+            }
+            .game-player-card .player-number {
+                width: 28px; height: 28px; font-size: 0.8rem;
+                top: 6px; left: 6px;
+            }
+            .game-player-card .name-container {
+                height: 34px; bottom: 6px; left: 6px; right: 6px;
+            }
+            .game-player-card .player-name { font-size: 1.2rem; letter-spacing: 1px; }
+            .option-btn { font-size: 0.7rem; padding: 8px 6px; min-height: 42px; border-radius: 10px; }
+            .options-grid { gap: 8px; }
+            .feedback-message { font-size: 0.9rem; }
+            .game-button { padding: 0.5rem 1.5rem; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="main-content">
+        <div class="game-wrapper">
+
+            <div class="game-title">
+                <h1>Quen é quen</h1>
+                <p class="subtitle">🃏 Recoñeces aos xogadores e xogadoras do club?</p>
+            </div>
+
+            <div class="game-container">
+
+                <!-- ===== PANEL DE CONFIGURACIÓN ===== -->
+                <div class="setup-panel" id="setupPanel">
+                    <div class="setup-title">🎯 Cantas preguntas queres?</div>
+                    <div class="setup-subtitle">Aparecerá unha carta e terás que adiviñar de quen se trata</div>
+
+                    <div class="questions-selector" id="questionsSelector">
+                        <button class="questions-btn active" data-questions="5">5 preguntas</button>
+                        <button class="questions-btn" data-questions="10">10 preguntas</button>
+                        <button class="questions-btn" data-questions="15">15 preguntas</button>
+                    </div>
+
+                    <button class="start-btn" id="startGameBtn">🎮 INICIAR PARTIDA</button>
+                </div>
+
+                <!-- ===== ZONA DE XOGO ===== -->
+                <div id="gameArea" style="display: none;">
+
+                    <div class="progress-bar">
+                        <span style="color:#1e3a5f;font-size:1rem;">📊</span>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">0 / 5</span>
+                    </div>
+
+                    <div class="card-display">
+                        <div class="game-player-card" id="playerCard">
+                            <div class="card-background"></div>
+                            <div class="player-number" id="playerNumber">?</div>
+                            <div class="photo-container" id="photoContainer">
+                                <div class="placeholder">🏀</div>
+                            </div>
+                            <div class="name-container">
+                                <div class="player-name">?</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="options-grid" id="optionsGrid">
+                        <button class="option-btn" data-index="0">...</button>
+                        <button class="option-btn" data-index="1">...</button>
+                        <button class="option-btn" data-index="2">...</button>
+                        <button class="option-btn" data-index="3">...</button>
+                    </div>
+
+                    <div class="feedback-message" id="feedbackMessage">💡 Quen é este xogador?</div>
+
+                    <div class="buttons-container">
+                        <button class="game-button secondary" id="backButton">⬅️ VOLVER AO INICIO</button>
+                    </div>
+
+                    <div class="instructions">
+                        <strong>🎮 CONTROLES:</strong> <kbd>1</kbd>-<kbd>4</kbd> responder · <kbd>R</kbd> reiniciar<br>
+                        <strong>🎯 OBXECTIVO:</strong> Adiviña o nome do xogador ou xogadora que aparece na carta
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== OVERLAY FINAL ===== -->
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-content">
+            <div class="trophy" id="resultEmoji">🏆</div>
+            <h2 id="resultTitle">¡Completaches o Quiz!</h2>
+            <div class="sub" id="resultSub">Great job!</div>
+            <div class="stats" id="resultStats">✅ 0 / 0 correctas</div>
+            <button class="game-button" id="playAgainBtn" style="background:#c9a03d;color:#1e3a5f;">🔄 XOGAR DE NOVO</button>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // CONFIGURACIÓN LOCAL
+        // =============================================
+        var CONFIG_LOCAL = {
+            sheets: {
+                plantillas: CONFIG.sheets.plantillas,
+                gidFemenino: '&gid=0',
+                gidMasculino: '&gid=1375196205'
+            },
+            drive: {
+                femenino: 'assets/img/plantillas/femenino/',
+                masculino: 'assets/img/plantillas/masculino/'
+            }
+        };
+
+        // =============================================
+        // ESTADO
+        // =============================================
+        var estado = {
+            numPreguntas: 5,
+            xogadores: [],
+            preguntas: [],
+            indexActual: 0,
+            puntuacion: 0,
+            respondido: false,
+            completado: false
+        };
+
+        // =============================================
+        // DOM
+        // =============================================
+        var setupPanel = document.getElementById('setupPanel');
+        var questionsSelector = document.getElementById('questionsSelector');
+        var startGameBtn = document.getElementById('startGameBtn');
+        var gameArea = document.getElementById('gameArea');
+        var progressFill = document.getElementById('progressFill');
+        var progressText = document.getElementById('progressText');
+        var playerCard = document.getElementById('playerCard');
+        var playerNumber = document.getElementById('playerNumber');
+        var photoContainer = document.getElementById('photoContainer');
+        var optionsGrid = document.getElementById('optionsGrid');
+        var optionBtns = optionsGrid.querySelectorAll('.option-btn');
+        var feedbackMessage = document.getElementById('feedbackMessage');
+        var backButton = document.getElementById('backButton');
+        var resultOverlay = document.getElementById('resultOverlay');
+        var resultEmoji = document.getElementById('resultEmoji');
+        var resultTitle = document.getElementById('resultTitle');
+        var resultSub = document.getElementById('resultSub');
+        var resultStats = document.getElementById('resultStats');
+        var playAgainBtn = document.getElementById('playAgainBtn');
+
+        // =============================================
+        // FUNCIÓNS AUXILIARES
+        // =============================================
+        function barallar(array) {
+            var arr = array.slice();
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+            return arr;
+        }
+
+        function esStaffLocal(valor) {
+            if (!valor) return false;
+            var v = String(valor).toUpperCase().trim();
+            return v === 'SI' || v === 'SÍ' || v === 'TRUE' || v === '1';
+        }
+
+        function parseCSVLocal(csv) {
+            var lines = csv.replace(/\r/g, '').split('\n').filter(function(line) { return line.trim(); });
+            var firstRow = lines[0].split(',');
+            var tieneHeader = isNaN(parseInt(firstRow[0]));
+            var startIndex = tieneHeader ? 1 : 0;
+
+            var result = [];
+            for (var i = startIndex; i < lines.length; i++) {
+                var values = lines[i].split(',');
+                var numero = (values[0] || '').trim().replace(/^"|"$/g, '');
+                var nombre = (values[1] || '').trim().replace(/^"|"$/g, '');
+                var entrenador = (values[2] || '').trim().replace(/^"|"$/g, '');
+                var info = (values[3] || '').trim().replace(/^"|"$/g, '');
+                if (!nombre) continue;
+                result.push({
+                    numero: numero,
+                    nombre: nombre,
+                    entrenador: entrenador,
+                    info_extra: info
+                });
+            }
+            return result;
+        }
+
+        async function cargarXogadoresDesdeSheet(url, xenero) {
+            try {
+                var response = await fetch(url);
+                var csv = await response.text();
+                var datos = parseCSVLocal(csv);
+                var xogadores = datos.filter(function(j) { return !esStaffLocal(j.entrenador); });
+
+                return xogadores.map(function(j) {
+                    return {
+                        id: xenero + '-' + j.numero,
+                        nome: j.nombre || ('Xogador ' + j.numero),
+                        dorsal: parseInt(j.numero) || 0,
+                        foto: CONFIG_LOCAL.drive[xenero] + j.numero + '.png',
+                        xenero: xenero
+                    };
+                });
+            } catch (error) {
+                console.error('Error cargando ' + xenero + ':', error);
+                return [];
+            }
+        }
+
+        async function cargarTodosXogadores() {
+            var urlFem = CONFIG_LOCAL.sheets.plantillas + CONFIG_LOCAL.sheets.gidFemenino;
+            var urlMas = CONFIG_LOCAL.sheets.plantillas + CONFIG_LOCAL.sheets.gidMasculino;
+
+            var resultados = await Promise.all([
+                cargarXogadoresDesdeSheet(urlFem, 'femenino'),
+                cargarXogadoresDesdeSheet(urlMas, 'masculino')
+            ]);
+
+            var todos = resultados[0].concat(resultados[1]);
+            var validos = todos.filter(function(x) {
+                return x.nome && x.nome.length > 0 && !isNaN(x.dorsal);
+            });
+            console.log('✅ Cargados ' + validos.length + ' xogadores');
+            return validos;
+        }
+
+        // =============================================
+        // XERAR PREGUNTAS
+        // =============================================
+        function xerarPreguntas(numPreguntas) {
+            var pool = barallar(estado.xogadores);
+            var seleccionados = pool.slice(0, Math.min(numPreguntas, pool.length));
+
+            return seleccionados.map(function(xogador) {
+                // Opciones incorrectas: otros xogadores con nombre distinto
+                var outros = estado.xogadores.filter(function(x) {
+                    return x.id !== xogador.id && x.nome !== xogador.nome;
+                });
+
+                // Preferir mismo género para que sea más difícil
+                var mismoXenero = outros.filter(function(x) { return x.xenero === xogador.xenero; });
+                var poolIncorrectos = mismoXenero.length >= 3 ? mismoXenero : outros;
+
+                var incorrectos = barallar(poolIncorrectos).slice(0, 3);
+
+                // Si no hay suficientes, rellenar con el pool general
+                if (incorrectos.length < 3) {
+                    var resto = barallar(outros).filter(function(x) {
+                        return incorrectos.indexOf(x) === -1;
+                    });
+                    while (incorrectos.length < 3 && resto.length > 0) {
+                        incorrectos.push(resto.shift());
+                    }
+                }
+
+                var opciones = [xogador].concat(incorrectos);
+                var opcionesBaralladas = barallar(opciones);
+
+                return {
+                    xogador: xogador,
+                    opciones: opcionesBaralladas,
+                    indiceCorrecto: opcionesBaralladas.findIndex(function(o) {
+                        return o.id === xogador.id;
+                    })
+                };
+            });
+        }
+
+        // =============================================
+        // CARGAR PREGUNTA
+        // =============================================
+        function cargarPregunta(index) {
+            var pregunta = estado.preguntas[index];
+            if (!pregunta) return;
+
+            estado.respondido = false;
+
+            // Reset botones
+            optionBtns.forEach(function(btn) {
+                btn.className = 'option-btn';
+                btn.disabled = false;
+                btn.textContent = '';
+            });
+
+            // Carta del jugador
+            var x = pregunta.xogador;
+            playerNumber.textContent = x.dorsal;
+
+            photoContainer.innerHTML = '';
+            var img = document.createElement('img');
+            img.src = x.foto;
+            img.alt = 'Xogador';
+            img.loading = 'lazy';
+            img.onerror = function() {
+                this.parentElement.innerHTML = '<div class="placeholder">🏀</div>';
+            };
+            photoContainer.appendChild(img);
+
+            // Opciones
+            pregunta.opciones.forEach(function(op, idx) {
+                if (op) {
+                    optionBtns[idx].textContent = op.nome;
+                    optionBtns[idx].dataset.correct = (idx === pregunta.indiceCorrecto) ? 'true' : 'false';
+                } else {
+                    optionBtns[idx].textContent = '—';
+                    optionBtns[idx].disabled = true;
+                }
+            });
+
+            // Progreso
+            var total = estado.preguntas.length;
+            progressFill.style.width = ((index / total) * 100) + '%';
+            progressText.textContent = index + ' / ' + total;
+
+            // Feedback
+            feedbackMessage.textContent = '💡 Quen é este xogador?';
+            feedbackMessage.className = 'feedback-message';
+        }
+
+        // =============================================
+        // MANEXAR RESPOSTA
+        // =============================================
+        function manexarResposta(index) {
+            if (estado.respondido || estado.completado) return;
+            if (estado.indexActual >= estado.preguntas.length) return;
+
+            var pregunta = estado.preguntas[estado.indexActual];
+            var btn = optionBtns[index];
+            var isCorrect = (index === pregunta.indiceCorrecto);
+
+            estado.respondido = true;
+
+            optionBtns.forEach(function(b) { b.disabled = true; });
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                estado.puntuacion++;
+                feedbackMessage.textContent = '✅ Correcto! É ' + pregunta.xogador.nome;
+                feedbackMessage.className = 'feedback-message correct';
+            } else {
+                btn.classList.add('wrong');
+                optionBtns.forEach(function(b, idx) {
+                    if (idx === pregunta.indiceCorrecto) {
+                        b.classList.add('reveal-correct');
+                    }
+                });
+                feedbackMessage.textContent = '❌ Era ' + pregunta.xogador.nome;
+                feedbackMessage.className = 'feedback-message wrong';
+            }
+
+            setTimeout(function() {
+                estado.indexActual++;
+                if (estado.indexActual >= estado.preguntas.length) {
+                    mostrarResultadoFinal();
+                } else {
+                    cargarPregunta(estado.indexActual);
+                }
+            }, 1500);
+        }
+
+        // =============================================
+        // RESULTADO FINAL
+        // =============================================
+        function mostrarResultadoFinal() {
+            estado.completado = true;
+            var total = estado.preguntas.length;
+            var score = estado.puntuacion;
+            var porcentaxe = Math.round((score / total) * 100);
+
+            var emoji, titulo, sub;
+            if (porcentaxe === 100) {
+                emoji = '🏆';
+                titulo = '¡PERFECTO!';
+                sub = 'Coñeces ao equipo coma a palma da túa man! 🎉';
+            } else if (porcentaxe >= 75) {
+                emoji = '🌟';
+                titulo = '¡MOI BEN!';
+                sub = 'Bos reflexos e boa memoria! 💪';
+            } else if (porcentaxe >= 50) {
+                emoji = '📚';
+                titulo = '¡BO INTENTO!';
+                sub = 'A práctica fai ao mestre. Segue así! 📖';
+            } else {
+                emoji = '💪';
+                titulo = '¡SEGUE PRACTICANDO!';
+                sub = 'Repasa as plantillas e volve intentalo! 🏀';
+            }
+
+            resultEmoji.textContent = emoji;
+            resultTitle.textContent = titulo;
+            resultSub.textContent = sub;
+            resultStats.innerHTML = '✅ <strong>' + score + '</strong> / ' + total + ' correctas · <strong>' + porcentaxe + '%</strong>';
+
+            progressFill.style.width = '100%';
+            progressText.textContent = total + ' / ' + total;
+
+            setTimeout(function() {
+                resultOverlay.classList.add('active');
+            }, 400);
+        }
+
+        // =============================================
+        // INICIO DE PARTIDA
+        // =============================================
+        async function iniciarPartida() {
+            if (estado.xogadores.length === 0) {
+                estado.xogadores = await cargarTodosXogadores();
+            }
+
+            if (estado.xogadores.length < 4) {
+                alert('Non hai suficientes xogadores no sheet (necesítanse polo menos 4)');
+                return;
+            }
+
+            estado.preguntas = xerarPreguntas(estado.numPreguntas);
+            estado.indexActual = 0;
+            estado.puntuacion = 0;
+            estado.respondido = false;
+            estado.completado = false;
+
+            setupPanel.style.display = 'none';
+            gameArea.style.display = 'block';
+            resultOverlay.classList.remove('active');
+
+            cargarPregunta(0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function volverAoInicio() {
+            if (!estado.completado && estado.indexActual > 0) {
+                if (!confirm('¿Seguro que queres saír? Perderás o progreso.')) return;
+            }
+            estado.completado = false;
+            gameArea.style.display = 'none';
+            setupPanel.style.display = 'block';
+            resultOverlay.classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // =============================================
+        // EVENTOS
+        // =============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM listo, iniciando Quen é quen...');
+
+            // Selector de preguntas
+            questionsSelector.querySelectorAll('.questions-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    questionsSelector.querySelectorAll('.questions-btn').forEach(function(b) {
+                        b.classList.remove('active');
+                    });
+                    btn.classList.add('active');
+                    estado.numPreguntas = parseInt(btn.dataset.questions);
+                });
+            });
+
+            startGameBtn.addEventListener('click', iniciarPartida);
+            backButton.addEventListener('click', volverAoInicio);
+            playAgainBtn.addEventListener('click', function() {
+                resultOverlay.classList.remove('active');
+                volverAoInicio();
+            });
+
+            // Opciones
+            optionBtns.forEach(function(btn, index) {
+                btn.addEventListener('click', function() {
+                    manexarResposta(index);
+                });
+            });
+
+            // Teclado
+            document.addEventListener('keydown', function(e) {
+                if (e.key >= '1' && e.key <= '4') {
+                    var idx = parseInt(e.key) - 1;
+                    if (idx < optionBtns.length && !optionBtns[idx].disabled) {
+                        manexarResposta(idx);
+                    }
+                }
+                if (e.key === 'r' || e.key === 'R') {
+                    e.preventDefault();
+                    if (gameArea.style.display !== 'none') {
+                        volverAoInicio();
+                    }
+                }
+            });
+
+            // Precargar xogadores
+            cargarTodosXogadores().then(function(xogadores) {
+                estado.xogadores = xogadores;
+                console.log('🎯 Listo para xogar con ' + xogadores.length + ' xogadores');
+            });
+        });
+    </script>
+</body>
+</html>
