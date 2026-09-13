@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="gl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>As parellas · CB O Grove</title>
+    
+    <!-- ===== FONTS ===== -->
+    <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
+    
+    <!-- ===== CSS GLOBAL DE LA WEB ===== -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- ===== SCRIPTS GLOBALES ===== -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/layout.js"></script>
+
+    <style>
+        /* ============================================
+           RESET Y BASE
+           ============================================ */
+        .game-wrapper * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .game-wrapper {
+            min-height: 60vh;
+            background: linear-gradient(145deg, #f8f9fc 0%, #eef2f7 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/img/logos/club/logo-negro.png');
+            background-size: auto 60%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            opacity: 0.06;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== TÍTULO ===== */
+        .game-title {
+            width: 100%;
+            max-width: 1100px;
+            text-align: center;
+            padding: 1rem 0 0.5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-title h1 {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 2.2rem;
+            color: #1e3a5f;
+        }
+
+        .game-title .subtitle {
+            color: #777;
+            font-size: 1rem;
+        }
+
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .game-container {
+            width: 100%;
+            max-width: 1100px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(4px);
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== PANEL DE CONFIGURACIÓN ===== */
+        .setup-panel {
+            text-align: center;
+        }
+
+        .setup-title {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.5rem;
+            color: #1e3a5f;
+            margin-bottom: 1.5rem;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .difficulty-btn {
+            padding: 0.8rem 2rem;
+            border: 3px solid #1e3a5f;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.7);
+            color: #1e3a5f;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .difficulty-btn:hover {
+            background: #1e3a5f;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
+        }
+
+        .difficulty-btn.active {
+            background: #1e3a5f;
+            color: white;
+            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.3);
+        }
+
+        .start-btn {
+            background: #1e3a5f;
+            color: white;
+            padding: 0.8rem 2.5rem;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .start-btn:hover {
+            background: #c9a03d;
+            color: #1e3a5f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        /* ===== TABLERO ===== */
+        .board {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            justify-content: center;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* ===== CARTA (flip 3D) ===== */
+        .memory-card {
+            aspect-ratio: 3 / 4;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .memory-card:hover:not(.flipped):not(.eliminated) {
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        .memory-card .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .memory-card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .memory-card .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== REVERSO (boca abajo) ===== */
+        .memory-card .card-back {
+            background: linear-gradient(145deg, #1e3a5f, #0d1f33);
+            border: 3px solid #c9a03d;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .memory-card .card-back img {
+            width: 65%;
+            height: 65%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(201, 160, 61, 0.3));
+        }
+
+        /* ===== ANVERSO ===== */
+        .memory-card .card-front {
+            transform: rotateY(180deg);
+            border: 3px solid #000000;
+            background: #FFD700;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .memory-card .card-front.card-only-name {
+            background: linear-gradient(145deg, #1e3a5f, #0d1f33);
+            border-color: #c9a03d;
+            padding: 1rem;
+        }
+
+        /* Fondo con escudo en el anverso */
+        .memory-card .card-front .front-bg {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            opacity: 0.15;
+            transform: rotate(35deg);
+            background-image: url('assets/img/logos/club/logo-negro.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: brightness(0) contrast(1);
+            pointer-events: none;
+        }
+
+        /* Foto */
+        .memory-card .card-front .card-photo {
+            position: absolute;
+            top: 12%;
+            left: 8%;
+            right: 8%;
+            bottom: 30%;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .memory-card .card-front .card-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .memory-card .card-front .card-photo .placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            background: rgba(255, 215, 0, 0.3);
+        }
+
+        /* Número */
+        .memory-card .card-front .card-number {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: 2px solid #000000;
+            background: #000000;
+            color: #FFD700;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            z-index: 3;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+        }
+
+        /* Nombre */
+        .memory-card .card-front .card-name {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            right: 8px;
+            height: 45px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 6px;
+            background: #000000;
+            border: 1.5px solid #000000;
+            z-index: 2;
+        }
+
+        .memory-card .card-front .card-name span {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            color: #FFD700;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        /* Carta solo nombre (nivel difícil) */
+        .memory-card .card-only-name .only-name-text {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #c9a03d;
+            text-align: center;
+            letter-spacing: 1px;
+            line-height: 1.2;
+            padding: 0 0.5rem;
+            z-index: 2;
+            position: relative;
+            word-break: break-word;
+        }
+
+        /* ===== ANIMACIÓN DE ELIMINACIÓN ===== */
+        .memory-card.eliminating {
+            animation: flyToEdge 0.5s forwards !important;
+            pointer-events: none;
+        }
+
+        @keyframes flyToEdge {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            30% {
+                transform: translate(var(--fly-x, 0), var(--fly-y, 0)) rotate(15deg) scale(1.1);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translate(var(--fly-x-end, 0), var(--fly-y-end, 0)) rotate(30deg) scale(0);
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        .memory-card.eliminated {
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        /* ===== ESTADO Y BOTONES ===== */
+        .status-container {
+            margin: 1.2rem 0;
+            padding: 0.8rem;
+            background: rgba(30, 58, 95, 0.08);
+            border-radius: 12px;
+            border-left: 4px solid #c9a03d;
+        }
+
+        .status-text {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.2rem;
+            color: #1e3a5f;
+            text-align: center;
+        }
+
+        .status-text.victoria {
+            color: #2e7d32;
+            animation: pulse-win 0.8s ease;
+        }
+
+        @keyframes pulse-win {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .message {
+            font-size: 1rem;
+            color: #555555;
+            text-align: center;
+            min-height: 2rem;
+            padding: 0.5rem;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.2rem 0 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .game-button {
+            padding: 0.6rem 2rem;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .game-button:hover:not(:disabled) {
+            background: #c9a03d;
+            color: #1e3a5f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .game-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ===== INSTRUCCIONES ===== */
+        .instructions {
+            margin-top: 1.2rem;
+            padding: 1rem 1.5rem;
+            background: rgba(30, 58, 95, 0.05);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #555555;
+            line-height: 1.7;
+            text-align: left;
+            border: 1px solid rgba(30, 58, 95, 0.08);
+        }
+
+        .instructions strong {
+            color: #1e3a5f;
+        }
+
+        .instructions kbd {
+            background: #1e3a5f;
+            color: white;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+
+        /* ===== OVERLAY DE VICTORIA ===== */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 1.5rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .result-overlay.hidden {
+            display: none;
+        }
+
+        .result-message {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 2.5rem;
+            color: #4caf50;
+            text-align: center;
+            text-shadow: 3px 3px 6px #000;
+            padding: 0 20px;
+            white-space: pre-line;
+        }
+
+        .result-stats {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.2rem;
+            color: #fff;
+            text-align: center;
+            background: rgba(0,0,0,0.5);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            border: 2px solid #c9a03d;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .game-title h1 {
+                font-size: 1.6rem;
+            }
+            .game-container { padding: 1.2rem; }
+            .cards-grid {
+                gap: 0.6rem;
+                max-width: 100%;
+            }
+            .memory-card .card-front .card-number {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+                top: 6px;
+                left: 6px;
+            }
+            .memory-card .card-front .card-name {
+                height: 36px;
+                bottom: 6px;
+                left: 6px;
+                right: 6px;
+            }
+            .memory-card .card-front .card-name span {
+                font-size: 0.65rem;
+            }
+            .memory-card .card-only-name .only-name-text {
+                font-size: 1rem;
+            }
+            .difficulty-btn {
+                padding: 0.6rem 1.4rem;
+                font-size: 0.85rem;
+            }
+            .start-btn {
+                font-size: 1rem;
+                padding: 0.7rem 1.8rem;
+            }
+            .status-text {
+                font-size: 1rem;
+            }
+            .result-message {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cards-grid {
+                gap: 0.4rem;
+            }
+            .memory-card .card-front .card-photo {
+                top: 8%;
+                left: 6%;
+                right: 6%;
+                bottom: 28%;
+            }
+            .memory-card .card-front .card-number {
+                width: 26px;
+                height: 26px;
+                font-size: 0.75rem;
+            }
+            .memory-card .card-front .card-name {
+                height: 30px;
+            }
+            .memory-card .card-front .card-name span {
+                font-size: 0.55rem;
+            }
+            .memory-card .card-only-name .only-name-text {
+                font-size: 0.85rem;
+            }
+            .game-button {
+                padding: 0.4rem 1.2rem;
+                font-size: 0.8rem;
+            }
+            .game-title h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="main-content">
+        <div class="game-wrapper">
+
+            <div class="game-title">
+                <h1>As parellas</h1>
+                <p class="subtitle">🔄 Atopa todas as parellas de xogadores</p>
+            </div>
+
+            <div class="game-container">
+
+                <!-- PANEL DE CONFIGURACIÓN -->
+                <div class="setup-panel" id="setupPanel">
+                    <div class="setup-title">🎯 Elixe a dificultade</div>
+                    <div class="difficulty-selector">
+                        <button class="difficulty-btn active" data-difficulty="facil">
+                            🟢 Fácil
+                        </button>
+                        <button class="difficulty-btn" data-difficulty="dificil">
+                            🔴 Difícil
+                        </button>
+                    </div>
+                    <button class="start-btn" id="startGameBtn">🎮 INICIAR PARTIDA</button>
+                    <div style="margin-top: 1rem; font-size: 0.85rem; color: #777;">
+                        <strong>Fácil:</strong> foto + número + nome nas dúas cartas<br>
+                        <strong>Difícil:</strong> unha carta con foto + número, outra só co nome
+                    </div>
+                </div>
+
+                <!-- ZONA DE XOGO -->
+                <div id="gameArea" style="display: none;">
+                    <div class="board">
+                        <div class="cards-grid" id="cardsGrid"></div>
+                    </div>
+
+                    <div class="status-container">
+                        <div class="status-text" id="statusText">0/8 PARELLAS</div>
+                    </div>
+
+                    <div class="message" id="message">🔄 Fai clic nunha carta para comezar</div>
+
+                    <div class="buttons-container">
+                        <button class="game-button" id="newGameBtn">🔄 NOVA PARTIDA</button>
+                        <button class="game-button" id="helpBtn">💡 AXUDA</button>
+                    </div>
+
+                    <div class="instructions">
+                        <strong>🎯 COMO XOGAR:</strong><br>
+                        1. Fai clic nunha carta para volteala<br>
+                        2. Fai clic noutra para buscar a súa parella<br>
+                        3. Se coinciden, voan fóra do taboleiro<br>
+                        4. Se non coinciden, vólvense a tapar<br>
+                        5. Atopa as <strong>8 parellas</strong> para gañar 🏆<br>
+                        <strong>🎮 ATALLOS:</strong> <kbd>N</kbd> Nova partida · <kbd>H</kbd> Axuda
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- OVERLAY DE VICTORIA -->
+    <div class="result-overlay hidden" id="resultOverlay">
+        <div class="result-message" id="resultMessage">🏆 ¡VITORIA! 🏀</div>
+        <div class="result-stats" id="resultStats"></div>
+        <button class="game-button" id="playAgainBtn">🔄 XOGAR DE NOVO</button>
+    </div>
+
+    <script>
+        // =============================================
+        // CONFIGURACIÓN LOCAL
+        // Usa CONFIG.sheets.plantillas (mismo sheet que plantillas.html)
+        // =============================================
+        var CONFIG_LOCAL = {
+            sheets: {
+                plantillas: CONFIG.sheets.plantillas,
+                gidFemenino: '&gid=0',
+                gidMasculino: '&gid=1375196205'
+            },
+            drive: {
+                femenino: 'assets/img/plantillas/femenino/',
+                masculino: 'assets/img/plantillas/masculino/'
+            }
+        };
+
+        var NUM_PARELLAS = 8;
+        var TOTAL_CARTAS = NUM_PARELLAS * 2;
+
+        // =============================================
+        // ESTADO DO XOGO
+        // =============================================
+        var estado = {
+            dificultade: 'facil',
+            xogadores: [],
+            cartas: [],
+            primeiraCarta: null,
+            segundaCarta: null,
+            bloqueado: false,
+            xogoActivo: false,
+            parellasAtopadas: 0,
+            intentos: 0
+        };
+
+        // =============================================
+        // FUNCIÓNS AUXILIARES
+        // =============================================
+
+        function barallar(array) {
+            var arr = array.slice();
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+            return arr;
+        }
+
+        function esStaffLocal(valor) {
+            if (!valor) return false;
+            var v = String(valor).toUpperCase().trim();
+            return v === 'SI' || v === 'SÍ' || v === 'TRUE' || v === '1';
+        }
+
+        // =============================================
+        // PARSEO CSV (adaptado a sheet sin headers)
+        // =============================================
+
+        function parseCSVLocal(csv) {
+            var lines = csv.replace(/\r/g, '').split('\n').filter(function(line) { return line.trim(); });
+            
+            var firstRow = lines[0].split(',');
+            var tieneHeader = isNaN(parseInt(firstRow[0]));
+            
+            var startIndex = tieneHeader ? 1 : 0;
+            
+            var result = [];
+            for (var i = startIndex; i < lines.length; i++) {
+                var values = lines[i].split(',');
+                
+                var numero = (values[0] || '').trim().replace(/^"|"$/g, '');
+                var nombre = (values[1] || '').trim().replace(/^"|"$/g, '');
+                var entrenador = (values[2] || '').trim().replace(/^"|"$/g, '');
+                var info = (values[3] || '').trim().replace(/^"|"$/g, '');
+                
+                if (!nombre) continue;
+                
+                result.push({
+                    numero: numero,
+                    nombre: nombre,
+                    entrenador: entrenador,
+                    info_extra: info
+                });
+            }
+            
+            return result;
+        }
+
+        // =============================================
+        // CARGA DE XOGADORES
+        // =============================================
+
+        async function cargarXogadoresDesdeSheet(url, xenero) {
+            try {
+                var response = await fetch(url);
+                var csv = await response.text();
+                var datos = parseCSVLocal(csv);
+                var xogadores = datos.filter(function(j) { return !esStaffLocal(j.entrenador); });
+                
+                return xogadores.map(function(j) {
+                    return {
+                        id: xenero + '-' + j.numero,
+                        nome: j.nombre || ('Xogador ' + j.numero),
+                        dorsal: parseInt(j.numero) || 0,
+                        foto: CONFIG_LOCAL.drive[xenero] + j.numero + '.png',
+                        xenero: xenero
+                    };
+                });
+            } catch (error) {
+                console.error('Error cargando ' + xenero + ':', error);
+                return [];
+            }
+        }
+
+        async function cargarTodosXogadores() {
+            var urlFem = CONFIG_LOCAL.sheets.plantillas + CONFIG_LOCAL.sheets.gidFemenino;
+            var urlMas = CONFIG_LOCAL.sheets.plantillas + CONFIG_LOCAL.sheets.gidMasculino;
+
+            var resultados = await Promise.all([
+                cargarXogadoresDesdeSheet(urlFem, 'femenino'),
+                cargarXogadoresDesdeSheet(urlMas, 'masculino')
+            ]);
+
+            var todos = resultados[0].concat(resultados[1]);
+            var validos = todos.filter(function(x) {
+                return x.nome && x.nome.length > 0 && !isNaN(x.dorsal);
+            });
+            console.log('✅ Cargados ' + validos.length + ' xogadores');
+            return validos;
+        }
+
+        // =============================================
+        // CONSTRUCCIÓN DO TABOLEIRO
+        // =============================================
+
+        function crearCartas(xogadores) {
+            var seleccionados = barallar(xogadores).slice(0, NUM_PARELLAS);
+            var cartas = [];
+
+            seleccionados.forEach(function(x, index) {
+                // Carta A: foto + número + nombre (siempre)
+                cartas.push({
+                    id: 'a-' + x.id,
+                    pairId: index,
+                    tipo: 'completa',
+                    xogador: x,
+                    xogadorId: x.id,
+                    eliminada: false,
+                    volteada: false
+                });
+
+                // Carta B: depende de la dificultad
+                if (estado.dificultade === 'facil') {
+                    // Fácil: foto + número + nombre (igual que A)
+                    cartas.push({
+                        id: 'b-' + x.id,
+                        pairId: index,
+                        tipo: 'completa',
+                        xogador: x,
+                        xogadorId: x.id,
+                        eliminada: false,
+                        volteada: false
+                    });
+                } else {
+                    // Difícil: solo nombre
+                    cartas.push({
+                        id: 'b-' + x.id,
+                        pairId: index,
+                        tipo: 'solo-nombre',
+                        xogador: x,
+                        xogadorId: x.id,
+                        eliminada: false,
+                        volteada: false
+                    });
+                }
+            });
+
+            return barallar(cartas);
+        }
+
+        // =============================================
+        // RENDERIZADO
+        // =============================================
+
+        function renderizarCartas() {
+            var grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+
+            estado.cartas.forEach(function(carta, index) {
+                var card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.index = index;
+
+                var inner = document.createElement('div');
+                inner.className = 'card-inner';
+
+                // ===== REVERSO (boca abajo) =====
+                var back = document.createElement('div');
+                back.className = 'card-face card-back';
+                var logoImg = document.createElement('img');
+                logoImg.src = 'assets/img/logos/club/logo-dorado.png';
+                logoImg.alt = 'CB O Grove';
+                logoImg.onerror = function() {
+                    this.style.display = 'none';
+                };
+                back.appendChild(logoImg);
+
+                // ===== ANVERSO =====
+                var front = document.createElement('div');
+                front.className = 'card-face card-front';
+
+                if (carta.tipo === 'completa') {
+                    // Foto + número + nombre
+                    var bg = document.createElement('div');
+                    bg.className = 'front-bg';
+                    front.appendChild(bg);
+
+                    var photoContainer = document.createElement('div');
+                    photoContainer.className = 'card-photo';
+                    var img = document.createElement('img');
+                    img.src = carta.xogador.foto;
+                    img.alt = carta.xogador.nome;
+                    img.loading = 'lazy';
+                    img.onerror = function() {
+                        this.parentElement.innerHTML = '<div class="placeholder">🏀</div>';
+                    };
+                    photoContainer.appendChild(img);
+                    front.appendChild(photoContainer);
+
+                    var number = document.createElement('div');
+                    number.className = 'card-number';
+                    number.textContent = carta.xogador.dorsal;
+                    front.appendChild(number);
+
+                    var nameContainer = document.createElement('div');
+                    nameContainer.className = 'card-name';
+                    var nameSpan = document.createElement('span');
+                    nameSpan.textContent = carta.xogador.nome;
+                    nameContainer.appendChild(nameSpan);
+                    front.appendChild(nameContainer);
+
+                } else {
+                    // Solo nombre (difícil)
+                    front.classList.add('card-only-name');
+                    var bg2 = document.createElement('div');
+                    bg2.className = 'front-bg';
+                    front.appendChild(bg2);
+
+                    var onlyName = document.createElement('div');
+                    onlyName.className = 'only-name-text';
+                    onlyName.textContent = carta.xogador.nome;
+                    front.appendChild(onlyName);
+                }
+
+                inner.appendChild(back);
+                inner.appendChild(front);
+                card.appendChild(inner);
+
+                card.addEventListener('click', function() {
+                    manejarClick(index);
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        function actualizarCarta(index) {
+            var carta = estado.cartas[index];
+            var cardEl = document.querySelectorAll('.memory-card')[index];
+            if (!cardEl) return;
+
+            if (carta.volteada) {
+                cardEl.classList.add('flipped');
+            } else {
+                cardEl.classList.remove('flipped');
+            }
+        }
+
+        // =============================================
+        // LÓXICA DO XOGO
+        // =============================================
+
+        function manejarClick(index) {
+            if (!estado.xogoActivo) return;
+            if (estado.bloqueado) return;
+            
+            var carta = estado.cartas[index];
+            if (carta.eliminada) return;
+            if (carta.volteada) return;
+            if (estado.primeiraCarta !== null && estado.segundaCarta !== null) return;
+
+            carta.volteada = true;
+            actualizarCarta(index);
+
+            if (estado.primeiraCarta === null) {
+                estado.primeiraCarta = index;
+            } else {
+                estado.segundaCarta = index;
+                estado.bloqueado = true;
+                comprobarParella();
+            }
+        }
+
+        function comprobarParella() {
+            var idx1 = estado.primeiraCarta;
+            var idx2 = estado.segundaCarta;
+            var carta1 = estado.cartas[idx1];
+            var carta2 = estado.cartas[idx2];
+
+            var coincide = (carta1.pairId === carta2.pairId);
+
+            estado.intentos++;
+
+            if (coincide) {
+                document.getElementById('message').textContent = '🎯 ¡PARELLA ATOPA!';
+                estado.parellasAtopadas++;
+                actualizarEstado();
+
+                eliminarCarta(idx1, function() {
+                    eliminarCarta(idx2, function() {
+                        resetearEstado();
+                        comprobarVitoria();
+                    });
+                });
+            } else {
+                document.getElementById('message').textContent = '❌ Non coinciden, memoriza...';
+                setTimeout(function() {
+                    if (!estado.xogoActivo) return;
+                    estado.cartas[idx1].volteada = false;
+                    estado.cartas[idx2].volteada = false;
+                    actualizarCarta(idx1);
+                    actualizarCarta(idx2);
+                    resetearEstado();
+                }, 1000);
+            }
+        }
+
+        function eliminarCarta(index, callback) {
+            var carta = estado.cartas[index];
+            if (carta.eliminada) {
+                if (callback) callback();
+                return;
+            }
+            carta.eliminada = true;
+            carta.volteada = false;
+
+            var cardEl = document.querySelectorAll('.memory-card')[index];
+            if (!cardEl) {
+                if (callback) callback();
+                return;
+            }
+
+            // Calcular dirección de vuelo
+            var rect = cardEl.getBoundingClientRect();
+            var vw = window.innerWidth;
+            var vh = window.innerHeight;
+            var distLeft = rect.left;
+            var distRight = vw - rect.right;
+            var distTop = rect.top;
+            var distBottom = vh - rect.bottom;
+            var minDist = Math.min(distLeft, distRight, distTop, distBottom);
+
+            var targetX = 0, targetY = 0;
+            if (minDist === distLeft) { targetX = -vw; }
+            else if (minDist === distRight) { targetX = vw; }
+            else if (minDist === distTop) { targetY = -vh; }
+            else { targetY = vh; }
+
+            cardEl.style.setProperty('--fly-x', '0px');
+            cardEl.style.setProperty('--fly-y', '0px');
+            cardEl.style.setProperty('--fly-x-end', targetX + 'px');
+            cardEl.style.setProperty('--fly-y-end', targetY + 'px');
+            cardEl.classList.add('eliminating');
+
+            setTimeout(function() {
+                cardEl.classList.add('eliminated');
+                if (callback) callback();
+            }, 500);
+        }
+
+        function resetearEstado() {
+            estado.primeiraCarta = null;
+            estado.segundaCarta = null;
+            estado.bloqueado = false;
+            if (estado.xogoActivo) {
+                document.getElementById('message').textContent = '🔍 Segue buscando parellas...';
+            }
+        }
+
+        function comprobarVitoria() {
+            if (estado.parellasAtopadas === NUM_PARELLAS) {
+                estado.xogoActivo = false;
+                mostrarResultado();
+            }
+        }
+
+        function actualizarEstado() {
+            document.getElementById('statusText').textContent = 
+                estado.parellasAtopadas + '/' + NUM_PARELLAS + ' PARELLAS · ' + 
+                estado.intentos + ' intentos';
+        }
+
+        function mostrarResultado() {
+            var overlay = document.getElementById('resultOverlay');
+            overlay.classList.remove('hidden');
+
+            document.getElementById('resultMessage').textContent = '🏆 ¡VITORIA! 🏀';
+            document.getElementById('resultStats').innerHTML = 
+                'Atopaches todas as parellas<br>' +
+                '<strong>' + estado.intentos + '</strong> intentos en total<br>' +
+                'Dificultade: <strong>' + estado.dificultade.toUpperCase() + '</strong>';
+        }
+
+        // =============================================
+        // AXUDA
+        // =============================================
+
+        function mostrarAxuda() {
+            if (!estado.xogoActivo) return;
+            if (estado.bloqueado) return;
+
+            var dispoñibles = [];
+            estado.cartas.forEach(function(c, i) {
+                if (!c.eliminada && !c.volteada) {
+                    dispoñibles.push(i);
+                }
+            });
+
+            if (dispoñibles.length < 2) {
+                document.getElementById('message').textContent = '⚠️ Non hai suficientes cartas ocultas';
+                return;
+            }
+
+            var idx1 = dispoñibles[Math.floor(Math.random() * dispoñibles.length)];
+            var idx2 = dispoñibles[Math.floor(Math.random() * dispoñibles.length)];
+            while (idx2 === idx1 && dispoñibles.length > 1) {
+                idx2 = dispoñibles[Math.floor(Math.random() * dispoñibles.length)];
+            }
+
+            estado.bloqueado = true;
+            estado.cartas[idx1].volteada = true;
+            estado.cartas[idx2].volteada = true;
+            actualizarCarta(idx1);
+            actualizarCarta(idx2);
+
+            document.getElementById('message').textContent = '💡 Axuda: mostrando 2 cartas ao azar...';
+
+            setTimeout(function() {
+                if (!estado.cartas[idx1].eliminada) {
+                    estado.cartas[idx1].volteada = false;
+                    actualizarCarta(idx1);
+                }
+                if (!estado.cartas[idx2].eliminada) {
+                    estado.cartas[idx2].volteada = false;
+                    actualizarCarta(idx2);
+                }
+                estado.bloqueado = false;
+                document.getElementById('message').textContent = '🔍 Segue buscando parellas...';
+            }, 1200);
+        }
+
+        // =============================================
+        // INICIO DE PARTIDA
+        // =============================================
+
+        async function iniciarPartida() {
+            var todosXogadores = await cargarTodosXogadores();
+
+            if (todosXogadores.length < NUM_PARELLAS) {
+                alert('Non hai suficientes xogadores no sheet (necesítanse ' + NUM_PARELLAS + ')');
+                return;
+            }
+
+            estado.cartas = crearCartas(todosXogadores);
+            estado.primeiraCarta = null;
+            estado.segundaCarta = null;
+            estado.bloqueado = false;
+            estado.parellasAtopadas = 0;
+            estado.intentos = 0;
+            estado.xogoActivo = true;
+
+            document.getElementById('setupPanel').style.display = 'none';
+            document.getElementById('gameArea').style.display = 'block';
+            document.getElementById('resultOverlay').classList.add('hidden');
+
+            renderizarCartas();
+            actualizarEstado();
+            document.getElementById('message').textContent = '🎲 ¡Partida iniciada! Atopa as ' + NUM_PARELLAS + ' parellas';
+        }
+
+        function volverAlSetup() {
+            estado.xogoActivo = false;
+            document.getElementById('setupPanel').style.display = 'block';
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('resultOverlay').classList.add('hidden');
+        }
+
+        // =============================================
+        // EVENTOS
+        // =============================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM listo, iniciando As parellas...');
+
+            // Selector de dificultad
+            document.querySelectorAll('.difficulty-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.difficulty-btn').forEach(function(b) {
+                        b.classList.remove('active');
+                    });
+                    btn.classList.add('active');
+                    estado.dificultade = btn.dataset.difficulty;
+                });
+            });
+
+            // Botóns
+            document.getElementById('startGameBtn').addEventListener('click', iniciarPartida);
+            document.getElementById('newGameBtn').addEventListener('click', volverAlSetup);
+            document.getElementById('playAgainBtn').addEventListener('click', function() {
+                document.getElementById('resultOverlay').classList.add('hidden');
+                volverAlSetup();
+            });
+            document.getElementById('helpBtn').addEventListener('click', mostrarAxuda);
+
+            // Atallos de teclado
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'n' || e.key === 'N') {
+                    e.preventDefault();
+                    if (document.getElementById('gameArea').style.display !== 'none') {
+                        volverAlSetup();
+                    }
+                }
+                if (e.key === 'h' || e.key === 'H') {
+                    e.preventDefault();
+                    if (estado.xogoActivo) mostrarAxuda();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
