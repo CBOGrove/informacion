@@ -671,45 +671,40 @@
         }
 
         // =============================================
-        // PARSEO CSV
+        // PARSEO CSV (adaptado a sheet sin headers)
         // =============================================
 
         function parseCSVLocal(csv) {
-            var lines = csv.split('\n').filter(function(line) { return line.trim(); });
-            if (lines.length < 2) return [];
-
-            var rawHeaders = lines[0].split(',').map(function(h) { return h.trim().toLowerCase(); });
+            // Limpiar \r y separar por líneas
+            var lines = csv.replace(/\r/g, '').split('\n').filter(function(line) { return line.trim(); });
             
-            var headerMap = {};
-            rawHeaders.forEach(function(h, index) {
-                if (h.indexOf('numero') !== -1 || h.indexOf('dorsal') !== -1 || h.indexOf('número') !== -1) {
-                    headerMap['numero'] = index;
-                } else if (h.indexOf('nombre') !== -1 || h.indexOf('nome') !== -1 || h.indexOf('jugador') !== -1) {
-                    headerMap['nombre'] = index;
-                } else if (h.indexOf('entrenador') !== -1 || h.indexOf('staff') !== -1 || h.indexOf('tecnico') !== -1) {
-                    headerMap['entrenador'] = index;
-                } else if (h.indexOf('info') !== -1 || h.indexOf('extra') !== -1 || h.indexOf('detras') !== -1 || h.indexOf('frase') !== -1) {
-                    headerMap['info_extra'] = index;
-                }
-            });
-
-            if (headerMap['numero'] === undefined) headerMap['numero'] = 0;
-            if (headerMap['nombre'] === undefined) headerMap['nombre'] = 1;
-            if (headerMap['entrenador'] === undefined) headerMap['entrenador'] = 2;
-            if (headerMap['info_extra'] === undefined) headerMap['info_extra'] = 3;
-
-            return lines.slice(1).map(function(line) {
-                var values = line.split(',').map(function(v) { return v.trim(); });
-                var obj = {};
-                Object.keys(headerMap).forEach(function(key) {
-                    var value = values[headerMap[key]] || '';
-                    if (value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
-                        value = value.slice(1, -1);
-                    }
-                    obj[key] = value;
+            // Detectar si la primera línea es un header o datos
+            var firstRow = lines[0].split(',');
+            var tieneHeader = isNaN(parseInt(firstRow[0]));
+            
+            var startIndex = tieneHeader ? 1 : 0;
+            
+            // Orden fijo de columnas: numero, nombre, entrenador, info
+            var result = [];
+            for (var i = startIndex; i < lines.length; i++) {
+                var values = lines[i].split(',');
+                
+                var numero = (values[0] || '').trim().replace(/^"|"$/g, '');
+                var nombre = (values[1] || '').trim().replace(/^"|"$/g, '');
+                var entrenador = (values[2] || '').trim().replace(/^"|"$/g, '');
+                var info = (values[3] || '').trim().replace(/^"|"$/g, '');
+                
+                if (!nombre) continue;
+                
+                result.push({
+                    numero: numero,
+                    nombre: nombre,
+                    entrenador: entrenador,
+                    info_extra: info
                 });
-                return obj;
-            });
+            }
+            
+            return result;
         }
 
         // =============================================
@@ -750,7 +745,10 @@
             var masculino = resultados[1];
 
             var todas = femenino.concat(masculino);
-            var validos = todas.filter(function(x) { return x.dorsal > 0; });
+            // Aceptar cualquier xogador con nome válido e dorsal numérico (incluído 0)
+            var validos = todas.filter(function(x) {
+                return x.nome && x.nome.length > 0 && !isNaN(x.dorsal);
+            });
             console.log('✅ Cargados ' + validos.length + ' xogadores (' + femenino.length + ' fem, ' + masculino.length + ' mas)');
             return validos;
         }
@@ -827,7 +825,7 @@
 
                 var number = document.createElement('div');
                 number.className = 'player-number';
-                number.textContent = xogador.dorsal || '?';
+                number.textContent = xogador.dorsal;
                 card.appendChild(number);
 
                 var photoContainer = document.createElement('div');
