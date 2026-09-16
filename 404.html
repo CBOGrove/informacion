@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="gl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 · Páxina non atopada · CB O Grove</title>
+    
+    <!-- ===== FONTS ===== -->
+    <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
+    
+    <!-- ===== CSS GLOBAL DE LA WEB ===== -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- ===== SCRIPTS GLOBALES ===== -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/layout.js"></script>
+
+    <style>
+        /* ============================================
+           BASE
+           ============================================ */
+        .error-page {
+            min-height: 60vh;
+            background: linear-gradient(145deg, #f8f9fc 0%, #eef2f7 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .error-page::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/img/logos/club/logo-negro.png');
+            background-size: auto 50%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            opacity: 0.05;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .error-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        /* ============================================
+           404 + BALÓN (animación)
+           ============================================ */
+        .animation-container {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            height: 280px;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* SVG del balón */
+        .ball-svg {
+            position: absolute;
+            left: 50%;
+            bottom: 60px;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 110px;
+            animation: bounce 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.25));
+            z-index: 2;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                bottom: 60px;
+                transform: translateX(-50%) scaleY(1) scaleX(1);
+            }
+            15% {
+                bottom: 60px;
+                transform: translateX(-50%) scaleY(0.85) scaleX(1.1);
+            }
+            50% {
+                bottom: 200px;
+                transform: translateX(-50%) scaleY(1.05) scaleX(0.95);
+            }
+            85% {
+                bottom: 60px;
+                transform: translateX(-50%) scaleY(0.85) scaleX(1.1);
+            }
+        }
+
+        /* Sombra del balón */
+        .ball-shadow {
+            position: absolute;
+            left: 50%;
+            bottom: 55px;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 14px;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: shadow-pulse 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            z-index: 1;
+        }
+
+        @keyframes shadow-pulse {
+            0%, 100% {
+                width: 80px;
+                opacity: 0.5;
+            }
+            50% {
+                width: 40px;
+                opacity: 0.15;
+            }
+        }
+
+        /* Número 404 */
+        .error-code {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 5rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            letter-spacing: 0.5rem;
+            line-height: 1;
+            text-shadow: 3px 3px 0 rgba(201, 160, 61, 0.3);
+            margin-bottom: 0.5rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Líneas de movimiento */
+        .motion-lines {
+            position: absolute;
+            left: 50%;
+            bottom: 90px;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 120px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .motion-line {
+            position: absolute;
+            width: 3px;
+            height: 18px;
+            background: #c9a03d;
+            border-radius: 3px;
+            opacity: 0;
+            animation: motion 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .motion-line:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+        }
+        .motion-line:nth-child(2) {
+            left: 50%;
+            animation-delay: 0.05s;
+        }
+        .motion-line:nth-child(3) {
+            left: 90%;
+            animation-delay: 0.1s;
+        }
+
+        @keyframes motion {
+            0%, 60%, 100% {
+                opacity: 0;
+                transform: translateY(0) scaleY(0.5);
+            }
+            70% {
+                opacity: 0.8;
+                transform: translateY(-20px) scaleY(1);
+            }
+            85% {
+                opacity: 0;
+                transform: translateY(-40px) scaleY(0.3);
+            }
+        }
+
+        /* ============================================
+           TEXTO Y BOTÓN
+           ============================================ */
+        .error-title {
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1.8rem;
+            color: #1e3a5f;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .error-subtitle {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+
+        .error-button {
+            display: inline-block;
+            background: #1e3a5f;
+            color: white;
+            padding: 0.8rem 2.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-family: 'Graduate', 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .error-button:hover {
+            background: #c9a03d;
+            color: #1e3a5f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 768px) {
+            .animation-container {
+                max-width: 260px;
+                height: 220px;
+            }
+            .ball-svg {
+                width: 90px;
+                height: 90px;
+                bottom: 50px;
+            }
+            @keyframes bounce {
+                0%, 100% { bottom: 50px; }
+                50% { bottom: 160px; }
+            }
+            .ball-shadow {
+                bottom: 45px;
+                width: 65px;
+            }
+            @keyframes shadow-pulse {
+                0%, 100% { width: 65px; opacity: 0.5; }
+                50% { width: 32px; opacity: 0.15; }
+            }
+            .error-code {
+                font-size: 3.5rem;
+                letter-spacing: 0.3rem;
+            }
+            .error-title {
+                font-size: 1.4rem;
+            }
+            .error-subtitle {
+                font-size: 0.9rem;
+            }
+            .error-button {
+                padding: 0.7rem 2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .error-page {
+                padding: 2rem 1rem;
+            }
+            .animation-container {
+                max-width: 200px;
+                height: 180px;
+            }
+            .ball-svg {
+                width: 70px;
+                height: 70px;
+                bottom: 40px;
+            }
+            @keyframes bounce {
+                0%, 100% { bottom: 40px; }
+                50% { bottom: 130px; }
+            }
+            .ball-shadow {
+                bottom: 35px;
+                width: 50px;
+            }
+            @keyframes shadow-pulse {
+                0%, 100% { width: 50px; opacity: 0.5; }
+                50% { width: 25px; opacity: 0.15; }
+            }
+            .error-code {
+                font-size: 2.8rem;
+                letter-spacing: 0.2rem;
+            }
+            .error-title {
+                font-size: 1.2rem;
+            }
+            .error-subtitle {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="main-content">
+        <div class="error-page">
+            <div class="error-content">
+
+                <!-- ANIMACIÓN: 404 + BALÓN BOTANDO -->
+                <div class="animation-container">
+
+                    <!-- Líneas de movimiento -->
+                    <div class="motion-lines">
+                        <div class="motion-line"></div>
+                        <div class="motion-line"></div>
+                        <div class="motion-line"></div>
+                    </div>
+
+                    <!-- Sombra -->
+                    <div class="ball-shadow"></div>
+
+                    <!-- Balón SVG -->
+                    <svg class="ball-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Balón base -->
+                        <circle cx="50" cy="50" r="48" fill="#e67e22" stroke="#000" stroke-width="2"/>
+                        <!-- Línea vertical -->
+                        <line x1="50" y1="2" x2="50" y2="98" stroke="#000" stroke-width="2"/>
+                        <!-- Línea horizontal -->
+                        <line x1="2" y1="50" x2="98" y2="50" stroke="#000" stroke-width="2"/>
+                        <!-- Curvas laterales -->
+                        <path d="M 2 50 Q 25 25 50 2" stroke="#000" stroke-width="2" fill="none"/>
+                        <path d="M 98 50 Q 75 25 50 2" stroke="#000" stroke-width="2" fill="none"/>
+                        <path d="M 2 50 Q 25 75 50 98" stroke="#000" stroke-width="2" fill="none"/>
+                        <path d="M 98 50 Q 75 75 50 98" stroke="#000" stroke-width="2" fill="none"/>
+                        <!-- Brillo -->
+                        <ellipse cx="35" cy="30" rx="10" ry="6" fill="rgba(255,255,255,0.3)" transform="rotate(-30 35 30)"/>
+                    </svg>
+                </div>
+
+                <!-- CÓDIGO 404 -->
+                <div class="error-code">404</div>
+
+                <!-- MENSAJE -->
+                <h1 class="error-title">🏀 Onde andas?</h1>
+                <p class="error-subtitle">
+                    A páxina que intentas visitar non está dispoñible ou foi movida.<br>
+                    Proba de novo ou fai click na barra superior.
+                </p>
+
+                <!-- BOTÓN VOLVER -->
+                <a href="index.html" class="error-button">🏠 VOLVER AO INICIO</a>
+
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
