@@ -1,0 +1,22 @@
+{
+    "name": "Club Baloncesto O Grove",
+    "short_name": "CB O Grove",
+    "description": "Web oficial do Club Baloncesto O Grove",
+    "icons": [
+        {
+            "src": "/informacion/assets/img/logos/club/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/informacion/assets/img/logos/club/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#1e3a5f",
+    "background_color": "#1e3a5f",
+    "display": "standalone",
+    "start_url": "/informacion/",
+    "lang": "gl"
+}
