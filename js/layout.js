@@ -1,7 +1,7 @@
 // ===== LAYOUT: HEADER Y FOOTER COMPARTIDOS =====
-// Versión 2.2 - Rutas para https://cbogrove.github.io/informacion/
+// Versión 2.4 - Añadido "Sobre nós" al menú
 
-console.log('🚀 Layout.js v2.2 cargado');
+console.log('🚀 Layout.js v2.4 cargado');
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 DOM cargado, inyectando header y footer...');
@@ -25,6 +25,7 @@ function inyectarHeader() {
             </a>
             <nav class="main-nav">
                 <a href="index.html">Inicio</a>
+                <a href="sobre-nos.html">Sobre nós</a>
                 <a href="plantillas.html">Plantillas</a>
                 <a href="xornadas.html">Xornadas</a>
                 <a href="noticias.html">Noticias</a>
