@@ -3,7 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quen é quen · CB O Grove</title>
+    <title>Quen é quen · Xogos CB O Grove</title>
+    
+    <!-- ===== SEO ===== -->
+    <meta name="description" content="Xogo de identificación do Club Baloncesto O Grove: aparece unha carta cunha foto e un dorsal, e tes que adiviñar o nome do xogador ou xogadora entre 4 opcións. Escolle entre 5, 10 ou 15 preguntas. Coñeces ao equipo?">
+    <meta name="keywords" content="quen é quen, xogo identificación, xogo recoñecer xogadores, xogo adiviñar nome, xogos CB O Grove, xogos baloncesto O Grove, xogo online baloncesto, coñece o equipo, Club Baloncesto O Grove, CB O Grove, baloncesto O Grove, O Grove, Rías Baixas, Concello de O Grove, Turismo de O Grove, Deporte Galego, Xunta de Galicia">
+    <meta name="author" content="Club Baloncesto O Grove">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="Galician">
+    <meta name="geo.region" content="ES-PO">
+    <meta name="geo.placename" content="O Grove">
+    <link rel="canonical" href="https://cbogrove.github.io/informacion/quen-e-quen.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="gl_ES">
+    <meta property="og:site_name" content="Club Baloncesto O Grove">
+    <meta property="og:title" content="Quen é quen · Xogos CB O Grove">
+    <meta property="og:description" content="Xogo de identificación: aparece unha carta e tes que adiviñar o nome do xogador ou xogadora entre 4 opcións.">
+    <meta property="og:image" content="https://cbogrove.github.io/informacion/assets/img/SEO.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://cbogrove.github.io/informacion/quen-e-quen.html">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Quen é quen · Xogos CB O Grove">
+    <meta name="twitter:description" content="Xogo de identificación: adiviña o nome do xogador a partir da súa carta.">
+    <meta name="twitter:image" content="https://cbogrove.github.io/informacion/assets/img/SEO.png">
+    <meta name="twitter:site" content="@cbogrove">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/img/logos/club/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/logos/club/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/logos/club/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/logos/club/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="theme-color" content="#1e3a5f">
+    <!-- ===== /SEO ===== -->
     
     <!-- ===== FONTS ===== -->
     <link href="https://fonts.googleapis.com/css2?family=Graduate&display=swap" rel="stylesheet">
@@ -853,18 +890,15 @@
             var seleccionados = pool.slice(0, Math.min(numPreguntas, pool.length));
 
             return seleccionados.map(function(xogador) {
-                // Opciones incorrectas: otros xogadores con nombre distinto
                 var outros = estado.xogadores.filter(function(x) {
                     return x.id !== xogador.id && x.nome !== xogador.nome;
                 });
 
-                // Preferir mismo género para que sea más difícil
                 var mismoXenero = outros.filter(function(x) { return x.xenero === xogador.xenero; });
                 var poolIncorrectos = mismoXenero.length >= 3 ? mismoXenero : outros;
 
                 var incorrectos = barallar(poolIncorrectos).slice(0, 3);
 
-                // Si no hay suficientes, rellenar con el pool general
                 if (incorrectos.length < 3) {
                     var resto = barallar(outros).filter(function(x) {
                         return incorrectos.indexOf(x) === -1;
@@ -896,14 +930,12 @@
 
             estado.respondido = false;
 
-            // Reset botones
             optionBtns.forEach(function(btn) {
                 btn.className = 'option-btn';
                 btn.disabled = false;
                 btn.textContent = '';
             });
 
-            // Carta del jugador
             var x = pregunta.xogador;
             playerNumber.textContent = x.dorsal;
 
@@ -917,7 +949,6 @@
             };
             photoContainer.appendChild(img);
 
-            // Opciones
             pregunta.opciones.forEach(function(op, idx) {
                 if (op) {
                     optionBtns[idx].textContent = op.nome;
@@ -928,12 +959,10 @@
                 }
             });
 
-            // Progreso
             var total = estado.preguntas.length;
             progressFill.style.width = ((index / total) * 100) + '%';
             progressText.textContent = index + ' / ' + total;
 
-            // Feedback
             feedbackMessage.textContent = '💡 Quen é este xogador?';
             feedbackMessage.className = 'feedback-message';
         }
@@ -1064,7 +1093,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('📄 DOM listo, iniciando Quen é quen...');
 
-            // Selector de preguntas
             questionsSelector.querySelectorAll('.questions-btn').forEach(function(btn) {
                 btn.addEventListener('click', function() {
                     questionsSelector.querySelectorAll('.questions-btn').forEach(function(b) {
@@ -1082,14 +1110,12 @@
                 volverAoInicio();
             });
 
-            // Opciones
             optionBtns.forEach(function(btn, index) {
                 btn.addEventListener('click', function() {
                     manexarResposta(index);
                 });
             });
 
-            // Teclado
             document.addEventListener('keydown', function(e) {
                 if (e.key >= '1' && e.key <= '4') {
                     var idx = parseInt(e.key) - 1;
@@ -1105,7 +1131,6 @@
                 }
             });
 
-            // Precargar xogadores
             cargarTodosXogadores().then(function(xogadores) {
                 estado.xogadores = xogadores;
                 console.log('🎯 Listo para xogar con ' + xogadores.length + ' xogadores');
